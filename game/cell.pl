@@ -7,14 +7,32 @@
 			  	  set_col/3
 			  	  ]).
 
-% Cell structure -> cell(BugType, Row , Col)
-init_cell(Bug, Row, Col, cell(Bug, Row, Col)).
+% Cell structure -> cell(BugType, Row , Col, Color, StackPos)
+init_cell(Bug, Row, Col, Color, StackPos, 
+		  cell(Bug, Row, Col, Color, StackPos)).
 
-get_bug_type(cell(Bug,_,_),Bug).
-get_row(cell(_,Row,_),Row).
-get_col(cell(_,_,Col),Col).
+get_bug_type(cell(Bug,_,_,_,_),Bug).
 
-set_bug_type(Bug, cell(_,Row,Col),cell(Bug, Row, Col)).
-set_row(Row, cell(Bug,_,Col),cell(Bug, Row, Col)).
-set_col(Col, cell(Bug,Row,_),cell(Bug, Row, Col)).
+get_row(cell(_,Row,_,_,_),Row).
+
+get_col(cell(_,_,Col,_,_),Col).
+
+get_color(cell(_,_,_,Color,_),Color).
+
+get_stack_pos(cell(_,_,_,_,StackPos),StackPos).
+
+set_bug_type(Bug, cell(_,Row,Col,Color,StackPos),
+			cell(Bug, Row, Col,Color,StackPos)).
+
+set_row(Row, cell(Bug,_,Col,Color,StackPos),
+		cell(Bug, Row, Col,Color,StackPos)).
+
+set_col(Col, cell(Bug,Row,_,Color,StackPos),
+	    cell(Bug, Row, Col,Color,StackPos)).
+
+set_color(Color, cell(Bug,Row,Col,_,StackPos),
+	    cell(Bug, Row, Col,Color,StackPos)).
+
+set_stack_pos(StackPos, cell(Bug,Row,Col,Color,_),
+	    cell(Bug, Row, Col,Color,StackPos)).
 
