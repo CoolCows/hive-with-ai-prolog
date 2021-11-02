@@ -9,8 +9,12 @@
 %
 % ListOfCells: list of cells structure that represent each piece of the game's board
 % Turns: total turns played so far
+% WhitePlayer: info related to the white player.It's a player structure from player.pl 
+% BlackPlayer: info related to the black player.It's a player structure from player.pl 
 % ---------------------------------------------------------------------------------
-init_board(board([],0)).
+init_board(board([],0,WhitePlayer, BlackPlayer)):-
+	init_player(WhitePlayer),
+	init_player(BlackPlayer).
 
 get_cells(board(Cells,_), Cells).
 
@@ -20,3 +24,6 @@ add_cell(Cell,Board, NewBoard) :-
 	get_cells(Board,BoardCells),
 	push(Cell, BoardCells, NewBoard).
 
+% Give all the possible movements of the given cell 
+% move_cell(Cell,Board, PossibleMovements):-
+		
