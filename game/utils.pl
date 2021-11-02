@@ -4,4 +4,4 @@
 % Some usefull predicates
 push(X,Y,[X|Y]).
 
-pop([X|_],_).
+pop([_|T],T).
