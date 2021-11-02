@@ -4,10 +4,12 @@
 
 :- use_module( utils, [push/3] ).
 
-% Board structure ->  board(listOfCells)
-init_board(_,board([])).
+% Board structure ->  board(listOfCells,turns)
+init_board(board([],0)).
 
-get_cells(board(X), X).
+get_cells(board(Cells,_), Cells).
+
+get_current_turn(board(_, Turns),Turns).
 
 add_cell(Cell,Board, NewBoard) :-
 	get_cells(Board,BoardCells),
