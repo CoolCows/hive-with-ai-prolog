@@ -6,6 +6,8 @@
 gui_init() :-
     new(MainWin, frame("CoolCows' Hive Game")),
     send(MainWin, append, new(Board, picture("Board"))),
+    send(Board, width, 1280),
+    send(Board, height, 720),
     file_dialog_setup(Board),
     menu_bar_setup(MainWin, Board),
 
@@ -22,17 +24,43 @@ menu_bar_setup(MainWin, Board) :-
                  menu_item(exit, message(MainWin, destroy))]).
 
 file_dialog_setup(Board) :-
-    send(new(M, dialog),right, Board),
+    send(new(T, dialog), right, Board),
+    send(T, ver_shrink, 100),
+    send(T, ver_stretch, 100),
+    send(T, width, 512),
+
+    send(T, append, new(P1, picture)),
+    send(P1, width, 500),
+    send(P1, height, 250),
+
+    send(T, append, new(P2, picture)),
+    send(P2, width, 500),
+    send(P2, height, 250),
+    %send(P2, position, point(40, 40)).
+    %send(M, display, new(P1, picture)),
+    %send(P1, ideal_width, 0),
+    %send(P1, ideal_height, 0).
+
+    %send(new(MM, dialog), left, MMM),
+    %send(MMM, append, new(MM, dialog)),
+    %send(MM, display, new(P2, picture)),
+    %send(MM, ver_shrink, 50),
+    %send(MM, ver_stretch, 50).
+    X is 3.
+
+file_dialog_setup2(Board) :-
+    send(new(M, dialog),left, Board),
     send(M, gap, size(0, 0)),
-    send(M, ver_shrink, 100),
-    send(M, ver_stretch, 100),
-    send(M, display, new(MM, menu(mode, choice))),
+    send(M, ver_shrink, 50),
+    send(M, ver_stretch, 50),
+    send(M, display, new(Remaining, picture)),
+    send(new(MM, menu(mode, choice)), below, Remaining),
     send(MM, layout, vertical),
     send(MM, show_label, @off),
     send_list(MM, append,
                 [menu_item(item1),
                  menu_item(item2)]),
-    send_list(MM, new,
+    send_list(MM, append,
                 [menu_item(item3)]).
 
 % Open Select Game Window
