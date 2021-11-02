@@ -21,8 +21,7 @@
 % Pillbug: total pillbugs outside the board
 % Spider: total spiders outside the board
 % ---------------------------------------------------------------------------------
-init_player(Queen, Ants, Beetle, Grasshopper, Ladybug, Mosquito, Pillbug, Spider,
-			player(1,     3,    2,      3,          1,       1,        1,       2)).
+init_player( player(1,     3,    2,      3,          1,       1,        1,       2)).
 
 get_queen(player(Queen,_,_,_,_,_,_,_),Queen).
 
