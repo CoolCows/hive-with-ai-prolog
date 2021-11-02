@@ -4,7 +4,12 @@
 
 :- use_module( utils, [push/3] ).
 
-% Board structure ->  board(listOfCells,turns)
+% ---------------------------------------------------------------------------------
+% Board structure ->  board(ListOfCells,Turns)
+%
+% ListOfCells: list of cells structure that represent each piece of the game's board
+% Turns: total turns played so far
+% ---------------------------------------------------------------------------------
 init_board(board([],0)).
 
 get_cells(board(Cells,_), Cells).

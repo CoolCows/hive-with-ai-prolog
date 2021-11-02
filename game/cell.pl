@@ -7,7 +7,15 @@
 			  	  set_col/3
 			  	  ]).
 
+% ---------------------------------------------------------------------------------
 % Cell structure -> cell(BugType, Row , Col, Color, StackPos)
+%
+% BugType: type of bug in the current cell
+% Row: relative row position
+% Col: relative column position
+% StackPos: if two cells are located in the same relative position then this value
+% acts like a z-index, giving the stack position of the object. Default is 0.
+% ---------------------------------------------------------------------------------
 init_cell(Bug, Row, Col, Color, StackPos, 
 		  cell(Bug, Row, Col, Color, StackPos)).
 
