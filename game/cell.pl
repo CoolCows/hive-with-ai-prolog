@@ -1,4 +1,4 @@
-:- module(cell, [ init_cell/5,
+:- module(cell, [ init_cell/6,
 				  get_bug_type/2,
 			      get_row/2,
 			      get_col/2,
