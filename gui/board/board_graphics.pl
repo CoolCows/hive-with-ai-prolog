@@ -57,6 +57,6 @@ get_test_cells(C) :-
     init_cell(0, 1, -1, 0, 0, C13),
     init_cell(0, 1, -2, 0, 0, C14),
     init_cell(0, 1, -3, 0, 0, C15),
-    append(C, [], [C1, C2, C3, C4, C5, C6, C7, C8, C9, C10, C11, C12, C13, C14, C15]).
+    append(C, [], [C1, C2, C3, C4, C5]).%, C3, C4, C5, C6, C7, C8, C9, C10, C11, C12, C13, C14, C15]).
 
 

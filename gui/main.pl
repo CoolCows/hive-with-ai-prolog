@@ -1,13 +1,19 @@
 % Load libraries and tools
 :- use_module(library(pce)).
 :- use_module("./board/board_graphics", [draw_board/3]).
+:- use_module("./board/board_events", [select_bug_to_play/2]).
 
 % Start Game Window
+
 gui_init() :-
     new(MainWin, frame("CoolCows Hive Game")),
     send(MainWin, append, new(Board, picture("Board"))),
     send(Board, width, 1280),
     send(Board, height, 720),
+    send(Board, recogniser,
+            click_gesture(left, '', single,
+                          message(@prolog, select_bug_to_play, Board, @event?position))),
+
     file_dialog_setup(Board),
     menu_bar_setup(MainWin, Board),
 
