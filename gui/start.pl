@@ -4,7 +4,7 @@
 
 % Start Game Window
 gui_init() :-
-    new(MainWin, frame("CoolCows' Hive Game")),
+    new(MainWin, frame("CoolCows Hive Game")),
     send(MainWin, append, new(Board, picture("Board"))),
     send(Board, width, 1280),
     send(Board, height, 720),
@@ -40,7 +40,7 @@ file_dialog_setup(Board) :-
     send(P2, width, 500),
     send(P2, height, 250),
 
-    send(button(refresh), below, P2).
+    send(button(refresh, message(@prolog, draw_board,[], Board, 1)), below, P2).
 
 % ?- game_type_selection().
 ?- gui_init().
