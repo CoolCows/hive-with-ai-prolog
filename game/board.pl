@@ -6,7 +6,8 @@
 
 :- use_module( cell, [ get_bug_type/3] ).
 :- use_module( utils, [push/3] ).
-:- use_module( "./movements/ant.", [movements_ant/3] )
+:- use_module( "./movements/ant.", [movements_ant/3] ).
+:- use_module( "./movements/queen", [movements_queen/3] ).
 
 % ---------------------------------------------------------------------------------
 % Board structure ->  board(ListOfCells,Turns,WhitePlayer,BlackPlayer)
