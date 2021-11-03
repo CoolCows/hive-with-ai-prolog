@@ -2,9 +2,13 @@
 				  get_bug_type/2,
 			      get_row/2,
 			      get_col/2,
+				  get_color/2,
+				  get_stack_pos/2,
 			      set_bug_type/3,
 			  	  set_row/3,
-			  	  set_col/3
+			  	  set_col/3,
+				  set_color/3,
+				  set_stack_pos/3
 			  	  ]).
 
 % ---------------------------------------------------------------------------------
