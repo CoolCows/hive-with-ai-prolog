@@ -1,4 +1,4 @@
-:- module( player, [ init_player/9,
+:- module( player, [ init_player/1,
 					 get_queen/9,
 					 get_ants/9,
 					 get_beetles/9,
