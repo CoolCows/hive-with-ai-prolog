@@ -1,4 +1,4 @@
-:- module(draw_board, [draw_board/2,
+:- module(board_graphics, [draw_board/2,
                        draw_board/3]).
 
 :- use_module("../primitives/draw_hex", [draw_hexagon/4]).

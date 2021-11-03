@@ -1,6 +1,6 @@
 % Load libraries and tools
 :- use_module(library(pce)).
-:- use_module("./board/draw_board", [draw_board/3]).
+:- use_module("./board/board_graphics", [draw_board/3]).
 
 % Start Game Window
 gui_init() :-
