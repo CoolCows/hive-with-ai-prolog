@@ -1,5 +1,5 @@
 :- module( player, [ init_player/1,
-					 get_queen/2,
+					 get_queens/2,
 					 get_ants/2,
 					 get_beetles/2,
 					 get_grasshopper/2,
@@ -50,23 +50,23 @@ get_spiders(player(_,_,_,_,_,_,_,Spiders),Spiders).
 set_queens(Queen, player(_, Ants, Beetle, Grasshopper, Ladybug, Mosquito, Pillbug, Spider),
 		           player(Queen, Ants, Beetle, Grasshopper, Ladybug, Mosquito, Pillbug, Spider)).
 
-set_ants(Ants, player(Queens, _, Beetle, Grasshopper, Ladybug, Mosquito, Pillbug, Spider),
+set_ants(Ants, player(Queen, _, Beetle, Grasshopper, Ladybug, Mosquito, Pillbug, Spider),
 		           player(Queen, Ants, Beetle, Grasshopper, Ladybug, Mosquito, Pillbug, Spider)).
 
-set_beetles(Beetle, player(Queens, Ants, _, Grasshopper, Ladybug, Mosquito, Pillbug, Spider),
+set_beetles(Beetle, player(Queen, Ants, _, Grasshopper, Ladybug, Mosquito, Pillbug, Spider),
 		           player(Queen, Ants, Beetle, Grasshopper, Ladybug, Mosquito, Pillbug, Spider)).
 
-set_grasshoppers(Grasshopper, player(Queens, Ants, Beetle, _, Ladybug, Mosquito, Pillbug, Spider),
+set_grasshoppers(Grasshopper, player(Queen, Ants, Beetle, _, Ladybug, Mosquito, Pillbug, Spider),
 		           player(Queen, Ants, Beetle, Grasshopper, Ladybug, Mosquito, Pillbug, Spider)).
 
-set_ladybugs(Ladybug, player(Queens, Ants, Beetle, Grasshopper, _, Mosquito, Pillbug, Spider),
+set_ladybugs(Ladybug, player(Queen, Ants, Beetle, Grasshopper, _, Mosquito, Pillbug, Spider),
 		           player(Queen, Ants, Beetle, Grasshopper, Ladybug, Mosquito, Pillbug, Spider)).
 
-set_mosquitos(Mosquito, player(Queens, Ants, Beetle, Grasshopper, Ladybug, _, Pillbug, Spider),
+set_mosquitos(Mosquito, player(Queen, Ants, Beetle, Grasshopper, Ladybug, _, Pillbug, Spider),
 		           player(Queen, Ants, Beetle, Grasshopper, Ladybug, Mosquito, Pillbug, Spider)).
 
-set_pillbugs(Pillbug, player(Queens, Ants, Beetle, Grasshopper, Ladybug, Mosquito, _, Spider),
+set_pillbugs(Pillbug, player(Queen, Ants, Beetle, Grasshopper, Ladybug, Mosquito, _, Spider),
 		           player(Queen, Ants, Beetle, Grasshopper, Ladybug, Mosquito, Pillbug, Spider)).
 
-set_spiders(Spider, player(Queens, Ants, Beetle, Grasshopper, Ladybug, Mosquito, Pillbug, _),
+set_spiders(Spider, player(Queen, Ants, Beetle, Grasshopper, Ladybug, Mosquito, Pillbug, _),
 		           player(Queen, Ants, Beetle, Grasshopper, Ladybug, Mosquito, Pillbug, Spider)).
