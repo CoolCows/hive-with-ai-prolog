@@ -12,7 +12,7 @@ gui_init() :-
     menu_bar_setup(MainWin, Board),
 
     send(MainWin, open),
-    draw_board([], Board, 3).
+    draw_board([], Board, 1).
 
 menu_bar_setup(MainWin, Board) :-
     send(new(D, dialog), above, Board),
