@@ -1,13 +1,21 @@
-:- module( board, [ init_board/4,
+:- module( board, [ init_board/1,
 					get_cells/2,
+					get_current_turn/2,
+					get_white_player/2,
+					get_black_player/2,
+					set_cells/3,
+					set_turns/3,
+					set_white_player/3,
+					set_black_player/3,
+					increase_turn/2,
 					add_cell/3,
 					movements/3]
 					).
 
-:- use_module( cell, [ get_bug_type/3] ).
+:- use_module( cell, [ get_bug_type/2] ).
 :- use_module( utils, [push/3] ).
 :- use_module( player, [init_player/1] ).
-:- use_module( "./movements/ant.", [movements_ant/3] ).
+:- use_module( "./movements/ant", [movements_ant/3] ).
 :- use_module( "./movements/queen", [movements_queen/3] ).
 
 % ---------------------------------------------------------------------------------
@@ -22,7 +30,7 @@ init_board(board([],0,WhitePlayer, BlackPlayer)):-
 	init_player(WhitePlayer),
 	init_player(BlackPlayer).
 
-get_cells(board(Cells,_), Cells).
+get_cells(board(Cells,_,_,_), Cells).
 
 get_current_turn(board(_, Turns),Turns).
 
