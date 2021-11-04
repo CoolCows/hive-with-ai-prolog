@@ -1,11 +1,11 @@
 % Load libraries and tools
 :- use_module(library(pce)).
-:- use_module("./board/board_graphics", [draw_board/3]).
+:- use_module("./board/board_graphics", [draw_board/2]).
 :- use_module("./board/board_events", [select_bug_to_play/2]).
 
-% Start Game Window
 
 gui_init() :-
+    %Setting up Game Panel
     new(MainWin, frame("CoolCows Hive Game")),
     send(MainWin, append, new(Board, picture("Board"))),
     send(Board, width, 1280),
@@ -13,12 +13,19 @@ gui_init() :-
     send(Board, recogniser,
             click_gesture(left, '', single,
                           message(@prolog, select_bug_to_play, Board, @event?position))),
-
     file_dialog_setup(Board),
     menu_bar_setup(MainWin, Board),
-
     send(MainWin, open),
-    draw_board([], Board, 1).
+
+    % Init Global Vars
+    nb_setval(scale, 1),
+    nb_setval(graphic_cells, []),
+    nb_setval(board_center, point(0,0)),
+    nb_setval(moving_cell, false),
+    nb_setval(adding_cell, false),
+
+    % Call function that returns a Cell Board from logic
+    draw_board([], Board).
 
 menu_bar_setup(MainWin, Board) :-
     send(new(D, dialog), above, Board),
