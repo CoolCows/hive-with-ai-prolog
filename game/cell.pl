@@ -8,7 +8,8 @@
 			  	  set_row/3,
 			  	  set_col/3,
 				  set_color/3,
-				  set_stack_pos/3
+				  set_stack_pos/3,
+				  same_position/2
 			  	  ]).
 
 % ---------------------------------------------------------------------------------
@@ -48,3 +49,4 @@ set_color(Color, cell(Bug,Row,Col,_,StackPos),
 set_stack_pos(StackPos, cell(Bug,Row,Col,Color,_),
 	    cell(Bug, Row, Col,Color,StackPos)).
 
+same_position(cell(_,Row,Col,_,_),cell(_,Row,Col,_,_)).
