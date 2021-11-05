@@ -17,8 +17,7 @@
 					adjacent_cell_3/3,
 					adjacent_cell_4/3,
 					adjacent_cell_5/3,
-					adjacent_cell_6/3,
-					add_cell/3
+					adjacent_cell_6/3
  					]).
 
 :- use_module("../cell", [ get_color/2,
@@ -34,8 +33,4 @@ movements_queen(Cell, Board, Adj):-
 	adjacent_cells(Adj,Board,Adj2),
 	not(get_bug_type(Adj2,none)),
 	not(same_position(Adj2,Cell)).
-	
-	
-
-	
 
