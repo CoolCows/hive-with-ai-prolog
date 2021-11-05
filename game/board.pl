@@ -1,5 +1,6 @@
 :- module( board, [ init_board/1,
 					get_cells/2,
+					get_cell/4,
 					get_current_turn/2,
 					get_white_player/2,
 					get_black_player/2,
@@ -8,15 +9,24 @@
 					set_white_player/3,
 					set_black_player/3,
 					increase_turn/2,
-					add_cell/3,
-					movements/3]
-					).
+					adjacent_cells/3,
+					adjacent_cell_1/3,
+					adjacent_cell_2/3,
+					adjacent_cell_3/3,
+					adjacent_cell_4/3,
+					adjacent_cell_5/3,
+					adjacent_cell_6/3,
+					add_cell/3
+					
+					]).
 
-:- use_module( cell, [ get_bug_type/2] ).
+:- use_module( cell, [ get_row/2,
+					   get_col/2,
+					   init_cell/6,
+					   get_bug_type/2] 
+				   ).
 :- use_module( utils, [push/3] ).
 :- use_module( player, [init_player/1] ).
-:- use_module( "./movements/ant", [movements_ant/3] ).
-:- use_module( "./movements/queen", [movements_queen/3] ).
 
 % ---------------------------------------------------------------------------------
 % Board structure ->  board(ListOfCells,Turns,WhitePlayer,BlackPlayer)
@@ -55,24 +65,80 @@ increase_turn(Board, NewBoard ):-
 	NewTurns is Turns + 1,
 	set_turns(NewTurns, Board, NewBoard).
 
+get_cell(Row, Col, Board, Cell):-
+	get_cells(Board, Cells),
+	get_cell_(Row,Col,Cells, Cell).
+
+get_cell(Row, Col, Board, Cell):-
+	get_cells(Board, Cells),
+	not( get_cell_(Row,Col, Cells, Cell) ),
+	init_cell(none,Row,Col,none,0, Cell).
+
+get_cell_(Row,Col,[cell(BugType,Row,Col,Color,StackPos)|_], cell(BugType,Row,Col,Color, StackPos)).
+get_cell_(Row,Col,[_|T],Cell):- get_cell_(Row,Col,T,Cell).
+
+%---------------------------------------------------------------%
+%                         ADJACENT CELLS                        %
+%---------------------------------------------------------------%
+%							   1 2                              %
+%						 	  3 0 4                             %
+%  	   						   5 6                              %
+%---------------------------------------------------------------%
+%---------------------------------------------------------------%
+
+adjacent_cell_1(Cell,Board,AdjCell):-
+	get_row(Cell, Row),
+	get_col(Cell, Col),
+	AdjRow is Row - 1,
+	get_cell(AdjRow, Col, Board, AdjCell).
+
+adjacent_cell_2(Cell,Board, AdjCell):-
+	get_row(Cell, Row),
+	get_col(Cell, Col),
+	AdjRow is Row - 1,
+	AdjCol is Col + 1,
+	get_cell(AdjRow, AdjCol, Board, AdjCell).
+
+adjacent_cell_3(Cell,Board, AdjCell):-
+	get_row(Cell, Row),
+	get_col(Cell, Col),
+	AdjCol is Col - 1,
+	get_cell(Row, AdjCol, Board, AdjCell).
+
+adjacent_cell_4(Cell,Board, AdjCell):-
+	get_row(Cell, Row),
+	get_col(Cell, Col),
+	AdjCol is Col + 1,
+	get_cell(Row, AdjCol, Board, AdjCell).
+
+adjacent_cell_5(Cell,Board, AdjCell):-
+	get_row(Cell, Row),
+	get_col(Cell, Col),
+	AdjRow is Row + 1,
+	AdjCol is Col - 1,
+	get_cell(AdjRow, AdjCol, Board, AdjCell).
+
+adjacent_cell_6(Cell,Board,AdjCell):-
+	get_row(Cell, Row),
+	get_col(Cell, Col),
+	AdjRow is Row + 1,
+	get_cell(AdjRow, Col, Board, AdjCell).
+
+adjacent_cells(Cell,Board, AdjCell):-
+	adjacent_cell_1(Cell,Board, AdjCell);
+	adjacent_cell_2(Cell,Board, AdjCell);
+	adjacent_cell_3(Cell,Board, AdjCell);
+	adjacent_cell_4(Cell,Board, AdjCell);
+	adjacent_cell_5(Cell,Board, AdjCell);
+	adjacent_cell_6(Cell,Board, AdjCell).
+
+%---------------------------------------------------------------%
+%---------------------------------------------------------------%
 
 add_cell(Cell,Board, NewBoard) :-
 	%TODO: validate position of new cell
 	get_cells(Board,BoardCells),
-	push(Cell, BoardCells, NewBoard).
+	push(Cell, BoardCells, NewBoardCells),
+	set_cells(NewBoardCells,Board,NewBoard).
 
-% Give all the possible movements of the given cell 
-movements(Cell, Board, PossibleMovements):-
-	get_bug_type(Cell, BugType), 
-	BugType == queen,
-	!,
-	movements_queen(Cell, Board, PossibleMovements).
 
-movements(Cell, Board, PossibleMovements):-
-	get_bug_type(Cell, BugType), 
-	BugType == ant,
-	!, 
-	movements_ant(Cell, Board, PossibleMovements).
-	
-
-		
