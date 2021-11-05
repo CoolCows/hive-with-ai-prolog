@@ -70,3 +70,51 @@ set_pillbugs(Pillbug, player(Queen, Ants, Beetle, Grasshopper, Ladybug, Mosquito
 
 set_spiders(Spider, player(Queen, Ants, Beetle, Grasshopper, Ladybug, Mosquito, Pillbug, _),
 		           player(Queen, Ants, Beetle, Grasshopper, Ladybug, Mosquito, Pillbug, Spider)).
+
+decrease_bug(queen, Player, NewPlayer):-
+	!,
+	get_queens(Player, Bug),
+	Bug is Bug - 1,
+	set_queens(Bug,Player, NewPlayer).
+
+decrease_bug(ant, Player, NewPlayer):-
+	!,
+	get_ants(Player, Bug),
+	Bug is Bug - 1,
+	set_ants(Bug,Player, NewPlayer).
+
+decrease_bug(beetle, Player, NewPlayer):-
+	!,
+	get_beetles(Player, Bug),
+	Bug is Bug - 1,
+	set_beetles(Bug,Player, NewPlayer).
+
+decrease_bug(grasshopper, Player, NewPlayer):-
+	!,
+	get_grasshopper(Player, Bug),
+	Bug is Bug - 1,
+	set_grasshoppers(Bug,Player, NewPlayer).
+
+decrease_bug(ladybug, Player, NewPlayer):-
+	!,
+	get_ladybugs(Player, Bug),
+	Bug is Bug - 1,
+	set_ladybugs(Bug,Player, NewPlayer).
+
+decrease_bug(mosquito, Player, NewPlayer):-
+	!,
+	get_mosquitos(Player, Bug),
+	Bug is Bug - 1,
+	set_mosquitos(Bug,Player, NewPlayer).
+
+decrease_bug(pillbug, Player, NewPlayer):-
+	!,
+	get_pillbugs(Player, Bug),
+	Bug is Bug - 1,
+	set_pillbugs(Bug,Player, NewPlayer).
+
+decrease_bug(spider, Player, NewPlayer):-
+	!,
+	get_spiders(Player, Bug),
+	Bug is Bug - 1,
+	set_spiders(Bug,Player, NewPlayer).
