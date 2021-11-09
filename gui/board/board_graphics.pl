@@ -22,7 +22,14 @@ draw_board(Board, Picture) :-
  
     %Erase this funcall when logic is functional
     get_test_cells(C),
+    write_ln('Getting test celss'),
+    write_ln(C),
+    write_ln('Converting to GCells'),
     board_to_graphic_board(C, GCells),
+    write_ln(GCells),
+    chain_list(CCells, GCells),
+    send(@cells, board, CCells),
+    %send(@cells, fill_board, GCells),
     
     nb_setval(board_center, point(MX, MY)),
     nb_setval(graphic_cells, GCells),
@@ -114,5 +121,26 @@ click_inside(C, ClickPosition:point, Result:bool) :->
     line(point(X + Dist/2, Y + Dist), point(X + Dist, Y), M1, N1),
     below_line(ClickPosition, M1, N1),
     Result is true.
+
+:- pce_end_class.
+
+:- pce_begin_class(graphic_board, object).
+
+variable(board, chain, both, 'Contains a list of graphic cells').
+
+initialise(C) :->
+    chain_list(X, []),
+    send(C, board, X).
+
+fill_board(C, GameBoard) :->
+    write_ln('Filling board'),
+    write_ln(GameBoard),
+    chain_list(PCEGameBoard, GameBoard),
+    write_ln(PCEGameBoard),
+    send(C, board, PCEGameBoard).
+
+get_list_board(C, GameBoard) :<-
+    get(C, board, PCEGameBoard),
+    chain_list(GameBoard, PCEGameBoard).
 
 :- pce_end_class.

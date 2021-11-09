@@ -3,6 +3,9 @@
 :- use_module("./board/board_graphics", [draw_board/2]).
 :- use_module("./board/board_events", [select_bug_to_play/2]).
 
+:- pce_global(@cells, new(graphic_board)),
+   pce_global(@moving, false),
+   pce_global(@positioning, false).
 
 gui_init() :-
     %Setting up Game Panel
@@ -19,7 +22,6 @@ gui_init() :-
 
     % Init Global Vars
     nb_setval(scale, 1),
-    nb_setval(graphic_cells, []),
     nb_setval(board_center, point(0,0)),
     nb_setval(moving_cell, false),
     nb_setval(adding_cell, false),
