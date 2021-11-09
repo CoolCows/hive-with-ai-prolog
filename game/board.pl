@@ -16,17 +16,20 @@
 					adjacent_cell_4/3,
 					adjacent_cell_5/3,
 					adjacent_cell_6/3,
-					add_cell/3
-					
+					add_new_cell/3,
+					move_cell/4
 					]).
 
 :- use_module( cell, [ get_row/2,
 					   get_col/2,
+					   get_color/2,
 					   init_cell/6,
-					   get_bug_type/2] 
+					   get_bug_type/2, 
+					   set_bug_type/3]
 				   ).
 :- use_module( utils, [push/3] ).
-:- use_module( player, [init_player/1] ).
+:- use_module( player, [init_player/1,
+					    decrease_bug/3] ).
 
 % ---------------------------------------------------------------------------------
 % Board structure ->  board(ListOfCells,Turns,WhitePlayer,BlackPlayer)
@@ -135,10 +138,40 @@ adjacent_cells(Cell,Board, AdjCell):-
 %---------------------------------------------------------------%
 %---------------------------------------------------------------%
 
-add_cell(Cell,Board, NewBoard) :-
-	%TODO: validate position of new cell
-	get_cells(Board,BoardCells),
-	push(Cell, BoardCells, NewBoardCells),
-	set_cells(NewBoardCells,Board,NewBoard).
+move_cell(SourceCell, DestCell, Board, NewBoard):-
+	get_cells(Board,Cells),
+	delete(Cells, SourceCell, NewCells),
+	move_cell_(SourceCell, DestCell, NewCells, NewCells1),
+	set_cells(NewCells1, Board, NewBoard).
 
+move_cell_(cell(BugType, _, _, Color,_), cell(none,Row, Col,_,_),Cells, NewCells):-
+	init_cell(BugType, Row, Col, Color,0,NewCell),
+	!,
+	push(NewCell, Cells,NewCells).
+	
+move_cell_(cell(BugType,_,_,Color,_), cell(_,Row,Col,_,StackPos),Cells, NewCells):-
+	NewStackPos is StackPos + 1,
+	init_cell(BugType,Row,Col,Color, NewStackPos, NewCell),
+	push(NewCell, Cells, NewCells).
 
+add_new_cell(Cell,Board, NewBoard) :-
+	get_color(Cell, white),
+	!,
+	get_cells(Board, Cells),
+	get_bug_type(Cell, BugType),
+	get_white_player(Board, WhitePlayer),
+	decrease_bug(BugType, WhitePlayer, NewWhitePlayer),
+	set_white_player(NewWhitePlayer,Board,B),
+	push(Cell, Cells, NewBoardCells),
+	set_cells(NewBoardCells,B,NewBoard).
+
+add_new_cell(Cell,Board, NewBoard) :-
+	get_color(Cell, black),
+	!,
+	get_cells(Board, Cells),
+	get_bug_type(Cell, BugType),
+	get_black_player(Board, BlackPlayer),
+	decrease_bug(BugType, BlackPlayer, NewBlackPlayer),
+	set_black_player(NewBlackPlayer, Board,B),
+	push(Cell, Cells, NewBoardCells),
+	set_cells(NewBoardCells,B,NewBoard).
