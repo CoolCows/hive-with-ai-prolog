@@ -1,7 +1,7 @@
 % Load libraries and tools
 :- use_module(library(pce)).
 :- use_module("./graphics/board_graphics", [draw_board/2]).
-:- use_module("./events/board_events", [select_cell/2]).
+:- use_module("./events/board_events", [select_event/2]).
 
 
 menu_bar_setup(MainWin, Board) :-
@@ -34,9 +34,10 @@ file_dialog_setup(Board) :-
 
 start_game(Board) :-
     % Init Global Vars
-    nb_setval(scale, 1),
+    nb_setval(scale, 0.75),
     nb_setval(move_cell, false),
     nb_setval(position_cell, false),
+    nb_setval(player_turn, white),
     draw_board([], Board).
 
 gui_init :-
@@ -47,7 +48,7 @@ gui_init :-
     send(Board, height, 720),
     send(Board, recogniser,
             click_gesture(left, '', single,
-                          message(@prolog, select_cell, Board, @event?position))),
+                          message(@prolog, select_event, Board, @event?position))),
     file_dialog_setup(Board),
     menu_bar_setup(MainWin, Board),
     send(MainWin, open).
