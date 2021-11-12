@@ -1,5 +1,5 @@
 :- module(board_graphics, [draw_board/2]).
-
+:- use_module(commons, [get_hexagon/4]).
 :- use_module("../../game/cell", [
         get_bug_type/2,
         get_row/2,
@@ -12,12 +12,13 @@
 
 draw_board(_, Canvas) :-
     send(Canvas, clear),
+    send(Canvas, background, colour(brown)),
     get(Canvas, size, size(W, H)),
     CH is H/2, CW is W/2,
     nb_getval(scale, Scale),
     %Erase this funcall when logic is functional
 
-    %_ is going to be the Board
+    %Var '_' is going to be the Board
     get_test_cells(Board),
     
     nb_setval(board, Board),
@@ -33,10 +34,19 @@ draw_cells([Cell|Rest], Canvas, point(CW, CH), Scale) :-
     X is CW + Scale*75*Col,
     Y is CH + Scale*100*Row + Scale*50*(Col mod 2),
     get_hexagon(X, Y, Scale, Hexagon),
+    set_hexagon_color(Cell, Hexagon),
     %T0d0: Modify the hexagon so it represents correctly the player and bug
     send(Canvas, display, Hexagon),
     draw_bug(Cell, X, Y, Canvas),
     draw_cells(Rest, Canvas, point(CW, CH), Scale). 
+
+set_hexagon_color(Cell, Hex) :-
+    get_color(Cell, Color),
+    (
+        (Color = black, send(Hex, colour, colour(lightgray)), send(Hex, fill_pattern, colour(white)));
+        (Color = white, send(Hex, colour, colour(darkgray)), send(Hex, fill_pattern, colour(black)))
+    ).
+
 
 draw_bug(Cell, X, Y, Canvas) :-
     get_bug_type(Cell, Bug),
@@ -45,21 +55,13 @@ draw_bug(Cell, X, Y, Canvas) :-
         (Bug = ant, new(BM, bitmap('./graphics/xpm/ant.xpm')));
         (Bug = beetle, new(BM, bitmap('./graphics/xpm/beetle.xpm')));
         (Bug = grasshopper, new(BM, bitmap('./graphics/xpm/grasshopper.xpm')));
-        (Bug = spyder, new(BM, bitmap('./graphics/xpm/spyder.xpm')))
+        (Bug = spyder, new(BM, bitmap('./graphics/xpm/spyder.xpm')));
+        (Bug = pillbug, new(BM, bitmap('./graphics/xpm/pillbug.xpm')));
+        (Bug = mosquito, new(BM, bitmap('./graphics/xpm/mosquito.xpm')));
+        (Bug = ladybug, new(BM, bitmap('./graphics/xpm/ladybug.xpm')))
     ),
     send(Canvas, display, BM, point(X - 35, Y - 35)).
     
-get_hexagon(X, Y, H) :- draw_hexagon(X,Y,1,H).
-get_hexagon(X, Y, S, H) :-
-    new(H, path),
-    send(H, append, point(X + -25*S, Y + -50*S)),
-    send(H, append, point(X + -50*S, Y)),
-    send(H, append, point(X + -25*S, Y + 50*S)),
-    send(H, append, point(X + 25*S, Y + 50*S)),
-    send(H, append, point(X + 50*S, Y)),
-    send(H, append, point(X + 25*S, Y + -50*S)),
-    send(H, append, point(X + -25*S, Y + -50*S)).
-
 % Erase method when complete
 get_test_cells(C) :-
     init_cell(ant, 0, 0, black, 0, C1),
@@ -67,11 +69,11 @@ get_test_cells(C) :-
     init_cell(queen, 0, 2, white, 0, C3),
     init_cell(grasshopper, 0, 3, white, 0, C4),
     init_cell(beetle, 1, 0, white, 0, C5),
-    init_cell(spyder, 1, 1, white, 0, C6),
+    init_cell(pillbug, 1, 1, white, 0, C6),
     init_cell(spyder, 1, 2, white, 0, C7),
     init_cell(spyder, 1, 3, white, 0, C8),
-    init_cell(beetle, 0, -1, white, 0, C9),
-    init_cell(beetle, 0, -2, white, 0, C10),
+    init_cell(mosquito, 0, -1, white, 0, C9),
+    init_cell(ladybug, 0, -2, white, 0, C10),
     init_cell(beetle, 0, -3, white, 0, C11),
     init_cell(beetle, -1, 0, white, 0, C12),
     init_cell(ant, 1, -1, white, 0, C13),
