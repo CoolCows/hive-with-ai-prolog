@@ -65,8 +65,6 @@ click_inside(Cell, ClickPosition, point(Col, Row)) :-
 click_line(T, point(ClickX, ClickY), X1val, Y1val, X2val, Y2val) :-
     X1init is X1val, Y1init is Y1val,
     X2init is X2val, Y2init is Y2val,
-    write_ln(format('x1',X1init, 'y1',Y1init)),
-    write_ln(format('x2',X2init, 'y2',Y2init)),
     line(point(X1init, Y1init), point(X2init, Y2init), M, N),
     ((T=below, below_line(point(ClickX, ClickY), M, N));
     (T=above, above_line(point(ClickX, ClickY), M, N))).
