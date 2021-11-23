@@ -1,9 +1,7 @@
-:- module(draw_hex, [draw_hexagon/3,
-                     draw_hexagon/4]).
-:- use_module(library(pce)).
+:- module(commons, [get_hexagon/3, get_hexagon/4]).
 
-draw_hexagon(X, Y, H) :- draw_hexagon(X,Y,1,H).
-draw_hexagon(X, Y, S, H) :-
+get_hexagon(X, Y, H) :- draw_hexagon(X,Y,1,H).
+get_hexagon(X, Y, S, H) :-
     new(H, path),
     send(H, append, point(X + -25*S, Y + -50*S)),
     send(H, append, point(X + -50*S, Y)),
@@ -12,4 +10,5 @@ draw_hexagon(X, Y, S, H) :-
     send(H, append, point(X + 50*S, Y)),
     send(H, append, point(X + 25*S, Y + -50*S)),
     send(H, append, point(X + -25*S, Y + -50*S)).
+
 

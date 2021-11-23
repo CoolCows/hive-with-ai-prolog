@@ -17,13 +17,9 @@ trace(X, Y, M, N) :-
     N is Y - M*X.
 
 below_line(point(X, Y), M, N) :-
-    write_ln(format('below_line M',M,'N',N,' point x',X,'y:',Y)),
     R is Y - M*X - N,!,
-    write_ln(format('Result ', R)),
     R =< 0.
 
 above_line(point(X, Y), M, N) :-
-    write_ln(format('above_line point X',X,'y:',Y)),
     R is Y - M*X - N,!,
-    write_ln(format('Result ', R)),
     R >= 0.

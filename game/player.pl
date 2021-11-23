@@ -2,7 +2,7 @@
 					 get_queens/2,
 					 get_ants/2,
 					 get_beetles/2,
-					 get_grasshopper/2,
+					 get_grasshoppers/2,
 					 get_ladybugs/2,
 					 get_mosquitos/2,
 					 get_pillbugs/2,
@@ -38,7 +38,7 @@ get_ants(player(_,Ants,_,_,_,_,_,_),Ants).
 
 get_beetles(player(_,_,Beetles,_,_,_,_,_),Beetles).
 
-get_grasshopper(player(_,_,_,Grasshoppers,_,_,_,_),Grasshoppers).
+get_grasshoppers(player(_,_,_,Grasshoppers,_,_,_,_),Grasshoppers).
 
 get_ladybugs(player(_,_,_,_,Ladybugs,_,_,_),Ladybugs).
 
