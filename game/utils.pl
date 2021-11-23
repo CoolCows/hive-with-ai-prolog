@@ -5,3 +5,4 @@
 push(X,Y,[X|Y]).
 
 pop([_|T],T).
+

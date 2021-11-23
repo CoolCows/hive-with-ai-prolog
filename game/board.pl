@@ -175,3 +175,4 @@ add_new_cell(Cell,Board, NewBoard) :-
 	set_black_player(NewBlackPlayer, Board,B),
 	push(Cell, Cells, NewBoardCells),
 	set_cells(NewBoardCells,B,NewBoard).
+
