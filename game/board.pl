@@ -17,7 +17,9 @@
 					adjacent_cell_5/3,
 					adjacent_cell_6/3,
 					add_new_cell/3,
-					move_cell/4
+					move_cell/4,
+					one_hive/3,
+					reachable/4
 					]).
 
 :- use_module( cell, [ get_row/2,
@@ -175,4 +177,37 @@ add_new_cell(Cell,Board, NewBoard) :-
 	set_black_player(NewBlackPlayer, Board,B),
 	push(Cell, Cells, NewBoardCells),
 	set_cells(NewBoardCells,B,NewBoard).
+
+
+one_hive(Board, Cell,ReachableCells):-
+	get_cells(Board, Cells),
+	delete(Cells, Cell, [X|Y]),
+	set_cells([X|Y],Board, NewBoard),
+	reachable(X,NewBoard,[X],ReachableCells),
+	len(ReachableCells,R),
+	len([X|Y],R).
+
+len([], LenResult):-
+    LenResult is 0.
+
+len([_|Y], LenResult):-
+    len(Y, L),
+    LenResult is L + 1.
+
+non_visited_adjacent(Cell,Board,Visited, AdjCell):-
+	adjacent_cells(Cell, Board,AdjCell),
+	not(get_bug_type(AdjCell,none)),
+	not(member(AdjCell, Visited)).
+
+reachable([],_,Visited,Visited):-!.
+reachable([Cell|RestOfCells],Board,Visited, ReachableCells):-
+	!,
+	reachable(Cell,Board,Visited,A),
+	reachable(RestOfCells,Board,A,ReachableCells).
+
+reachable(Cell,Board,Visited,ReachableCells):-
+	findall(AdjCell, non_visited_adjacent(Cell, Board,Visited,AdjCell),AdjCells),
+	append(AdjCells,Visited,A),
+	reachable(AdjCells,Board,A,ReachableCells).
+
 
