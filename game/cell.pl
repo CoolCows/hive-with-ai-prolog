@@ -9,7 +9,8 @@
 			  	  set_col/3,
 				  set_color/3,
 				  set_stack_pos/3,
-				  same_position/2
+				  same_position/2,
+				  one_hive/3
 			  	  ]).
 
 % ---------------------------------------------------------------------------------
