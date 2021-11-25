@@ -1,6 +1,9 @@
 :- module(side_board_events, [select_side_board/3]).
 
-:- use_module("events_commons", [click_inside_hexagon/3]).
+:- use_module("events_commons", [
+    click_inside_hexagon/3,
+    position_cell/1
+]).
 :- use_module("../../game/player", [
     get_queens/2,
     get_ants/2,
@@ -17,6 +20,7 @@ select_side_board(Canvas, ClickPosition, Colour) :-
         (Colour = white, nb_getval(white_player, Player));
         (Colour = black, nb_getval(black_player, Player))
     ),
+    nb_getval(player_turn, Colour),
     select_remaining_cell(
         Canvas,
         ClickPosition,
@@ -33,6 +37,11 @@ select_side_board(Canvas, ClickPosition, Colour) :-
         ],
         SelectedCell
     ),
+    position_cell(SelectedCell),
+    % Ask logic for positioning locations
+    % Recieve something of possible locations
+    % Paint those possible locations
+    write_ln('Can now position'),
     write_ln(SelectedCell).
 
 select_remaining_cell(

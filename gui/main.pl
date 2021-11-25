@@ -45,8 +45,8 @@ file_dialog_setup(Board, BlackCells, WhiteCells) :-
 start_game(Board, BlackCells, WhiteCells) :-
     % Init Global Vars
     nb_setval(scale, 0.75),
-    nb_setval(move_cell, false),
-    nb_setval(position_cell, false),
+    nb_setval(move_cell, undefined),
+    nb_setval(position_cell, undefined),
     nb_setval(player_turn, white),
     draw_side_board([], black, BlackCells),
     draw_side_board([], white, WhiteCells),

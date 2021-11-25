@@ -1,4 +1,8 @@
-:- module(events_commons, [click_inside_hexagon/3]).
+:- module(events_commons, [
+    click_inside_hexagon/3,
+    move_cell/1,
+    position_cell/1
+]).
 
 :- use_module("../tools/geometry", [
         below_line/3,
@@ -6,6 +10,13 @@
         line/4
     ]).
 
+move_cell(Cell) :-
+    nb_setval(move_cell, Cell),
+    nb_setval(position_cell, undefined).
+
+position_cell(BugType) :-
+    nb_setval(move_cell, undefined),
+    nb_setval(position_cell, BugType).
 
 click_inside_hexagon(point(ClickX, ClickY), point(X, Y), Dist) :-
     % Check click position is between the hexagon up and bottom frontiers
