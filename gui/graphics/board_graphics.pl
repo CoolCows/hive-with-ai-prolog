@@ -38,7 +38,7 @@ draw_cells([Cell|Rest], Canvas, point(CW, CH), Scale) :-
     %T0d0: Modify the hexagon so it represents correctly the player and bug
     send(Canvas, display, Hexagon),
     draw_bug(Cell, X, Y, Canvas),
-    draw_cells(Rest, Canvas, point(CW, CH), Scale). 
+    draw_cells(Rest, Canvas, point(CW, CH), Scale),!.
 
 set_hexagon_color(Cell, Hex) :-
     get_color(Cell, Color),
