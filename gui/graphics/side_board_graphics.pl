@@ -27,13 +27,14 @@ draw_side_board(_, Colour, Canvas) :-
 
     % Saving the player, this logic is incorrectly put here
     (
-        (Colour = white, nb_setval(white_player, Player));
-        (Colour = black, nb_setval(black_player, Player))
+        (Colour = white, nb_setval(white_player, player(0, 0, 0, 0, 1, 1, 1, 0)));
+        (Colour = black, nb_setval(black_player, player(0, 0, 0, 0, 1, 1, 1, 0)))
     ),
     
     draw_remaining_cells(
         Canvas,
-        Player,
+        player(0, 0, 0, 0, 1, 1, 1, 0),
+        %Player,
         Colour,
         0,
         [
@@ -45,8 +46,7 @@ draw_side_board(_, Colour, Canvas) :-
            queen, ant, beetle, grasshopper, ladybug,
            mosquito, pillbug, spyder
         ]
-    ),
-    true.
+    ).
 
 color_side_board(Colour, Canvas) :-
     (Colour = white, send(Canvas, background, colour(lightblue)));

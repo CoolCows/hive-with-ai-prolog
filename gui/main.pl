@@ -3,6 +3,7 @@
 :- use_module("./graphics/board_graphics", [draw_board/2]).
 :- use_module("./graphics/side_board_graphics", [draw_side_board/3]).
 :- use_module("./events/board_events", [select_event/2]).
+:- use_module("./events/side_board_events", [select_side_board/3]).
 
 
 menu_bar_setup(MainWin, Board, BlackCells, WhiteCells) :-
@@ -28,10 +29,16 @@ file_dialog_setup(Board, BlackCells, WhiteCells) :-
     send(T, append, new(BlackCells, window)),
     send(BlackCells, width, 400),
     send(BlackCells, height, 200),
+    send(BlackCells, recogniser, 
+            click_gesture(left, '', single,
+                            message(@prolog, select_side_board, BlackCells, @event?position, black))),
 
     send(T, append, new(WhiteCells, window)),
     send(WhiteCells, width, 400),
     send(WhiteCells, height, 200),
+    send(WhiteCells, recogniser,
+            click_gesture(left, '', single,
+                            message(@prolog, select_side_board, WhiteCells, @event?position, white))),
 
     send(button(refresh, message(@prolog, draw_board,[], Board)), below, WhiteCells).
 
