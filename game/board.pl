@@ -17,7 +17,10 @@
 					adjacent_cell_5/3,
 					adjacent_cell_6/3,
 					add_new_cell/3,
-					move_cell/4
+					move_cell/4,
+					one_hive/3,
+					reachable/4,
+					insect_above/2
 					]).
 
 :- use_module( cell, [ get_row/2,
@@ -25,9 +28,13 @@
 					   get_color/2,
 					   init_cell/6,
 					   get_bug_type/2, 
-					   set_bug_type/3]
+					   set_bug_type/3,
+					   same_position/2,
+					   get_stack_pos/2]
 				   ).
-:- use_module( utils, [push/3] ).
+:- use_module( utils, [push/3,
+					   len/2
+					   ] ).
 :- use_module( player, [init_player/1,
 					    decrease_bug/3] ).
 
@@ -175,3 +182,48 @@ add_new_cell(Cell,Board, NewBoard) :-
 	set_black_player(NewBlackPlayer, Board,B),
 	push(Cell, Cells, NewBoardCells),
 	set_cells(NewBoardCells,B,NewBoard).
+
+
+one_hive(Board, Cell,ReachableCells):-
+	get_cells(Board, Cells),
+	delete(Cells, Cell, [X|Y]),
+	set_cells([X|Y],Board, NewBoard),
+	reachable(X,NewBoard,[X],ReachableCells),
+	len(ReachableCells,R),
+	len(Y,R).
+
+
+non_visited_adjacent(Cell,Board,Visited, AdjCell):-
+	adjacent_cells(Cell, Board,AdjCell),
+	not(get_bug_type(AdjCell,none)),
+	not(member(AdjCell, Visited)).
+
+reachable([],_,Visited,Visited):-!.
+reachable([Cell|RestOfCells],Board,Visited, ReachableCells):-
+	!,
+	reachable(Cell,Board,Visited,A),
+	% NOTE: visit only the rest of non visited cells instead of RestOfCells
+	reachable(RestOfCells,Board,A,ReachableCells).
+
+reachable(Cell,Board,Visited,ReachableCells):-
+	findall(AdjCell, non_visited_adjacent(Cell, Board,Visited,AdjCell),AdjCells),
+	append(AdjCells,Visited,A),
+	reachable(AdjCells,Board,A,ReachableCells).
+
+insect_above(Cell,Board):-
+	get_cells(Board,Cells),
+	any(Cells,[above,Cell]).
+
+above(Cell,AnotherCell):-
+	same_position(Cell,AnotherCell),
+	get_stack_pos(Cell,X),
+	get_stack_pos(AnotherCell,Y),
+	Y > X.
+
+% NOTE: find a way to use any from a single source
+any([X|Y], C) :- 
+	append(C,[X],D),
+	T=..D,
+	T,
+	!;
+	any(Y,C).
