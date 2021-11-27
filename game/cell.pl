@@ -1,4 +1,7 @@
-:- module(cell, [ init_cell/6,
+:- module(cell, [ init_cell/5,
+				  delete_cell/1,
+				  get_cell/2,
+				  cells/1,
 				  get_bug_type/2,
 			      get_row/2,
 			      get_col/2,
@@ -9,10 +12,10 @@
 			  	  set_col/3,
 				  set_color/3,
 				  set_stack_pos/3,
-				  same_position/2,
-				  one_hive/3
+				  same_position/2
 			  	  ]).
 
+:- dynamic cell/5.
 % ---------------------------------------------------------------------------------
 % Cell structure -> cell(BugType, Row , Col, Color, StackPos)
 %
@@ -22,8 +25,17 @@
 % StackPos: if two cells are located in the same relative position then this value
 % acts like a z-index, giving the stack position of the object. Default is 0.
 % ---------------------------------------------------------------------------------
-init_cell(Bug, Row, Col, Color, StackPos, 
-		  cell(Bug, Row, Col, Color, StackPos)).
+init_cell(Bug, Row, Col, Color, StackPos):- 
+	assertz(cell(Bug, Row, Col, Color, StackPos)).
+
+delete_cell(cell(Bug, Row, Col, Color, StackPos)):-
+	retract(cell(Bug,Row,Col,Color,StackPos)).
+
+cells(Cells):-
+	findall(Cell, get_cell(Cell,_),Cells).
+
+get_cell(cell(Bug, Row, Col, Color, StackPos), cell(Bug, Row, Col, Color, StackPos)):-
+	cell(Bug, Row, Col, Color, StackPos).
 
 get_bug_type(cell(Bug,_,_,_,_),Bug).
 

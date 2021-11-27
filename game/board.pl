@@ -1,91 +1,18 @@
-:- module( board, [ init_board/1,
-					get_cells/2,
-					get_cell/4,
-					get_current_turn/2,
-					get_white_player/2,
-					get_black_player/2,
-					set_cells/3,
-					set_turns/3,
-					set_white_player/3,
-					set_black_player/3,
-					increase_turn/2,
-					adjacent_cells/3,
-					adjacent_cell_1/3,
-					adjacent_cell_2/3,
-					adjacent_cell_3/3,
-					adjacent_cell_4/3,
-					adjacent_cell_5/3,
-					adjacent_cell_6/3,
-					add_new_cell/3,
-					move_cell/4,
-					one_hive/3,
-					reachable/4,
-					insect_above/2
+:- module( board, [	adjacent_cell_1/2,
+					adjacent_cell_2/2,
+					adjacent_cell_3/2,
+					adjacent_cell_4/2,
+					adjacent_cell_5/2,
+					adjacent_cell_6/2,
+					adjacent_cell/2,
+					adjacent_cells/2,
+					one_hive/1
 					]).
 
-:- use_module( cell, [ get_row/2,
-					   get_col/2,
-					   get_color/2,
-					   init_cell/6,
-					   get_bug_type/2, 
-					   set_bug_type/3,
-					   same_position/2,
-					   get_stack_pos/2]
-				   ).
-:- use_module( utils, [push/3,
-					   len/2
-					   ] ).
-:- use_module( player, [init_player/1,
-					    decrease_bug/3] ).
+:- use_module(cell).
+:- use_module(utils).
+:- use_module(player).
 
-% ---------------------------------------------------------------------------------
-% Board structure ->  board(ListOfCells,Turns,WhitePlayer,BlackPlayer)
-%
-% ListOfCells: list of cells structure that represent each piece of the game's board
-% Turns: total turns played so far
-% WhitePlayer: info related to the white player.It's a player structure from player.pl 
-% BlackPlayer: info related to the black player.It's a player structure from player.pl 
-% ---------------------------------------------------------------------------------
-init_board(board([],0,WhitePlayer, BlackPlayer)):-
-	init_player(WhitePlayer),
-	init_player(BlackPlayer).
-
-get_cells(board(Cells,_,_,_), Cells).
-
-get_current_turn(board(_, Turns),Turns).
-
-get_white_player(board(_,_,WhitePlayer,_),WhitePlayer).
-
-get_black_player(board(_,_,_,BlackPlayer),BlackPlayer).
-
-set_cells(Cells, board(_, Turns, WhitePlayer, BlackPlayer),
-		  board(Cells, Turns, WhitePlayer, BlackPlayer)).
-
-set_turns(Turns, board(Cells,_, WhitePlayer, BlackPlayer),
-		  board(Cells, Turns, WhitePlayer, BlackPlayer)).
-
-set_white_player(WhitePlayer, board(Cells, Turns,_, BlackPlayer),
-				 board(Cells, Turns, WhitePlayer, BlackPlayer)).
-
-set_black_player(BlackPlayer, board(Cells, Turns, WhitePlayer,_),
-				 board(Cells, Turns, WhitePlayer,BlackPlayer)).
-
-increase_turn(Board, NewBoard ):-
-	get_current_turn(Board, Turns),
-	NewTurns is Turns + 1,
-	set_turns(NewTurns, Board, NewBoard).
-
-get_cell(Row, Col, Board, Cell):-
-	get_cells(Board, Cells),
-	get_cell_(Row,Col,Cells, Cell).
-
-get_cell(Row, Col, Board, Cell):-
-	get_cells(Board, Cells),
-	not( get_cell_(Row,Col, Cells, Cell) ),
-	init_cell(none,Row,Col,none,0, Cell).
-
-get_cell_(Row,Col,[cell(BugType,Row,Col,Color,StackPos)|_], cell(BugType,Row,Col,Color, StackPos)).
-get_cell_(Row,Col,[_|T],Cell):- get_cell_(Row,Col,T,Cell).
 
 %---------------------------------------------------------------%
 %                         ADJACENT CELLS                        %
@@ -96,134 +23,135 @@ get_cell_(Row,Col,[_|T],Cell):- get_cell_(Row,Col,T,Cell).
 %---------------------------------------------------------------%
 %---------------------------------------------------------------%
 
-adjacent_cell_1(Cell,Board,AdjCell):-
-	get_row(Cell, Row),
-	get_col(Cell, Col),
-	AdjRow is Row - 1,
-	get_cell(AdjRow, Col, Board, AdjCell).
+adjacent_cell_1(cell(_,Row,Col,_,_),AdjCell):-
+	AdjRow is Row -1,
+	(
+		cell:get_cell(cell(_,AdjRow,Col,_,_),AdjCell),!;
+		AdjCell = cell(none,AdjRow,Col,none,0)
+	).
 
-adjacent_cell_2(Cell,Board, AdjCell):-
-	get_row(Cell, Row),
-	get_col(Cell, Col),
-	AdjRow is Row - 1,
-	AdjCol is Col + 1,
-	get_cell(AdjRow, AdjCol, Board, AdjCell).
+adjacent_cell_2(cell(_,Row,Col,_,_),AdjCell):-
+	AdjRow is Row -1,
+	AdjCol is Col +1,
+	(
+		cell:get_cell(cell(_,AdjRow,AdjCol,_,_),AdjCell),!;
+		AdjCell = cell(none,AdjRow,AdjCol,none,0)
+	).
 
-adjacent_cell_3(Cell,Board, AdjCell):-
-	get_row(Cell, Row),
-	get_col(Cell, Col),
-	AdjCol is Col - 1,
-	get_cell(Row, AdjCol, Board, AdjCell).
+adjacent_cell_3(cell(_,Row,Col,_,_),AdjCell):-
+	AdjCol is Col -1,
+	(
+		cell:get_cell(cell(_,Row,AdjCol,_,_),AdjCell),!;
+		AdjCell = cell(none,Row,AdjCol,none,0)
+	).
 
-adjacent_cell_4(Cell,Board, AdjCell):-
-	get_row(Cell, Row),
-	get_col(Cell, Col),
-	AdjCol is Col + 1,
-	get_cell(Row, AdjCol, Board, AdjCell).
 
-adjacent_cell_5(Cell,Board, AdjCell):-
-	get_row(Cell, Row),
-	get_col(Cell, Col),
-	AdjRow is Row + 1,
-	AdjCol is Col - 1,
-	get_cell(AdjRow, AdjCol, Board, AdjCell).
+adjacent_cell_4(cell(_,Row,Col,_,_),AdjCell):-
+	AdjCol is Col +1,
+	(
+		cell:get_cell(cell(_,Row,AdjCol,_,_),AdjCell),!;
+		AdjCell = cell(none,Row,AdjCol,none,0)
+	).
 
-adjacent_cell_6(Cell,Board,AdjCell):-
-	get_row(Cell, Row),
-	get_col(Cell, Col),
-	AdjRow is Row + 1,
-	get_cell(AdjRow, Col, Board, AdjCell).
 
-adjacent_cells(Cell,Board, AdjCell):-
-	adjacent_cell_1(Cell,Board, AdjCell);
-	adjacent_cell_2(Cell,Board, AdjCell);
-	adjacent_cell_3(Cell,Board, AdjCell);
-	adjacent_cell_4(Cell,Board, AdjCell);
-	adjacent_cell_5(Cell,Board, AdjCell);
-	adjacent_cell_6(Cell,Board, AdjCell).
+adjacent_cell_5(cell(_,Row,Col,_,_),AdjCell):-
+	AdjRow is Row +1,
+	AdjCol is Col -1,
+	(
+		cell:get_cell(cell(_,AdjRow,AdjCol,_,_),AdjCell),!;
+		AdjCell = cell(none,AdjRow,AdjCol,none,0)
+	).
+
+
+adjacent_cell_6(cell(_,Row,Col,_,_),AdjCell):-
+	AdjRow is Row +1,
+	(
+		cell:get_cell(cell(_,AdjRow,Col,_,_),AdjCell),!;
+		AdjCell = cell(none,AdjRow,Col,none,0)
+	).
+
+adjacent_cell(Cell, AdjCell):-
+	adjacent_cell_1(Cell, AdjCell);
+	adjacent_cell_2(Cell, AdjCell);
+	adjacent_cell_3(Cell, AdjCell);
+	adjacent_cell_4(Cell, AdjCell);
+	adjacent_cell_5(Cell, AdjCell);
+	adjacent_cell_6(Cell, AdjCell).
+
+adjacent_cells(Cell, AdjCells):-
+	findall(AdjCell, adjacent_cell(Cell,AdjCell),AdjCells).
 
 %---------------------------------------------------------------%
 %---------------------------------------------------------------%
 
-move_cell(SourceCell, DestCell, Board, NewBoard):-
-	get_cells(Board,Cells),
-	delete(Cells, SourceCell, NewCells),
-	move_cell_(SourceCell, DestCell, NewCells, NewCells1),
-	set_cells(NewCells1, Board, NewBoard).
+% move_cell(SourceCell, DestCell, Board, NewBoard):-
+% 	get_cells(Board,Cells),
+% 	delete(Cells, SourceCell, NewCells),
+% 	move_cell_(SourceCell, DestCell, NewCells, NewCells1),
+% 	set_cells(NewCells1, Board, NewBoard).
 
-move_cell_(cell(BugType, _, _, Color,_), cell(none,Row, Col,_,_),Cells, NewCells):-
-	init_cell(BugType, Row, Col, Color,0,NewCell),
-	!,
-	push(NewCell, Cells,NewCells).
+% move_cell_(cell(BugType, _, _, Color,_), cell(none,Row, Col,_,_),Cells, NewCells):-
+% 	init_cell(BugType, Row, Col, Color,0,NewCell),
+% 	!,
+% 	push(NewCell, Cells,NewCells).
 	
-move_cell_(cell(BugType,_,_,Color,_), cell(_,Row,Col,_,StackPos),Cells, NewCells):-
-	NewStackPos is StackPos + 1,
-	init_cell(BugType,Row,Col,Color, NewStackPos, NewCell),
-	push(NewCell, Cells, NewCells).
+% move_cell_(cell(BugType,_,_,Color,_), cell(_,Row,Col,_,StackPos),Cells, NewCells):-
+% 	NewStackPos is StackPos + 1,
+% 	init_cell(BugType,Row,Col,Color, NewStackPos, NewCell),
+% 	push(NewCell, Cells, NewCells).
 
-add_new_cell(Cell,Board, NewBoard) :-
-	get_color(Cell, white),
-	!,
-	get_cells(Board, Cells),
-	get_bug_type(Cell, BugType),
-	get_white_player(Board, WhitePlayer),
-	decrease_bug(BugType, WhitePlayer, NewWhitePlayer),
-	set_white_player(NewWhitePlayer,Board,B),
-	push(Cell, Cells, NewBoardCells),
-	set_cells(NewBoardCells,B,NewBoard).
+% add_new_cell(Cell,Board, NewBoard) :-
+% 	get_color(Cell, white),
+% 	!,
+% 	get_cells(Board, Cells),
+% 	get_bug_type(Cell, BugType),
+% 	get_white_player(Board, WhitePlayer),
+% 	decrease_bug(BugType, WhitePlayer, NewWhitePlayer),
+% 	set_white_player(NewWhitePlayer,Board,B),
+% 	push(Cell, Cells, NewBoardCells),
+% 	set_cells(NewBoardCells,B,NewBoard).
 
-add_new_cell(Cell,Board, NewBoard) :-
-	get_color(Cell, black),
-	!,
-	get_cells(Board, Cells),
-	get_bug_type(Cell, BugType),
-	get_black_player(Board, BlackPlayer),
-	decrease_bug(BugType, BlackPlayer, NewBlackPlayer),
-	set_black_player(NewBlackPlayer, Board,B),
-	push(Cell, Cells, NewBoardCells),
-	set_cells(NewBoardCells,B,NewBoard).
+% add_new_cell(Cell,Board, NewBoard) :-
+% 	get_color(Cell, black),
+% 	!,
+% 	get_cells(Board, Cells),
+% 	get_bug_type(Cell, BugType),
+% 	get_black_player(Board, BlackPlayer),
+% 	decrease_bug(BugType, BlackPlayer, NewBlackPlayer),
+% 	set_black_player(NewBlackPlayer, Board,B),
+% 	push(Cell, Cells, NewBoardCells),
+% 	set_cells(NewBoardCells,B,NewBoard).
 
-
-one_hive(Board, Cell,ReachableCells):-
-	get_cells(Board, Cells),
-	delete(Cells, Cell, [X|Y]),
-	set_cells([X|Y],Board, NewBoard),
-	reachable(X,NewBoard,[X],ReachableCells),
+one_hive(Cell):-
+	cells(Cells),
+	delete(Cells,Cell, [X|Y]).
+	reachable(X,[X],ReachableCells),
 	len(ReachableCells,R),
-	len(Y,R).
+	len([X|Y],R).
 
-
-non_visited_adjacent(Cell,Board,Visited, AdjCell):-
-	adjacent_cells(Cell, Board,AdjCell),
+non_visited(Cell,Visited, AdjCell):-
+	adjacent_cell(Cell,AdjCell),
 	not(get_bug_type(AdjCell,none)),
 	not(member(AdjCell, Visited)).
 
-reachable([],_,Visited,Visited):-!.
-reachable([Cell|RestOfCells],Board,Visited, ReachableCells):-
+reachable([],X,X):-!.
+reachable([Cell|RestOfCells],Visited, ReachableCells):-
 	!,
-	reachable(Cell,Board,Visited,A),
-	% NOTE: visit only the rest of non visited cells instead of RestOfCells
-	reachable(RestOfCells,Board,A,ReachableCells).
+	reachable(Cell,Visited,A),
+	% NOTE: visit only the rest of non-visited cells instead of RestOfCells
+	reachable(RestOfCells,A,ReachableCells).
 
-reachable(Cell,Board,Visited,ReachableCells):-
-	findall(AdjCell, non_visited_adjacent(Cell, Board,Visited,AdjCell),AdjCells),
+reachable(Cell,Visited,ReachableCells):-
+	findall(AdjCell, non_visited(Cell, Visited,AdjCell),AdjCells),
 	append(AdjCells,Visited,A),
-	reachable(AdjCells,Board,A,ReachableCells).
+	reachable(AdjCells,A,ReachableCells).
 
-insect_above(Cell,Board):-
-	get_cells(Board,Cells),
-	any(Cells,[above,Cell]).
+% insect_above(Cell):-
+% 	cells(Cells),
+% 	any(Cells,[above,Cell]).
 
-above(Cell,AnotherCell):-
-	same_position(Cell,AnotherCell),
-	get_stack_pos(Cell,X),
-	get_stack_pos(AnotherCell,Y),
-	Y > X.
-
-% NOTE: find a way to use any from a single source
-any([X|Y], C) :- 
-	append(C,[X],D),
-	T=..D,
-	T,
-	!;
-	any(Y,C).
+% above(Cell,AnotherCell):-
+% 	same_position(Cell,AnotherCell),
+% 	get_stack_pos(Cell,X),
+% 	get_stack_pos(AnotherCell,Y),
+% 	Y > X.

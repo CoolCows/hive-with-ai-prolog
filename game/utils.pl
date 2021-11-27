@@ -3,6 +3,10 @@
 				 len/2,
 				 any/2
 				 ]).
+:- module_transparent(any/2).
+% :- meta_predicate
+% 			any(0,0).
+
 
 push(X,Y,[X|Y]).
 
@@ -21,9 +25,3 @@ any([X|Y], C) :-
 	T,
 	!;
 	any(Y,C).
-
-cell(1,2).
-cell(2,4).
-cells(cell(_,_)).
-
-
