@@ -16,7 +16,8 @@ draw_board(Board, Canvas) :-
     nb_getval(center, point(CW, CH)),
 
     %Function that gets the screen painting
-    draw_cells(Board, Canvas, point(CW, CH), Scale).
+    quick_sort(Board, SortedBoard),
+    draw_cells(SortedBoard, Canvas, point(CW, CH), Scale).
 
 % Sort according to stack position
 quick_sort([], []).
