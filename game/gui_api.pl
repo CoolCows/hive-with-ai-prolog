@@ -36,16 +36,16 @@ gui_move_cell(+Cell, -Board) :-
     % Returns the new board if succesful
     Board = [].
 
-gui_get_possible_moves(+Cell, -PosMoves) :-
-    % Given a Cell, it's positon and type
-    % return possible moves, which is a 
-    % list of Cells with bug=None and color=show
-    PosMoves = [].
+gui_get_possible_moves(+Cell, -Board) :-
+    % Get all Cells where a bug can be moved
+    % return the board with possible positions.
+    % Possible position cells has color = bug = none
+    Board = [].
 
-gui_get_possible_positions(+Color, -PosPositions) :-
+gui_get_possible_positions(+Color, -Board) :-
     % Get all Cells where a bug by certain player can be put
-    % return possible positions, which is a 
-    % list of Cells with bug=None and color=show
-    PosPositions= [].
+    % return the board with possible positions.
+    % Possible position cells has color = bug = none
+    Board= [].
 
 % ALL RETURN TYPES MUST BE LISTS OF TYPE CELL
