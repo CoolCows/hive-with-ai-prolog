@@ -1,4 +1,4 @@
- :- module(side_board_events, [select_side_board/3]).
+:- module(side_board_events, [select_side_board/3]).
 
 :- use_module("events_commons", [
     click_inside_hexagon/3,
