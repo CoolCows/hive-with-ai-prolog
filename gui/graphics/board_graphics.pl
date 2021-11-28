@@ -35,16 +35,15 @@ draw_cells([Cell|Rest], Canvas, point(CW, CH), Scale) :-
     Y is CH + Scale*100*Row + Scale*50*(Col mod 2),
     get_hexagon(X, Y, Scale, Hexagon),
     set_hexagon_color(Cell, Hexagon),
-    %T0d0: Modify the hexagon so it represents correctly the player and bug
     send(Canvas, display, Hexagon),
     draw_bug(Cell, X, Y, Canvas),
-    draw_cells(Rest, Canvas, point(CW, CH), Scale). 
+    draw_cells(Rest, Canvas, point(CW, CH), Scale),!.
 
 set_hexagon_color(Cell, Hex) :-
     get_color(Cell, Color),
     (
-        (Color = black, send(Hex, colour, colour(lightgray)), send(Hex, fill_pattern, colour(white)));
-        (Color = white, send(Hex, colour, colour(darkgray)), send(Hex, fill_pattern, colour(black)))
+        (Color = white, send(Hex, colour, colour(lightgray)), send(Hex, fill_pattern, colour(white)));
+        (Color = black, send(Hex, colour, colour(darkgray)), send(Hex, fill_pattern, colour(black)))
     ).
 
 
