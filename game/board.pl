@@ -6,6 +6,7 @@
 					adjacent_cell_6/2,
 					adjacent_cell/2,
 					adjacent_cells/2,
+					valid_new_cell/2,
 					one_hive/1
 					]).
 
@@ -121,10 +122,23 @@ adjacent_cells(Cell, AdjCells):-
 % 	set_black_player(NewBlackPlayer, Board,B),
 % 	push(Cell, Cells, NewBoardCells),
 % 	set_cells(NewBoardCells,B,NewBoard).
+%
+
+valid_new_cell(Color,ValidCell):-
+	get_cell(cell(_,_,_,Color,0),SameColorCell),
+	adjacent_cell(SameColorCell, ValidCell),
+	ValidCell = cell(none,_,_,none,0),
+	adjacent_cells(ValidCell,AdjCells),
+	forall(member(N,AdjCells), valid_color(N,Color)).
+
+% valid adjacent cells' color for new cell
+valid_color(N,Color):-
+	get_color(N,Color);
+	get_color(N,none).
 
 one_hive(Cell):-
 	cells(Cells),
-	delete(Cells,Cell, [X|Y]).
+	delete(Cells,Cell, [X|Y]),
 	reachable(X,[X],ReachableCells),
 	len(ReachableCells,R),
 	len([X|Y],R).
