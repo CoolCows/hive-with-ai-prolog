@@ -13,26 +13,14 @@
     get_spiders/2
 ]).
 
-draw_side_board(_, Colour, Canvas) :-
+draw_side_board(Player, Colour, Canvas) :-
     write_ln('Drawing side board'),
     send(Canvas, clear),
     color_side_board(Colour, Canvas),
     
-    % Erase after testing
-    % Player should be recieved as an arg
-    % from _
-    init_player(Player),
-
-    % Saving the player, this logic is incorrectly put here
-    (
-        (Colour = white, nb_setval(white_player, player(0, 0, 0, 0, 1, 1, 1, 0)));
-        (Colour = black, nb_setval(black_player, player(0, 0, 0, 0, 1, 1, 1, 0)))
-    ),
-    
     draw_remaining_cells(
         Canvas,
-        player(0, 0, 0, 0, 1, 1, 1, 0),
-        %Player,
+        Player,
         Colour,
         0,
         [

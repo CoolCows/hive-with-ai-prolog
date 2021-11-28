@@ -1,3 +1,10 @@
+:- module(gui_api,[
+    gui_init_board/1,
+    gui_init_players/1,
+    gui_put_cell/2,
+    gui_move_cell/2
+]).
+
 :- use_module(player, [
     init_player/1,
     players/1

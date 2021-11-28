@@ -3,6 +3,7 @@
 :- use_module("./graphics/board_graphics", [draw_board/2]).
 :- use_module("./graphics/side_board_graphics", [draw_side_board/3]).
 :- use_module("./events/board_events", [select_event/2]).
+:- use_module("./events/side_board_events", [select_side_board/3]).
 :- use_module("../game/gui_api").
 
 
@@ -42,7 +43,7 @@ file_dialog_setup(Board, BlackCells, WhiteCells) :-
 
     send(button(refresh, message(@prolog, draw_board,[], Board)), below, WhiteCells).
 
-start_game(Board, BlackCells, WhiteCells) :-
+start_game(Canvas, BlackCells, WhiteCells) :-
     % Init Global Vars
     nb_setval(scale, 0.75),
     nb_setval(move_cell, undefined),
@@ -50,9 +51,15 @@ start_game(Board, BlackCells, WhiteCells) :-
     nb_setval(player_turn, white),
 
     gui_init_players([Player1, Player2]),
-    draw_side_board(Player1, WhiteCells),
-    draw_side_board(Player2, BlackCells),
-    draw_board([], Board).
+    nb_setval(white_player, Player1),
+    nb_setval(black_player, Player2),
+
+    gui_init_board(Board),
+    nb_setval(board, Board),
+
+    draw_side_board(Player1, white, WhiteCells),
+    draw_side_board(Player2, black, BlackCells),
+    draw_board([], Canvas).
 
 gui_init :-
     %Setting up Game Panel
