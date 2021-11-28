@@ -59,7 +59,7 @@ start_game(Canvas, BlackCells, WhiteCells) :-
     nb_setval(white_player, Player1),
     nb_setval(black_player, Player2),
 
-    gui_init_board(Board),
+    gui_init_board(-Board),
     nb_setval(board, Board),
 
     draw_side_board(Player1, white, WhiteCells),

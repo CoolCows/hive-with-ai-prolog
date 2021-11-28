@@ -1,4 +1,4 @@
-:- module(board_graphics, [draw_board/2, refresh/1]).
+:- module(board_graphics, [draw_board/2, draw_pos_moves/2, refresh/1]).
 :- use_module(commons).
 :- use_module("../../game/cell", [
         get_bug_type/2,
@@ -41,7 +41,7 @@ set_hexagon_color(Cell, Hex) :-
     (
         (Color = white, send(Hex, colour, colour(lightgray)), send(Hex, fill_pattern, colour(white)));
         (Color = black, send(Hex, colour, colour(darkgray)), send(Hex, fill_pattern, colour(black)));
-        (Color = none, send(Hex, colour, colour(white)));
+        (Color = none, send(Hex, colour, colour(white)), send(Hex, pen, 3));
         (Color = show, send(Hex, colour, colour(yellow)), send(Hex, pen, 5))
     ).
 

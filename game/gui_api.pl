@@ -12,7 +12,14 @@
 
 gui_init_board(-Board) :-
     % Call method that return the board
-    Board = [].
+    Board = [
+        cell(spyder, 0, 0, white, 0),
+        cell(ant, 0, 1, white, 0),
+        cell(queen, 1, 0, black, 0),
+        cell(none, 1, 1, none, 0),
+        cell(none, 2, 1, none, 0),
+        cell(none, 3, 1, show, 0)
+    ].
 
 gui_init_players(-Players) :-
     init_player(white),

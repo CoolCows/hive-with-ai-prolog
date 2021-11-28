@@ -10,6 +10,11 @@
     position_cell/1
     ]).
 
+:- use_module("../graphics/board_graphics", [
+    draw_board/2,
+    draw_pos_moves/2
+]).
+
 :- use_module("../../game/cell", [
         get_bug_type/2,
         get_row/2,
@@ -41,31 +46,44 @@ position_cell(Canvas, ClickPosition) :-
         not(Type = none),
         select_cell(Canvas, ClickPosition)
     );
-
-    % if cell is not empty call select_cell instead
-    % Send coordinates to logic
-    % Logic returns a new board to draw
-    % After, board is drawn
-    write_ln('Correctly postioned'),
-    position_cell(undefined).
+    (
+        get_color(CorrectCell, Colour),
+        gui_put_cell(+Colour, -NewBoard),
+        draw_board(NewBoard, Canvas),
+        nb_setval(board, NewBoard),
+        position_cell(undefined),
+        write_ln('Correctly postioned')
+    ).
     
 move_cell(Canvas, ClickPosition) :-
     nb_getval(board, Board),
     scan_board(Board, ClickPosition, CorrectCell),
-    % Anologous Papolodopus to the prevous func,
-    % ... board is Drawn
-    write_ln('Correctly moved'),
-    move_cell(undefined).
+    get_bug_type(CorrectCell, Type),
+    (
+        not(Type = none),
+        select_cell(Canvas, ClickPosition)
+    );
+    (
+        gui_move_cell(+CorrectCell, -NewBoard),
+        draw_board(NewBoard, Canvas),
+        nb_setval(board, NewBoard),
+        move_cell(undefined),
+        write_ln('Correctly moved')
+    ).
     
 
 select_cell(Canvas, ClickPosition) :-
-   nb_getval(board, C),
-   scan_board(C, ClickPosition, CorrectCell),
-   % Check cell is not empty
-   nb_getval(player_turn, Colour),
-   get_color(CorrectCell,  Colour),
-   write_ln('Can now move'),
-   move_cell(CorrectCell).
+    nb_getval(board, C),
+    scan_board(C, ClickPosition, CorrectCell),
+
+    not(Type = none),
+    nb_getval(player_turn, Colour),
+    get_color(CorrectCell,  Colour),
+    
+    gui_get_possible_moves(+CorrectCell, -PosMoves),
+    draw_pos_moves(CorrectCell, PosMoves),
+    write_ln('Can now move'),
+    move_cell(CorrectCell).
    % Draw possible moves of cell
 
 scan_board([Cell|Rest], ClickPosition, CorrectCell) :-
