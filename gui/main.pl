@@ -57,8 +57,8 @@ gui_init :-
                           message(@prolog, select_event, Board, @event?position))),
     file_dialog_setup(Board, BlackPlayer, WhitePlayer),
     menu_bar_setup(MainWin, Board, BlackPlayer, WhitePlayer),
-    send(MainWin, open),
-    draw_side_board([], BlackPlayer),
-    draw_side_board([], WhitePlayer).
+    send(MainWin, open).
+    %draw_side_board([], BlackPlayer),
+    %draw_side_board([], WhitePlayer).
 
 ?- gui_init.
