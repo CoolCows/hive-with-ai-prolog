@@ -3,6 +3,7 @@
 :- use_module("./graphics/board_graphics", [draw_board/2]).
 :- use_module("./graphics/side_board_graphics", [draw_side_board/2]).
 :- use_module("./events/board_events", [select_event/2]).
+:- use_module("../game/gui_api").
 
 
 menu_bar_setup(MainWin, Board, BlackCells, WhiteCells) :-
@@ -39,8 +40,10 @@ start_game(Board, BlackCells, WhiteCells) :-
     nb_setval(move_cell, false),
     nb_setval(position_cell, false),
     nb_setval(player_turn, white),
-    draw_side_board([], BlackCells),
-    draw_side_board([], WhiteCells),
+
+    gui_init_players([Player1, Player2]),
+    draw_side_board(Player1, WhiteCells),
+    draw_side_board(Player2, BlackCells),
     draw_board([], Board).
 
 gui_init :-

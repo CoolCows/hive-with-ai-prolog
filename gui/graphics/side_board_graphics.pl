@@ -9,16 +9,11 @@
     get_ladybugs/2,
     get_mosquitos/2,
     get_pillbugs/2,
-    get_spiders/2,
-    % Erase after functioning logic
-    init_player/1
+    get_spiders/2
 ]).
 
-draw_side_board(_, Canvas) :-
-    write_ln('Drawing side board'),
+draw_side_board(+Player, +Canvas) :-
     send(Canvas, clear),
-    % Erase after testing
-    init_player(Player),
     draw_remaining_cells(
         Canvas,
         Player, 
