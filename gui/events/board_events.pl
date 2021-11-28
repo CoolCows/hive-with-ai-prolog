@@ -30,10 +30,38 @@
 ]).
 
 select_event(Canvas, ClickPosition) :-
+    nb_getval(player_turn, Colour),
+    nb_getval(board, Board),
+    get_correct_cells(Board, ClickPosition, CorrectCell),
+    get_color(CorrectCell, Colour), 
+    (
+        not(get_bug_type(CorrectCell, none)),
+        write_ln('selecting_cell'),
+        select_cell(Canvas, CorrectCell)
+    );
+    (
+        not(nb_getval(position_cell, undefined)), 
+        write_ln('position_event'), 
+        position_cell(Canvas, ClickPosition)
+    );
+    (
+        not(nb_getval(move_cell, undefined)), 
+        write_ln('moving_cell'), 
+        move_cell(Canvas, ClickPosition)
+    ).
+
     write_ln('Selecting event'),
     (
-        (not(nb_getval(position_cell, undefined)), write_ln('position_event'), position_cell(Canvas, ClickPosition));
-        (not(nb_getval(move_cell, undefined)), write_ln('moving_cell'), move_cell(Canvas, ClickPosition));
+        (
+            not(nb_getval(position_cell, undefined)), 
+            write_ln('position_event'), 
+            position_cell(Canvas, ClickPosition)
+        );
+        (
+            not(nb_getval(move_cell, undefined)), 
+            write_ln('moving_cell'), 
+            move_cell(Canvas, ClickPosition)
+        );
         write_ln('selectting_position'),
         select_cell(Canvas, ClickPosition)
     ).
@@ -72,19 +100,27 @@ move_cell(Canvas, ClickPosition) :-
     ).
     
 
-select_cell(Canvas, ClickPosition) :-
-    nb_getval(board, C),
-    scan_board(C, ClickPosition, CorrectCell),
-
-    not(Type = none),
-    nb_getval(player_turn, Colour),
-    get_color(CorrectCell,  Colour),
-    
+select_cell(Canvas, CorrectCell) :-
     gui_get_possible_moves(+CorrectCell, -PosMoves),
-    draw_pos_moves(CorrectCell, PosMoves),
+    draw_pos_moves(PosMoves, Canvas),
     write_ln('Can now move'),
     move_cell(CorrectCell).
-   % Draw possible moves of cell
+
+get_correct_cells(CellList, ClickPosition, CorrectCell):-
+    bagof(Cell, scan_board(CellList, ClickPosition, Cell), CorrectCells),
+    get_top_cell(CorrectCells, CorrectCell).
+    
+get_top_cell([X], X).
+get_top_cell([X, Y|Rest], TopCell) :-
+    get_stack_pos(X, StackPosX),
+    get_stack_pos(Y, StackPosY),
+    (
+        StackPosX > StackPosY, !,
+        get_top_cell([X|Rest], TopCell)
+    );
+    get_top_cell([Y|Rest], TopCell).
+    
+
 
 scan_board([Cell|Rest], ClickPosition, CorrectCell) :-
     click_inside(Cell, ClickPosition, CorrectCell);

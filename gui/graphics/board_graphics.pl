@@ -41,8 +41,8 @@ set_hexagon_color(Cell, Hex) :-
     (
         (Color = white, send(Hex, colour, colour(lightgray)), send(Hex, fill_pattern, colour(white)));
         (Color = black, send(Hex, colour, colour(darkgray)), send(Hex, fill_pattern, colour(black)));
-        (Color = none, send(Hex, colour, colour(white)), send(Hex, pen, 3));
-        (Color = show, send(Hex, colour, colour(yellow)), send(Hex, pen, 5))
+        (Color = none, send(Hex, colour, colour(yellow)), send(Hex, pen, 3));
+        (Color = show, send(Hex, colour, colour(green)), send(Hex, pen, 5))
     ).
 
 
