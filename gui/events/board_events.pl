@@ -11,7 +11,8 @@
     ]).
 
 :- use_module("../graphics/board_graphics", [
-    draw_board/2
+    draw_board/2,
+    draw_selected_cell/2
 ]).
 
 :- use_module("../../game/cell", [
@@ -70,7 +71,9 @@ select_cell(Canvas, CorrectCell) :-
     draw_board(NewBoard, Canvas),
     nb_setval(board, NewBoard),
     write_ln('Can now move'),
-    move_cell(CorrectCell).
+    move_cell(CorrectCell),
+    CorrectCell = cell(_, Row, Col, _, StackPos),
+    draw_selected_cell(cell(none, Row, Col, show, StackPos), Canvas).
 
 get_correct_cells(CellList, ClickPosition, CorrectCell):-
     bagof(Cell, scan_board(CellList, ClickPosition, Cell), CorrectCells),

@@ -1,4 +1,9 @@
-:- module(board_graphics, [draw_board/2,  refresh/1]).
+:- module(board_graphics, [
+    draw_board/2,
+    draw_selected_cell/2,
+    refresh/1
+]).
+
 :- use_module(commons).
 :- use_module("../../game/cell", [
         get_bug_type/2,
@@ -19,8 +24,8 @@ draw_board(Board, Canvas) :-
     draw_cells(SortedBoard, Canvas, point(CW, CH), Scale).
 
 draw_selected_cell(Cell, Canvas) :-
-    get(scale, Scale),
-    get(center, Center),
+    nb_getval(scale, Scale),
+    nb_getval(center, Center),
     draw_cells([Cell], Canvas, Center, Scale).
 
 % Sort according to stack position
