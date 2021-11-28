@@ -12,18 +12,33 @@
 
 gui_init_board(-Board) :-
     % Call method that return the board
-    true.
+    Board = [].
 
-gui_init_players(Players) :-
+gui_init_players(-Players) :-
     init_player(white),
     init_player(black),
     players(Players).
 
 gui_put_cell(+Cell, -Board) :-
-    % Tries to put cell in a certain location
-    true.
+    % Tries to put the cell in certain location
+    % Returns the new board if succesful
+    Board = [].
 
 gui_move_cell(+Cell, -Board) :-
     % Tries to move cell to a certain location
-    true.
+    % Returns the new board if succesful
+    Board = [].
 
+gui_get_possible_moves(+Cell, -PosMoves) :-
+    % Given a Cell, it's positon and type
+    % return possible moves, which is a 
+    % list of Cells with bug=None and color=show
+    PosMoves = [].
+
+gui_get_possible_positions(+Color, -PosPositions) :-
+    % Get all Cells where a bug by certain player can be put
+    % return possible positions, which is a 
+    % list of Cells with bug=None and color=show
+    PosPositions= [].
+
+% ALL RETURN TYPES MUST BE LISTS OF TYPE CELL

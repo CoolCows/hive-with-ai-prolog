@@ -1,9 +1,18 @@
-:- module(side_board_events, [select_side_board/3]).
+:- module(side_board_events, [select_side_board/4]).
 
 :- use_module("events_commons", [
     click_inside_hexagon/3,
     position_cell/1
 ]).
+
+:- use_module("../graphics/board_graphics", [
+    draw_pos_moves/2
+]).
+
+:- use_module("../graphics/side_board_graphics",[
+    color_selected_cell/4
+]).
+
 :- use_module("../../game/player", [
     get_queens/2,
     get_ants/2,
@@ -15,14 +24,18 @@
     get_spiders/2
 ]).
 
-select_side_board(Canvas, ClickPosition, Colour) :-
+:- use_module("../../game/gui_api", [
+    gui_get_possible_positions/2
+]).
+
+select_side_board(MainCanvas, SideCanvas, ClickPosition, Colour) :-
     (
         (Colour = white, nb_getval(white_player, Player));
         (Colour = black, nb_getval(black_player, Player))
     ),
     nb_getval(player_turn, Colour),
     select_remaining_cell(
-        Canvas,
+        SideCanvas,
         ClickPosition,
         Player,
         0,
@@ -35,14 +48,12 @@ select_side_board(Canvas, ClickPosition, Colour) :-
            queen, ant, beetle, grasshopper, ladybug,
            mosquito, pillbug, spyder
         ],
-        SelectedCell
+        position(BugType, Index)
     ),
-    position_cell(SelectedCell),
-    % Ask logic for positioning locations
-    % Recieve something of possible locations
-    % Paint those possible locations
-    write_ln('Can now position'),
-    write_ln(SelectedCell).
+    position_cell(BugType),
+    gui_get_possible_positions(+Colour, -PosPositions),
+    color_selected_cell(Index, Player, Colour, SideCanvas),
+    draw_pos_moves(PosPositions, MainCanvas).
 
 select_remaining_cell(
     Canvas,
@@ -51,7 +62,7 @@ select_remaining_cell(
     Index, 
     [Getter|FuncRest], 
     [Type|TypeRest], 
-    SelectedCell
+    PositionCell
 ):-
     apply(Getter, [Player, Count]),
     (
@@ -64,13 +75,13 @@ select_remaining_cell(
                 Index,
                 FuncRest,
                 TypeRest,
-                SelectedCell
+                PositionCell
             )
         );
         (
             (
                 click_inside(ClickPosition, Index),
-                SelectedCell = Type
+                PositionCell = position(Type, Index)
             );
             select_remaining_cell(
                 Canvas,
@@ -79,7 +90,7 @@ select_remaining_cell(
                 Index + 1,
                 FuncRest,
                 TypeRest,
-                SelectedCell
+                PositionCell
             )
         )
     ).

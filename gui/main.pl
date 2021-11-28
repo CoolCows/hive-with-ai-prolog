@@ -1,9 +1,9 @@
 % Load libraries and tools
 :- use_module(library(pce)).
-:- use_module("./graphics/board_graphics", [draw_board/2]).
+:- use_module("./graphics/board_graphics", [draw_board/2, refresh/1]).
 :- use_module("./graphics/side_board_graphics", [draw_side_board/3]).
 :- use_module("./events/board_events", [select_event/2]).
-:- use_module("./events/side_board_events", [select_side_board/3]).
+:- use_module("./events/side_board_events", [select_side_board/4]).
 :- use_module("../game/gui_api").
 
 
@@ -21,8 +21,8 @@ menu_bar_setup(MainWin, Board, BlackCells, WhiteCells) :-
                  menu_item(against_AI),
                  menu_item(online)]).
 
-file_dialog_setup(Board, BlackCells, WhiteCells) :-
-    send(new(T, dialog), right, Board),
+file_dialog_setup(Canvas, BlackCells, WhiteCells) :-
+    send(new(T, dialog), right, Canvas),
     send(T, ver_shrink, 100),
     send(T, ver_stretch, 100),
     send(T, background, colour(orange)),
@@ -32,16 +32,17 @@ file_dialog_setup(Board, BlackCells, WhiteCells) :-
     send(BlackCells, height, 200),
     send(BlackCells, recogniser, 
             click_gesture(left, '', single,
-                            message(@prolog, select_side_board, BlackCells, @event?position, black))),
+                            message(@prolog, select_side_board, Canvas, BlackCells, @event?position, black))),
 
     send(T, append, new(WhiteCells, window)),
     send(WhiteCells, width, 400),
     send(WhiteCells, height, 200),
     send(WhiteCells, recogniser,
             click_gesture(left, '', single,
-                            message(@prolog, select_side_board, WhiteCells, @event?position, white))),
+                            message(@prolog, select_side_board, Canvas, WhiteCells, @event?position, white))),
 
-    send(button(refresh, message(@prolog, draw_board,[], Board)), below, WhiteCells).
+    send(button(refresh, message(@prolog, refresh, Canvas)), below, WhiteCells).
+
 
 start_game(Canvas, BlackCells, WhiteCells) :-
     % Init Global Vars
@@ -50,7 +51,11 @@ start_game(Canvas, BlackCells, WhiteCells) :-
     nb_setval(position_cell, undefined),
     nb_setval(player_turn, white),
 
-    gui_init_players([Player1, Player2]),
+    get(Canvas, size, size(W, H)),
+    CH is H/2, CW is W/2,
+    nb_setval(center, point(CW, CH)),
+
+    gui_init_players(-[Player1, Player2]),
     nb_setval(white_player, Player1),
     nb_setval(black_player, Player2),
 
@@ -59,7 +64,7 @@ start_game(Canvas, BlackCells, WhiteCells) :-
 
     draw_side_board(Player1, white, WhiteCells),
     draw_side_board(Player2, black, BlackCells),
-    draw_board([], Canvas).
+    draw_board(Board, Canvas).
 
 gui_init :-
     %Setting up Game Panel
@@ -73,7 +78,5 @@ gui_init :-
     file_dialog_setup(Board, BlackPlayer, WhitePlayer),
     menu_bar_setup(MainWin, Board, BlackPlayer, WhitePlayer),
     send(MainWin, open).
-    %draw_side_board([], BlackPlayer),
-    %draw_side_board([], WhitePlayer).
 
 ?- gui_init.

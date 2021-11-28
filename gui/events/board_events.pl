@@ -3,11 +3,13 @@
     ]).
 
 :- use_module(library(pce)).
+
 :- use_module("events_commons", [
     click_inside_hexagon/3,
     move_cell/1,
     position_cell/1
     ]).
+
 :- use_module("../../game/cell", [
         get_bug_type/2,
         get_row/2,
@@ -15,6 +17,12 @@
         get_color/2,
         get_stack_pos/2
     ]).
+
+:- use_module("../../game/gui_api", [
+    gui_put_cell/2,
+    gui_move_cell/2,
+    gui_get_possible_moves/2
+]).
 
 select_event(Canvas, ClickPosition) :-
     write_ln('Selecting event'),
@@ -28,6 +36,12 @@ select_event(Canvas, ClickPosition) :-
 position_cell(Canvas, ClickPosition) :-
     nb_getval(board, Board),
     scan_board(Board, ClickPosition, CorrectCell),
+    get_bug_type(CorrectCell, Type),
+    (
+        not(Type = none),
+        select_cell(Canvas, ClickPosition)
+    );
+
     % if cell is not empty call select_cell instead
     % Send coordinates to logic
     % Logic returns a new board to draw
