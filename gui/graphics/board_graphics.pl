@@ -21,10 +21,10 @@ draw_board(Board, Canvas) :-
 % Sort according to stack position
 quick_sort([], []).
 quick_sort([Cell|Rest], Sorted) :-
-    pivot(Cell, Rest, Less, Greater),
-    quick_sort(Less, Sorted1),
-    quick_sort(Greater, Sorted2),
-    append(Sorted1, [X|Sorted2], Sorted).
+    pivot(Cell, Rest, Lesser, Greater),
+    quick_sort(Lesser, LesserSorted),
+    quick_sort(Greater, GreaterSorted),
+    append(LesserSorted, [Cell|GreaterSorted], Sorted).
 
 pivot(_, [], [], []).
 pivot(CellX, [CellY|T], [CellY|Lesser], Greater) :-
