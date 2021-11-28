@@ -15,30 +15,15 @@ draw_board(Board, Canvas) :-
     nb_getval(scale, Scale),
     nb_getval(center, point(CW, CH)),
 
-    %Function that gets the screen painting
     quick_sort(Board, SortedBoard),
     draw_cells(SortedBoard, Canvas, point(CW, CH), Scale).
 
+draw_selected_cell(Cell, Canvas) :-
+    get(scale, Scale),
+    get(center, Center),
+    draw_cells([Cell], Canvas, Center, Scale).
+
 % Sort according to stack position
-quick_sort([], []).
-quick_sort([Cell|Rest], Sorted) :-
-    pivot(Cell, Rest, Lesser, Greater),
-    quick_sort(Lesser, LesserSorted),
-    quick_sort(Greater, GreaterSorted),
-    append(LesserSorted, [Cell|GreaterSorted], Sorted).
-
-pivot(_, [], [], []).
-pivot(CellX, [CellY|T], [CellY|Lesser], Greater) :-
-    get_stack_pos(CellX, X),
-    get_stack_pos(CellY, Y),
-    Y =< X,
-    pivot(CellX, T, Lesser, Greater).
-pivot(CellX, [CellY|T], Lesser, [CellY|Greater]) :-
-    get_stack_pos(CellX, X),
-    get_stack_pos(CellY, Y),
-    Y > X,
-    pivot(CellX, T, Lesser, Greater).
-
 draw_cells([], _, _, _).
 draw_cells([Cell|Rest], Canvas, point(CW, CH), Scale) :-
     get_col(Cell, Col), 
@@ -60,8 +45,6 @@ set_hexagon_color(Cell, Hex) :-
         (Color = none, send(Hex, colour, colour(yellow)), send(Hex, pen, 3));
         (Color = show, send(Hex, colour, colour(green)), send(Hex, pen, 5))
     ).
-
-
     
 refresh(Canvas) :- 
     get(Canvas, size, size(W, H)),
@@ -69,3 +52,24 @@ refresh(Canvas) :-
     nb_setval(center, point(CW, CH)),
     nb_getval(board, Board),
     draw_board(Board, Canvas).
+
+quick_sort([], []).
+quick_sort([Cell|Rest], Sorted) :-
+    pivot(Cell, Rest, Lesser, Greater),
+    quick_sort(Lesser, LesserSorted),
+    quick_sort(Greater, GreaterSorted),
+    append(LesserSorted, [Cell|GreaterSorted], Sorted).
+
+pivot(_, [], [], []).
+pivot(CellX, [CellY|T], [CellY|Lesser], Greater) :-
+    get_stack_pos(CellX, X),
+    get_stack_pos(CellY, Y),
+    Y =< X,
+    pivot(CellX, T, Lesser, Greater).
+pivot(CellX, [CellY|T], Lesser, [CellY|Greater]) :-
+    get_stack_pos(CellX, X),
+    get_stack_pos(CellY, Y),
+    Y > X,
+    pivot(CellX, T, Lesser, Greater).
+
+
