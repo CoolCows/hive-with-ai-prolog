@@ -1,4 +1,4 @@
-:- module(board_graphics, [draw_board/2, draw_pos_moves/2, refresh/1]).
+:- module(board_graphics, [draw_board/2,  refresh/1]).
 :- use_module(commons).
 :- use_module("../../game/cell", [
         get_bug_type/2,
@@ -18,12 +18,27 @@ draw_board(Board, Canvas) :-
     %Function that gets the screen painting
     draw_cells(Board, Canvas, point(CW, CH), Scale).
 
-draw_pos_moves(PosMoves, Canvas) :-
-    nb_getval(board, Board),
-    draw_board(Board, Canvas),
-    draw_cells(PosMoves, Canvas).
+% Sort according to stack position
+quick_sort([], []).
+quick_sort([Cell|Rest], Sorted) :-
+    pivot(Cell, Rest, Less, Greater),
+    quick_sort(Less, Sorted1),
+    quick_sort(Greater, Sorted2),
+    append(Sorted1, [X|Sorted2], Sorted).
 
-draw_cells([], _, _).
+pivot(_, [], [], []).
+pivot(CellX, [CellY|T], [CellY|Lesser], Greater) :-
+    get_stack_pos(CellX, X),
+    get_stack_pos(CellY, Y),
+    Y =< X,
+    pivot(CellX, T, Lesser, Greater).
+pivot(CellX, [CellY|T], Lesser, [CellY|Greater]) :-
+    get_stack_pos(CellX, X),
+    get_stack_pos(CellY, Y),
+    Y > X,
+    pivot(CellX, T, Lesser, Greater).
+
+draw_cells([], _, _, _).
 draw_cells([Cell|Rest], Canvas, point(CW, CH), Scale) :-
     get_col(Cell, Col), 
     get_row(Cell, Row),
@@ -34,7 +49,7 @@ draw_cells([Cell|Rest], Canvas, point(CW, CH), Scale) :-
     send(Canvas, display, Hexagon),
     get_bug_type(Cell, Bug),
     draw_bug(Bug, X, Y, Canvas),
-    draw_cells(Rest, Canvas, point(CW, CH), Scale),!.
+    draw_cells(Rest, Canvas, point(CW, CH), Scale).
 
 set_hexagon_color(Cell, Hex) :-
     get_color(Cell, Color),
