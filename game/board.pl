@@ -125,17 +125,27 @@ adjacent_cells(Cell, AdjCells):-
 %
 
 valid_new_cell(Color,ValidCell):-
-	get_cell(cell(_,_,_,Color,0),SameColorCell),
+	get_cell(cell(_,_,_,Color,_),SameColorCell),
+	not(insect_above(SameColorCell,_)),
 	adjacent_cell(SameColorCell, ValidCell),
 	ValidCell = cell(none,_,_,none,0),
 	adjacent_cells(ValidCell,AdjCells),
-	forall(member(N,AdjCells), valid_color(N,Color)).
+	forall(member(N,AdjCells), valid_adj_cell(N,Color)).
 
-% valid adjacent cells' color for new cell
-valid_color(N,Color):-
+% triumph if the top level adjacent cell is from the same color 
+valid_adj_cell(N,Color):-
+	(
+		insect_above(N,M),!,
+		valid_adj_cell(M,Color)
+	);
 	get_color(N,Color);
 	get_color(N,none).
 
+
+%---------------------------------------------------------------%
+% Useful predicates to check some conditions
+%---------------------------------------------------------------%
+% checks for one hive rule
 one_hive(Cell):-
 	cells(Cells),
 	delete(Cells,Cell, [X|Y]),
@@ -143,11 +153,13 @@ one_hive(Cell):-
 	len(ReachableCells,R),
 	len([X|Y],R).
 
+% non visited cells during dfs
 non_visited(Cell,Visited, AdjCell):-
 	adjacent_cell(Cell,AdjCell),
 	not(get_bug_type(AdjCell,none)),
 	not(member(AdjCell, Visited)).
 
+% dfs
 reachable([],X,X):-!.
 reachable([Cell|RestOfCells],Visited, ReachableCells):-
 	!,
@@ -160,12 +172,10 @@ reachable(Cell,Visited,ReachableCells):-
 	append(AdjCells,Visited,A),
 	reachable(AdjCells,A,ReachableCells).
 
-% insect_above(Cell):-
-% 	cells(Cells),
-% 	any(Cells,[above,Cell]).
 
-% above(Cell,AnotherCell):-
-% 	same_position(Cell,AnotherCell),
-% 	get_stack_pos(Cell,X),
-% 	get_stack_pos(AnotherCell,Y),
-% 	Y > X.
+insect_above(cell(_,Row,Col,_,X),AboveCell):-
+	AboveCell = cell(Bug,Row,Col,Color,Y),
+	get_cell(cell(_,Row,Col,_,_),
+			 cell(Bug,Row,Col,Color,Y)),
+	X < Y.
+
