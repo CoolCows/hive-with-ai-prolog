@@ -11,8 +11,7 @@
     ]).
 
 :- use_module("../graphics/board_graphics", [
-    draw_board/2,
-    draw_pos_moves/2
+    draw_board/2
 ]).
 
 :- use_module("../../game/cell", [
@@ -30,9 +29,9 @@
 ]).
 
 select_event(Canvas, ClickPosition) :-
-    nb_getval(player_turn, Colour),
     nb_getval(board, Board),
     get_correct_cells(Board, ClickPosition, CorrectCell),
+    nb_getval(player_turn, Colour),
     get_color(CorrectCell, Colour), 
     (
         not(get_bug_type(CorrectCell, none)),
@@ -42,67 +41,34 @@ select_event(Canvas, ClickPosition) :-
     (
         not(nb_getval(position_cell, undefined)), 
         write_ln('position_event'), 
-        position_cell(Canvas, ClickPosition)
+        position_cell(Canvas, CorrectCell)
     );
     (
         not(nb_getval(move_cell, undefined)), 
         write_ln('moving_cell'), 
-        move_cell(Canvas, ClickPosition)
+        move_cell(Canvas, CorrectCell)
     ).
 
-    write_ln('Selecting event'),
-    (
-        (
-            not(nb_getval(position_cell, undefined)), 
-            write_ln('position_event'), 
-            position_cell(Canvas, ClickPosition)
-        );
-        (
-            not(nb_getval(move_cell, undefined)), 
-            write_ln('moving_cell'), 
-            move_cell(Canvas, ClickPosition)
-        );
-        write_ln('selectting_position'),
-        select_cell(Canvas, ClickPosition)
-    ).
-
-position_cell(Canvas, ClickPosition) :-
-    nb_getval(board, Board),
-    scan_board(Board, ClickPosition, CorrectCell),
-    get_bug_type(CorrectCell, Type),
-    (
-        not(Type = none),
-        select_cell(Canvas, ClickPosition)
-    );
-    (
-        get_color(CorrectCell, Colour),
-        gui_put_cell(+Colour, -NewBoard),
-        draw_board(NewBoard, Canvas),
-        nb_setval(board, NewBoard),
-        position_cell(undefined),
-        write_ln('Correctly postioned')
-    ).
+position_cell(Canvas, CorrectCell) :-
+    get_color(CorrectCell, Colour),
+    gui_put_cell(+Colour, -NewBoard),
+    draw_board(NewBoard, Canvas),
+    nb_setval(board, NewBoard),
+    position_cell(undefined),
+    write_ln('Correctly postioned').
     
-move_cell(Canvas, ClickPosition) :-
-    nb_getval(board, Board),
-    scan_board(Board, ClickPosition, CorrectCell),
-    get_bug_type(CorrectCell, Type),
-    (
-        not(Type = none),
-        select_cell(Canvas, ClickPosition)
-    );
-    (
-        gui_move_cell(+CorrectCell, -NewBoard),
-        draw_board(NewBoard, Canvas),
-        nb_setval(board, NewBoard),
-        move_cell(undefined),
-        write_ln('Correctly moved')
-    ).
+move_cell(Canvas, CorrectCell) :-
+    gui_move_cell(+CorrectCell, -NewBoard),
+    draw_board(NewBoard, Canvas),
+    nb_setval(board, NewBoard),
+    move_cell(undefined),
+    write_ln('Correctly moved').
     
 
 select_cell(Canvas, CorrectCell) :-
-    gui_get_possible_moves(+CorrectCell, -PosMoves),
-    draw_pos_moves(PosMoves, Canvas),
+    gui_get_possible_moves(+CorrectCell, -NewBoard),
+    draw_board(NewBoard, Canvas),
+    nb_setval(board, NewBoard),
     write_ln('Can now move'),
     move_cell(CorrectCell).
 

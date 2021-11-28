@@ -6,7 +6,7 @@
 ]).
 
 :- use_module("../graphics/board_graphics", [
-    draw_pos_moves/2
+    draw_board/2
 ]).
 
 :- use_module("../graphics/side_board_graphics",[
@@ -51,9 +51,10 @@ select_side_board(MainCanvas, SideCanvas, ClickPosition, Colour) :-
         position(BugType, Index)
     ),
     position_cell(BugType),
-    gui_get_possible_positions(+Colour, -PosPositions),
+    gui_get_possible_positions(+Colour, -NewBoard),
     color_selected_cell(Index, Player, Colour, SideCanvas),
-    draw_pos_moves(PosPositions, MainCanvas).
+    draw_board(NewBoard, MainCanvas),
+    nb_setval(board, NewBoard).
 
 select_remaining_cell(
     Canvas,

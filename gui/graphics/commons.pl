@@ -28,4 +28,3 @@ draw_bug(Bug, X, Y, Canvas) :-
         ),
         send(Canvas, display, BM, point(X - 35, Y - 35))
     ).
-
