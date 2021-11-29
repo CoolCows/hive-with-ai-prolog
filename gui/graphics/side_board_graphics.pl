@@ -1,7 +1,7 @@
-:- module(side_board_graphics, [draw_side_board/3]).
+:- module(side_board_graphics, [draw_side_board/3, color_selected_cell/4]).
 
 :- use_module(library(pce)).
-:- use_module(commons, [get_hexagon/4]).
+:- use_module(commons).
 :- use_module("../../game/player", [
     get_queens/2,
     get_ants/2,
@@ -13,26 +13,14 @@
     get_spiders/2
 ]).
 
-draw_side_board(_, Colour, Canvas) :-
+draw_side_board(Player, Colour, Canvas) :-
     write_ln('Drawing side board'),
     send(Canvas, clear),
     color_side_board(Colour, Canvas),
     
-    % Erase after testing
-    % Player should be recieved as an arg
-    % from _
-    init_player(Player),
-
-    % Saving the player, this logic is incorrectly put here
-    (
-        (Colour = white, nb_setval(white_player, player(0, 0, 0, 0, 1, 1, 1, 0)));
-        (Colour = black, nb_setval(black_player, player(0, 0, 0, 0, 1, 1, 1, 0)))
-    ),
-    
     draw_remaining_cells(
         Canvas,
-        player(0, 0, 0, 0, 1, 1, 1, 0),
-        %Player,
+        Player,
         Colour,
         0,
         [
@@ -50,6 +38,10 @@ color_side_board(Colour, Canvas) :-
     (Colour = white, send(Canvas, background, colour(lightblue)));
     (Colour = black, send(Canvas, background, colour(darkblue))).
 
+color_selected_cell(Index, Player, Colour, Canvas) :-
+    draw_side_board(Player, Colour, Canvas),
+    color_cell(Canvas, show, " ", none, Index).
+
 draw_remaining_cells( _, _, _, _, [], []).
 draw_remaining_cells(Canvas, Player, Colour, Index, [Getter|FuncRest], [Type|TypeRest]) :-
     apply(Getter, [Player, Count]),
@@ -59,24 +51,25 @@ draw_remaining_cells(Canvas, Player, Colour, Index, [Getter|FuncRest], [Type|Typ
             draw_remaining_cells(Canvas, Player, Colour, Index, FuncRest, TypeRest),!
         );
         (
-            S is 0.75, % Current hexagon Scale
-            ModIndex is Index mod 4,
-            Row is Index // 4,
-            X is ModIndex*60*S + ModIndex*65*S + 50,
-            Y is 60*S + 110*S*Row,
-            color_cell(Canvas, Colour, Count, Type, X, Y),
+            color_cell(Canvas, Colour, Count, Type, Index),
             draw_remaining_cells(Canvas, Player, Colour, Index + 1, FuncRest, TypeRest),!
         )
     ).
     
-color_cell(Canvas, Colour, Count, Type, X, Y) :-
+color_cell(Canvas, Colour, Count, Type, Index) :-
     S is 0.75,
+    ModIndex is Index mod 4,
+    Row is Index // 4,
+    X is ModIndex*60*S + ModIndex*65*S + 50,
+    Y is 60*S + 110*S*Row,
+
     get_hexagon(X, Y, S, H),
     new(Text, text(new(_, string('x%s', Count)))),
     send(Text, font, font(helvetica, arial, 20)),
     (
         (Colour = white, send(H, fill_pattern, colour(white)), send(H, colour, colour(lightgray)));
-        (Colour = black, send(H, fill_pattern, colour(black)))
+        (Colour = black, send(H, fill_pattern, colour(black)));
+        (Colour = show, send(H, colour, colour(green)), send(H, pen, 5))
     ),
     send(Text, colour, colour(orange)),
     % Display in Canvas
@@ -84,16 +77,4 @@ color_cell(Canvas, Colour, Count, Type, X, Y) :-
     send(Canvas, display, Text, point(X + 30, Y + 10)),
     draw_bug(Type, X, Y, Canvas).
 
-draw_bug(Bug, X, Y, Canvas) :-
-    (
-        (Bug = queen, new(BM, bitmap( './graphics/xpm/queen.xpm')));
-        (Bug = ant, new(BM, bitmap('./graphics/xpm/ant.xpm')));
-        (Bug = beetle, new(BM, bitmap('./graphics/xpm/beetle.xpm')));
-        (Bug = grasshopper, new(BM, bitmap('./graphics/xpm/grasshopper.xpm')));
-        (Bug = spyder, new(BM, bitmap('./graphics/xpm/spyder.xpm')));
-        (Bug = pillbug, new(BM, bitmap('./graphics/xpm/pillbug.xpm')));
-        (Bug = mosquito, new(BM, bitmap('./graphics/xpm/mosquito.xpm')));
-        (Bug = ladybug, new(BM, bitmap('./graphics/xpm/ladybug.xpm')))
-    ),
-    send(Canvas, display, BM, point(X - 35, Y - 35)).
 
