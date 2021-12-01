@@ -4,8 +4,6 @@
 				 any/2
 				 ]).
 :- module_transparent(any/2).
-% :- meta_predicate
-% 			any(0,0).
 
 
 push(X,Y,[X|Y]).
