@@ -1,4 +1,5 @@
 :- module(cell, [ init_cell/5,
+				  init_cell/1,
 				  delete_cell/1,
 				  get_cell/2,
 				  cells/1,
@@ -25,8 +26,11 @@
 % StackPos: if two cells are located in the same relative position then this value
 % acts like a z-index, giving the stack position of the object. Default is 0.
 % ---------------------------------------------------------------------------------
+
+init_cell(cell(Bug, Row, Col, Color, StackPos)):-
+	assertz(cell(Bug, Row, Col, Color, StackPos)),!.
 init_cell(Bug, Row, Col, Color, StackPos):- 
-	assertz(cell(Bug, Row, Col, Color, StackPos)).
+	assertz(cell(Bug, Row, Col, Color, StackPos)),!.
 
 delete_cell(cell(Bug, Row, Col, Color, StackPos)):-
 	retract(cell(Bug,Row,Col,Color,StackPos)).
