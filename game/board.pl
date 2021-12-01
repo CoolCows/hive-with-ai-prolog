@@ -6,13 +6,32 @@
 					adjacent_cell_6/2,
 					adjacent_cell/2,
 					adjacent_cells/2,
+					add_new_cell/1,
 					valid_new_cell/2,
-					one_hive/1
+					move_cell/3,
+					one_hive/1,
+					adjacent_to_hive/2
 					]).
 
 :- use_module(cell).
 :- use_module(utils).
 :- use_module(player).
+
+% adds a new cell to the board 
+% NOTE: to find  new cells possible positions use findall with valid_new_cell/2
+add_new_cell(cell(Bug,Row,Col,Color,0)):-
+	get_player(player(Color,_,_,_,_,_,_,_,_),Player),
+	decrease_bug(Bug,Player,NewPlayer),
+	delete_player(Player),
+	init_player(NewPlayer),
+	init_cell(cell(Bug,Row,Col,Color,0)).
+
+% R is the result of moving cell(Bug,Row,Col,Color,X) to cell(_,NewRow,NewCol,_,Y) 
+move_cell(cell(Bug,Row,Col,Color,X),cell(_,NewRow,NewCol,_,Y),R):-
+	NewStackPos is Y + 1,
+	init_cell(Bug,NewRow,NewCol,Color,NewStackPos),
+	delete_cell(cell(Bug,Row,Col,Color,X)),
+	R = cell(Bug,NewRow,NewCol,Color,NewStackPos).
 
 
 %---------------------------------------------------------------%
@@ -85,45 +104,11 @@ adjacent_cells(Cell, AdjCells):-
 %---------------------------------------------------------------%
 %---------------------------------------------------------------%
 
-% move_cell(SourceCell, DestCell, Board, NewBoard):-
-% 	get_cells(Board,Cells),
-% 	delete(Cells, SourceCell, NewCells),
-% 	move_cell_(SourceCell, DestCell, NewCells, NewCells1),
-% 	set_cells(NewCells1, Board, NewBoard).
+%---------------------------------------------------------------%
+% Useful predicates to check some conditions on the board
+%---------------------------------------------------------------%
 
-% move_cell_(cell(BugType, _, _, Color,_), cell(none,Row, Col,_,_),Cells, NewCells):-
-% 	init_cell(BugType, Row, Col, Color,0,NewCell),
-% 	!,
-% 	push(NewCell, Cells,NewCells).
-	
-% move_cell_(cell(BugType,_,_,Color,_), cell(_,Row,Col,_,StackPos),Cells, NewCells):-
-% 	NewStackPos is StackPos + 1,
-% 	init_cell(BugType,Row,Col,Color, NewStackPos, NewCell),
-% 	push(NewCell, Cells, NewCells).
-
-% add_new_cell(Cell,Board, NewBoard) :-
-% 	get_color(Cell, white),
-% 	!,
-% 	get_cells(Board, Cells),
-% 	get_bug_type(Cell, BugType),
-% 	get_white_player(Board, WhitePlayer),
-% 	decrease_bug(BugType, WhitePlayer, NewWhitePlayer),
-% 	set_white_player(NewWhitePlayer,Board,B),
-% 	push(Cell, Cells, NewBoardCells),
-% 	set_cells(NewBoardCells,B,NewBoard).
-
-% add_new_cell(Cell,Board, NewBoard) :-
-% 	get_color(Cell, black),
-% 	!,
-% 	get_cells(Board, Cells),
-% 	get_bug_type(Cell, BugType),
-% 	get_black_player(Board, BlackPlayer),
-% 	decrease_bug(BugType, BlackPlayer, NewBlackPlayer),
-% 	set_black_player(NewBlackPlayer, Board,B),
-% 	push(Cell, Cells, NewBoardCells),
-% 	set_cells(NewBoardCells,B,NewBoard).
-%
-
+% checks if ValidCell is a valid cell position for player of color Color
 valid_new_cell(Color,ValidCell):-
 	get_cell(cell(_,_,_,Color,_),SameColorCell),
 	not(insect_above(SameColorCell,_)),
@@ -132,24 +117,13 @@ valid_new_cell(Color,ValidCell):-
 	adjacent_cells(ValidCell,AdjCells),
 	forall(member(N,AdjCells), valid_adj_cell(N,Color)).
 
-% triumph if the top level adjacent cell is from the same color 
-valid_adj_cell(N,Color):-
-	(
-		insect_above(N,M),!,
-		valid_adj_cell(M,Color)
-	);
-	get_color(N,Color);
-	get_color(N,none).
-
-
-%---------------------------------------------------------------%
-% Useful predicates to check some conditions
-%---------------------------------------------------------------%
 % checks for one hive rule
 one_hive(Cell):-
 	cells(Cells),
-	delete(Cells,Cell, [X|Y]),
+	delete_cell(Cell),
+	cells([X|Y]),
 	reachable(X,[X],ReachableCells),
+	init_cell(Cell),
 	len(ReachableCells,R),
 	len([X|Y],R).
 
@@ -172,10 +146,24 @@ reachable(Cell,Visited,ReachableCells):-
 	append(AdjCells,Visited,A),
 	reachable(AdjCells,A,ReachableCells).
 
-
+% checks if AboveCell is above cell(_,Row,Col,_,X)
 insect_above(cell(_,Row,Col,_,X),AboveCell):-
 	AboveCell = cell(Bug,Row,Col,Color,Y),
 	get_cell(cell(_,Row,Col,_,_),
 			 cell(Bug,Row,Col,Color,Y)),
 	X < Y.
 
+
+% triumph if the top level adjacent cell is from the same color 
+valid_adj_cell(N,Color):-
+	(
+		insect_above(N,M),!,
+		valid_adj_cell(M,Color)
+	);
+	get_color(N,Color);
+	get_color(N,none).
+
+% triumph if Cell is adjacnt to the hive represented by a list of cells
+adjacent_to_hive(Cell, HiveCells):-
+	adjacent_cell(Cell,AdjCell),
+	member(AdjCell,HiveCells).
