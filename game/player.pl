@@ -25,6 +25,7 @@
 % ---------------------------------------------------------------------------------
 % Player structure -> player(Color,Queen, Ants, Beetle, Grasshopper, Ladybug, Mosquito, Pillbug, Spider)
 %
+% Color : player color (black or white)
 % Queen: total queens outside the board
 % Ants: total ants outside the board
 % Beetle: total beetles outside the board
@@ -34,11 +35,14 @@
 % Pillbug: total pillbugs outside the board
 % Spider: total spiders outside the board
 % ---------------------------------------------------------------------------------
+
+init_player(player(Color,Queen, Ants, Beetle, Grasshopper, Ladybug, Mosquito, Pillbug, Spider)):-
+	assertz(player(Color,Queen, Ants, Beetle, Grasshopper, Ladybug, Mosquito, Pillbug, Spider)),!.
 init_player(Color):-
-	assertz(player(Color,1,3,2,3,1,1,1,2)).
+	assertz(player(Color,1,3,2,3,1,1,1,2)),!.
 
 delete_player(player(Color,Queen, Ants, Beetle, Grasshopper, Ladybug, Mosquito, Pillbug, Spider)):-
-	retract(player(Color,Queen, Ants, Beetle, Grasshopper, Ladybug, Mosquito, Pillbug, Spider)).
+	retract(player(Color,Queen, Ants, Beetle, Grasshopper, Ladybug, Mosquito, Pillbug, Spider)),!.
 
 players(Players):-
 	findall(Player, get_player(Player,_),Players).
