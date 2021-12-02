@@ -6,7 +6,12 @@
 :- use_module(spider).
 :- use_module(grasshopper).
 :- use_module(ladybug).
+:- use_module(beetle).
 
+
+valid_movement(SourceCell,DestCell):-
+	get_bug_type(SourceCell,beetle),!,
+	valid_beetle_movement(SourceCell,DestCell).
 
 valid_movement(SourceCell,DestCell):-
 	get_bug_type(SourceCell,ant),!,
