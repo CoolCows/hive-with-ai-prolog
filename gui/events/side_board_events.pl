@@ -52,9 +52,9 @@ select_side_board(MainCanvas, SideCanvas, ClickPosition, Colour) :-
     ),
     position_cell(BugType),
     gui_get_possible_positions(+Colour, -NewBoard),
-    color_selected_cell(Index, Player, Colour, SideCanvas),
+    nb_setval(board, NewBoard),
     draw_board(NewBoard, MainCanvas),
-    nb_setval(board, NewBoard).
+    color_selected_cell(Index, Player, Colour, SideCanvas).
 
 select_remaining_cell(
     Canvas,
@@ -103,7 +103,7 @@ click_inside(ClickPosition, Index) :-
     get(ClickPosition, y, ClickY),
     ModIndex is Index mod 4,
     Row is Index // 4,
-    X is ModIndex*60*S + ModIndex*75*S + 50,
+    X is ModIndex*60*S + ModIndex*65*S + 50,
     Y is 60*S + 110*S*Row,
     Dist is 50*S,
     click_inside_hexagon(point(ClickX, ClickY), point(X, Y), Dist).
