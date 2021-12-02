@@ -76,7 +76,7 @@ adjacent_cell_4(cell(_,Row,Col,_,_),AdjCell):-
 
 
 adjacent_cell_5(cell(_,Row,Col,_,_),AdjCell):-
-	AdjRow is Row +1,
+	AdjRow is Row -1,
 	AdjCol is Col -1,
 	(
 		cell:get_cell(cell(_,AdjRow,AdjCol,_,_),AdjCell),!;
