@@ -24,8 +24,8 @@
     ]).
 
 :- use_module("../../game/gui_api", [
-    gui_put_cell/2,
-    gui_move_cell/2,
+    gui_put_cell/4,
+    gui_move_cell/3,
     gui_get_possible_moves/2
 ]).
 
@@ -64,8 +64,14 @@ position_cell(Canvas, cell(none, Row, Col, none, Stack)) :-
     position_cell(undefined),
     write_ln('Correctly postioned').
     
-move_cell(Canvas, CorrectCell) :-
-    gui_move_cell(+CorrectCell, -NewBoard),
+move_cell(Canvas, cell(none, Row, Col, none, Stack)) :-
+    nb_getval(move_cell, SourceCell),
+    SourceCell = cell(BugType, _, _, Colour, _),
+    gui_move_cell(
+        +SourceCell,
+        +cell(BugType, Row, Col, Colour, Stack),
+        -NewBoard
+    ),
     draw_board(NewBoard, Canvas),
     nb_setval(board, NewBoard),
     move_cell(undefined),

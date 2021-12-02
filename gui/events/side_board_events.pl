@@ -52,9 +52,9 @@ select_side_board(MainCanvas, SideCanvas, ClickPosition, Colour) :-
     ),
     position_cell(BugType),
     gui_get_possible_positions(+Colour, -NewBoard),
-    color_selected_cell(Index, Player, Colour, SideCanvas),
+    nb_setval(board, NewBoard),
     draw_board(NewBoard, MainCanvas),
-    nb_setval(board, NewBoard).
+    color_selected_cell(Index, Player, Colour, SideCanvas).
 
 select_remaining_cell(
     Canvas,
