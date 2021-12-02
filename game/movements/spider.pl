@@ -5,19 +5,22 @@
 
 
 valid_spider_movement(SourceCell,DestCell):-
-	% TODO: checks if the cell is accesible
+	% TODO: check if the cell is accesible
 	one_hive(SourceCell),
 	cells(HiveCells),
 	delete(HiveCells,SourceCell,HiveCellsWithoutSourceCell),
 	adjacent_cell(SourceCell,AdjCell1),
 	adjacent_to_hive(AdjCell1,HiveCellsWithoutSourceCell),
 	AdjCell1 \== SourceCell,
+	get_bug_type(AdjCell1,none),
 	adjacent_cell(AdjCell1,AdjCell2),
 	adjacent_to_hive(AdjCell2,HiveCellsWithoutSourceCell),
 	AdjCell2 \== SourceCell,
 	AdjCell2 \== AdjCell1,
+	get_bug_type(AdjCell2,none),
 	adjacent_cell(AdjCell2,DestCell),
 	adjacent_to_hive(DestCell,HiveCellsWithoutSourceCell),
 	DestCell \== SourceCell,
 	DestCell \== AdjCell1,
-	DestCell \== AdjCell2.
+	DestCell \== AdjCell2,
+	get_bug_type(DestCell,none).

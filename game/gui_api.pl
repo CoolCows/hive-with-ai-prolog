@@ -5,17 +5,16 @@
     gui_move_cell/2
 ]).
 
-:- use_module(player, [
-    init_player/1,
-    players/1
-]).
+:- use_module(player).
 :- use_module(cell).
 :- use_module("movements/movements").
+:- use_module(board).
 
 dummy_init:-
-    init_cell(queen, 0, 0, white, 0),
-    init_cell(ant, 0, 1, black, 0),
-    init_cell(beetle, 0, 2, white, 0).
+    init_cell(cell(queen, 0, 0, white, 0)),
+    init_cell(cell( beetle, 0, 1, black, 0 )),
+	init_cell(cell(ant,1,1,black,0)),
+    init_cell(grasshopper, 0, 2, white, 0).
 
 gui_init_board(-Board) :-
     % Call method that return the board

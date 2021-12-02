@@ -12,12 +12,12 @@ testing(P) :-
 	% init_cell(ant, 2,2,black,0),	
 	init_player(black),
 
-	add_new_cell(cell(ant,1,2,black,0)),
-	add_new_cell(cell(grasshopper,2,2,black,0)),
-	add_new_cell(cell(ant,0,2,black,0)),
+	add_new_cell(cell(ant,1,1,black,0)),
+	add_new_cell(cell(ant,2,1,black,0)),
+	add_new_cell(cell(ant,2,2,black,0)),
 	% one_hive(cell(spider,2,2,black,0)).
 	% move_cell(cell(ant,1,2,black,0),cell(none,1,1,none,0),R),
-	valid_movements(cell(grasshopper,2,2,black,0),P).
+	valid_movements(cell(ant,2,2,black,0),P).
 	% adjacent_cells(cell(spider,2,2,black,0),P).
 	% delete_cell(cell(ant,1,2,black,0)),
 	% init_cell(R),
