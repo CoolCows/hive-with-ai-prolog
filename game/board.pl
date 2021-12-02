@@ -10,7 +10,8 @@
 					valid_new_cell/2,
 					move_cell/3,
 					one_hive/1,
-					adjacent_to_hive/2
+					adjacent_to_hive/2,
+					adjacent_to_hive/1
 					]).
 
 :- use_module(cell).
@@ -166,4 +167,9 @@ valid_adj_cell(N,Color):-
 % triumph if Cell is adjacnt to the hive represented by a list of cells
 adjacent_to_hive(Cell, HiveCells):-
 	adjacent_cell(Cell,AdjCell),
-	member(AdjCell,HiveCells).
+	member(AdjCell,HiveCells),!.
+
+adjacent_to_hive(Cell):-
+	cells(HiveCells),
+	adjacent_cell(Cell,AdjCell),
+	member(AdjCell,HiveCells),!.
