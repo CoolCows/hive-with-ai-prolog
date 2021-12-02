@@ -34,11 +34,19 @@ select_event(Canvas, ClickPosition) :-
     get_correct_cells(Board, ClickPosition, CorrectCell),
     (
         (
-            not(get_bug_type(CorrectCell, none)),
-            nb_getval(player_turn, Colour),
-            get_color(CorrectCell, Colour), 
-            write_ln('selecting_cell'),
-            select_cell(Canvas, CorrectCell)
+            (
+                nb_getval(pillbug_effect, MovBugs),
+                not(nb_getval(pillbug_effect, MovBugs)),
+                member(CorrectCell, MovBugs),
+                move_cell(CorrectCell)
+            );
+            (
+                not(get_bug_type(CorrectCell, none)),
+                nb_getval(player_turn, Colour),
+                get_color(CorrectCell, Colour), 
+                write_ln('selecting_cell'),
+                select_cell(Canvas, CorrectCell)
+            )
         );
         (
             not(nb_getval(position_cell, undefined)), 
@@ -80,12 +88,20 @@ move_cell(Canvas, cell(none, Row, Col, none, Stack)) :-
 
 select_cell(Canvas, CorrectCell) :-
     gui_get_possible_moves(+CorrectCell, -NewBoard),
-    draw_board(NewBoard, Canvas),
     nb_setval(board, NewBoard),
-    write_ln('Can now move'),
     move_cell(CorrectCell),
-    CorrectCell = cell(_, Row, Col, _, StackPos),
+    CorrectCell = cell(BugType, Row, Col, _, StackPos),
+    (
+        (
+            BugType = pillbug,
+            gui_get_pillbug_effect(CorrectCell, MovBugs),
+            nb_setval(pillbug_effect, MovBugs)
+        );
+        true
+    ),
+    draw_board(NewBoard, Canvas),
     draw_selected_cell(cell(none, Row, Col, show, StackPos), Canvas).
+
 
 get_correct_cells(CellList, ClickPosition, CorrectCell):-
     bagof(Cell, scan_board(CellList, ClickPosition, Cell), CorrectCells),
@@ -102,6 +118,25 @@ get_top_cell([X, Y|Rest], TopCell) :-
     get_top_cell([Y|Rest], TopCell).
     
 
+change_turn(Board, Player) :-
+    nb_setval(Board),
+    nb_setval(pillbug_effect, undefined),
+    nb_setval(move_cell, undefined),
+    nb_setval(position_cell, undefined),
+
+    nb_getval(player_turn, Colour),
+    (
+        (   
+            Colour = white,
+            nb_setval(white_player, Player),
+            nb_setval(player_turn, black)
+        );
+        (
+            Colour = black, 
+            nb_setval(black_player, Player),
+            nb_setval(player_turn, white)
+        )
+    ).
 
 scan_board([Cell|Rest], ClickPosition, CorrectCell) :-
     click_inside(Cell, ClickPosition, CorrectCell);
