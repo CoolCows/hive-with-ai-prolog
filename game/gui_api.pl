@@ -17,8 +17,8 @@ dummy_init:-
     init_cell(spyder, 0, 1, black, 0),
     init_cell(spyder, 0, -1, black, 0),
     init_cell(spyder, 1, 0, black, 0),
-    init_cell(spyder, -1, -1, black, 0),
-    init_cell(spyder, -1, 0, black, 0),
+    init_cell(spyder, -1, -1, white, 0),
+    % init_cell(spyder, -1, 0, black, 0),
     init_cell(ant, 0, 2, white, 0),
     init_cell(spyder, -1, 1, black, 0).
 

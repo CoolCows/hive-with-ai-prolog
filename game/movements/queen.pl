@@ -4,7 +4,8 @@
 :- use_module("../cell").
 :- use_module("../utils").
 
-valid_queen_movement(SourceCell, cell(none, Row, Col, none, 0)) :-
+valid_queen_movement(SourceCell, DestCell) :-
 	one_hive(SourceCell),
-    adjacent_cell(SourceCell, cell(none, Row, Col, none, 0)),
-	adjacent_to_hive(cell(none,Row,Col,none,0)).
+    adjacent_cell(SourceCell, DestCell),
+	get_bug_type(DestCell,none),
+	adjacent_to_hive(DestCell).
