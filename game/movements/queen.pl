@@ -7,4 +7,3 @@
 valid_queen_movement(SourceCell, cell(none, Row, Col, none, 0)) :-
     % delete_cell(SourceCell),
     adjacent_cell(SourceCell, cell(none, Row, Col, none, 0)).
-

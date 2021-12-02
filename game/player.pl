@@ -114,7 +114,7 @@ decrease_bug(beetle, Player, NewPlayer):-
 
 decrease_bug(grasshopper, Player, NewPlayer):-
 	!,
-	get_grasshopper(Player, Bug),
+	get_grasshoppers(Player, Bug),
 	NewBugCount is Bug - 1,
 	set_grasshoppers(NewBugCount,Player, NewPlayer).
 

@@ -5,6 +5,8 @@
 :- use_module("../utils").
 
 valid_ant_movement(SourceCell,DestCell):-
+	% TODO: checks if the cell is accesible
+	one_hive(SourceCell),
 	delete_cell(SourceCell),
 	ant_path(SourceCell,[],DestCells),
 	init_cell(SourceCell),

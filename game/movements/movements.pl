@@ -4,6 +4,8 @@
 :- use_module(ant).
 :- use_module(queen).
 :- use_module(spider).
+:- use_module(grasshopper).
+:- use_module(ladybug).
 
 
 valid_movement(SourceCell,DestCell):-
@@ -24,6 +26,11 @@ valid_movement(SourceCell,DestCell):-
 valid_movement(SourceCell,DestCell):-
 	get_bug_type(SourceCell,grasshopper),!,
 	valid_grasshopper_movement(SourceCell,DestCell).
+
+
+valid_movement(SourceCell,DestCell):-
+	get_bug_type(SourceCell,ladybug),!,
+	valid_ladybug_movement(SourceCell,DestCell).
 
 
 % all possible movements of a given cell 
