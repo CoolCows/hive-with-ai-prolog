@@ -9,17 +9,18 @@
     init_player/1,
     players/1
 ]).
+:- use_module(cell).
+:- use_module("movements/movements").
+
+dummy_init:-
+    init_cell(queen, 0, 0, white, 0),
+    init_cell(ant, 0, 1, black, 0),
+    init_cell(beetle, 0, 2, white, 0).
 
 gui_init_board(-Board) :-
     % Call method that return the board
-    Board = [
-        cell(spyder, 0, 0, white, 0),
-        cell(ant, 0, 1, white, 0),
-        cell(queen, 1, 0, black, 0),
-        cell(none, 1, 1, none, 0),
-        cell(none, 2, 1, none, 0),
-        cell(none, 3, 1, show, 0)
-    ].
+    dummy_init,
+    cells(Board).
 
 gui_init_players(-Players) :-
     init_player(white),
@@ -40,7 +41,10 @@ gui_get_possible_moves(+Cell, -Board) :-
     % Get all Cells where a bug can be moved
     % return the board with possible positions.
     % Possible position cells has color = bug = none
-    Board = [].
+    valid_movements(Cell, PosMoves),
+    write_ln(PosMoves),
+    cells(Cells),
+    append(PosMoves, Cells, Board).
 
 gui_get_possible_positions(+Color, -Board) :-
     % Get all Cells where a bug by certain player can be put
