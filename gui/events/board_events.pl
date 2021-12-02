@@ -24,7 +24,7 @@
     ]).
 
 :- use_module("../../game/gui_api", [
-    gui_put_cell/4,
+    gui_put_cell/3,
     gui_move_cell/3,
     gui_get_possible_moves/2
 ]).
@@ -65,11 +65,11 @@ position_cell(Canvas, cell(none, Row, Col, none, Stack)) :-
     nb_getval(position_cell, BugType),
     gui_put_cell(
         +cell(BugType, Row, Col, Colour, Stack),
-        -NewBoard
+        -NewBoard,
+        -NewPlayer
     ),
+    change_turn(NewBoard, _),
     draw_board(NewBoard, Canvas),
-    nb_setval(board, NewBoard),
-    position_cell(undefined),
     write_ln('Correctly postioned').
     
 move_cell(Canvas, cell(none, Row, Col, none, Stack)) :-
@@ -80,9 +80,8 @@ move_cell(Canvas, cell(none, Row, Col, none, Stack)) :-
         +cell(BugType, Row, Col, Colour, Stack),
         -NewBoard
     ),
+    change_turn(NewBoard, NewPlayer),
     draw_board(NewBoard, Canvas),
-    nb_setval(board, NewBoard),
-    move_cell(undefined),
     write_ln('Correctly moved').
     
 
@@ -94,7 +93,7 @@ select_cell(Canvas, CorrectCell) :-
     (
         (
             BugType = pillbug,
-            gui_get_pillbug_effect(CorrectCell, MovBugs),
+            gui_get_pillbug_effect(+CorrectCell, -MovBugs),
             nb_setval(pillbug_effect, MovBugs)
         );
         true
@@ -119,7 +118,7 @@ get_top_cell([X, Y|Rest], TopCell) :-
     
 
 change_turn(Board, Player) :-
-    nb_setval(Board),
+    nb_setval(board, Board),
     nb_setval(pillbug_effect, undefined),
     nb_setval(move_cell, undefined),
     nb_setval(position_cell, undefined),
@@ -128,14 +127,17 @@ change_turn(Board, Player) :-
     (
         (   
             Colour = white,
-            nb_setval(white_player, Player),
-            nb_setval(player_turn, black)
+            nb_setval(player_turn, black),
+            not(var(Player)),
+            nb_setval(white_player, Player)
         );
         (
             Colour = black, 
-            nb_setval(black_player, Player),
-            nb_setval(player_turn, white)
-        )
+            nb_setval(player_turn, white),
+            not(var(Player)),
+            nb_setval(black_player, Player)
+        );
+        true
     ).
 
 scan_board([Cell|Rest], ClickPosition, CorrectCell) :-
