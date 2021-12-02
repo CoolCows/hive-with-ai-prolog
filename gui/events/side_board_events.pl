@@ -103,7 +103,7 @@ click_inside(ClickPosition, Index) :-
     get(ClickPosition, y, ClickY),
     ModIndex is Index mod 4,
     Row is Index // 4,
-    X is ModIndex*60*S + ModIndex*75*S + 50,
+    X is ModIndex*60*S + ModIndex*65*S + 50,
     Y is 60*S + 110*S*Row,
     Dist is 50*S,
     click_inside_hexagon(point(ClickX, ClickY), point(X, Y), Dist).
