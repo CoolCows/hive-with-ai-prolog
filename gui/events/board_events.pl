@@ -32,27 +32,33 @@
 select_event(Canvas, ClickPosition) :-
     nb_getval(board, Board),
     get_correct_cells(Board, ClickPosition, CorrectCell),
-    nb_getval(player_turn, Colour),
-    get_color(CorrectCell, Colour), 
     (
-        not(get_bug_type(CorrectCell, none)),
-        write_ln('selecting_cell'),
-        select_cell(Canvas, CorrectCell)
-    );
-    (
-        not(nb_getval(position_cell, undefined)), 
-        write_ln('position_event'), 
-        position_cell(Canvas, CorrectCell)
-    );
-    (
-        not(nb_getval(move_cell, undefined)), 
-        write_ln('moving_cell'), 
-        move_cell(Canvas, CorrectCell)
+        (
+            not(get_bug_type(CorrectCell, none)),
+            nb_getval(player_turn, Colour),
+            get_color(CorrectCell, Colour), 
+            write_ln('selecting_cell'),
+            select_cell(Canvas, CorrectCell)
+        );
+        (
+            not(nb_getval(position_cell, undefined)), 
+            write_ln('position_event'), 
+            position_cell(Canvas, CorrectCell)
+        );
+        (
+            not(nb_getval(move_cell, undefined)), 
+            write_ln('moving_cell'), 
+            move_cell(Canvas, CorrectCell)
+        )
     ).
 
-position_cell(Canvas, CorrectCell) :-
-    get_color(CorrectCell, Colour),
-    gui_put_cell(+Colour, -NewBoard),
+position_cell(Canvas, cell(none, Row, Col, none, Stack)) :-
+    nb_getval(player_turn, Colour),
+    nb_getval(position_cell, BugType),
+    gui_put_cell(
+        +cell(BugType, Row, Col, Colour, Stack),
+        -NewBoard
+    ),
     draw_board(NewBoard, Canvas),
     nb_setval(board, NewBoard),
     position_cell(undefined),
