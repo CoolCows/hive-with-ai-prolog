@@ -4,7 +4,7 @@
 :- use_module("../cell").
 :- use_module("../utils").
 
-valid_queen_movement(SourceCell, cell(none, Row, Col, _, 0)) :-
+valid_queen_movement(SourceCell, cell(none, Row, Col, none, 0)) :-
     % delete_cell(SourceCell),
-    adjacent_cell(SourceCell, cell(none, Row, Col, _, 0)).
+    adjacent_cell(SourceCell, cell(none, Row, Col, none, 0)).
 
