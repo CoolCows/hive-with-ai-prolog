@@ -21,4 +21,3 @@ valid_spider_movement(SourceCell,DestCell):-
 	DestCell \== SourceCell,
 	DestCell \== AdjCell1,
 	DestCell \== AdjCell2.
-
