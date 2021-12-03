@@ -69,8 +69,7 @@ gui_get_pillbug_effect(+PillbugCell, -MovableBugs) :-
     % call to method that with pillbug cells return 
     % a list of MovableBugs
 	movable_cells_by_pillbug(PillbugCell,MovableBugs),
-	write_ln("HOlaajfkafadfasdfd"),
-	write_ln(MovableBugs),
-    true.
+	write_ln('Adding movable bugs'),
+	write_ln(MovableBugs).
 
 % ALL RETURN TYPES MUST BE LISTS OF TYPE CELL

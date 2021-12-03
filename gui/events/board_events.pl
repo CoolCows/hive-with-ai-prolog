@@ -36,9 +36,11 @@ select_event(Canvas, ClickPosition) :-
         (
             (
                 nb_getval(pillbug_effect, MovBugs),
-                not(nb_getval(pillbug_effect, MovBugs)),
+                not(nb_getval(pillbug_effect, undefined)),
                 member(CorrectCell, MovBugs),
-                move_cell(CorrectCell)
+                move_cell(CorrectCell),
+                CorrectCell = cell(_, Row, Col, _, 0),
+                draw_selected_cell(cell(none, Row, Col, show, 1), Canvas)
             );
             (
                 not(get_bug_type(CorrectCell, none)),
