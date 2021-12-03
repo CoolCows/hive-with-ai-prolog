@@ -49,31 +49,43 @@ move_cell(cell(Bug,Row,Col,Color,X),cell(_,NewRow,NewCol,_,Y),R):-
 adjacent_cell_1(cell(_,Row,Col,_,_),AdjCell):-
 	AdjRow is Row -1,
 	(
-		cell:get_cell(cell(_,AdjRow,Col,_,_),AdjCell),!;
+		cell:get_cell(cell(_,AdjRow,Col,_,_),AdjCell);
+		(
+		not(cell:get_cell(cell(_,AdjRow,Col,_,_),AdjCell)),
 		AdjCell = cell(none,AdjRow,Col,none,0)
+		)
 	).
 
 adjacent_cell_2(cell(_,Row,Col,_,_),AdjCell):-
 	AdjRow is Row - 1 + 2*(Col mod 2),
 	AdjCol is Col + 1,
 	(
-		cell:get_cell(cell(_,AdjRow,AdjCol,_,_),AdjCell),!;
+		cell:get_cell(cell(_,AdjRow,AdjCol,_,_),AdjCell);
+		(
+		not(cell:get_cell(cell(_,AdjRow,AdjCol,_,_),AdjCell)),
 		AdjCell = cell(none,AdjRow,AdjCol,none,0)
+		)
 	).
 
 adjacent_cell_3(cell(_,Row,Col,_,_),AdjCell):-
 	AdjCol is Col -1,
 	(
-		cell:get_cell(cell(_,Row,AdjCol,_,_),AdjCell),!;
+		cell:get_cell(cell(_,Row,AdjCol,_,_),AdjCell);
+		(
+		not(cell:get_cell(cell(_,Row,AdjCol,_,_),AdjCell)),
 		AdjCell = cell(none,Row,AdjCol,none,0)
+		)
 	).
 
 
 adjacent_cell_4(cell(_,Row,Col,_,_),AdjCell):-
 	AdjCol is Col +1,
 	(
-		cell:get_cell(cell(_,Row,AdjCol,_,_),AdjCell),!;
+		cell:get_cell(cell(_,Row,AdjCol,_,_),AdjCell);
+		(
+		not(cell:get_cell(cell(_,Row,AdjCol,_,_),AdjCell)),
 		AdjCell = cell(none,Row,AdjCol,none,0)
+		)
 	).
 
 
@@ -81,16 +93,22 @@ adjacent_cell_5(cell(_,Row,Col,_,_),AdjCell):-
     AdjRow is Row -1 + 2*(Col mod 2),
 	AdjCol is Col -1,
 	(
-		cell:get_cell(cell(_,AdjRow,AdjCol,_,_),AdjCell),!;
+		cell:get_cell(cell(_,AdjRow,AdjCol,_,_),AdjCell);
+		(
+		not(cell:get_cell(cell(_,AdjRow,AdjCol,_,_),AdjCell)),
 		AdjCell = cell(none,AdjRow,AdjCol,none,0)
+		)
 	).
 
 
 adjacent_cell_6(cell(_,Row,Col,_,_),AdjCell):-
 	AdjRow is Row +1,
 	(
-		cell:get_cell(cell(_,AdjRow,Col,_,_),AdjCell),!;
+		cell:get_cell(cell(_,AdjRow,Col,_,_),AdjCell);
+		(
+		not(cell:get_cell(cell(_,AdjRow,Col,_,_),AdjCell)),
 		AdjCell = cell(none,AdjRow,Col,none,0)
+		)
 	).
 
 adjacent_cell(Cell, AdjCell):-
@@ -136,6 +154,14 @@ non_visited(Cell,Visited, AdjCell):-
 	not(get_bug_type(AdjCell,none)),
 	not(member(AdjCell, Visited)).
 
+non_visited(Cell,Visited, AboveCell):-
+	insect_above(Cell,AboveCell),
+	not(member(AboveCell,Visited)).
+
+non_visited(Cell,Visited, BelowCell):-
+	insect_below(Cell,BelowCell),
+	not(member(BelowCell,Visited)).
+
 % dfs
 reachable([],X,X):-!.
 reachable([Cell|RestOfCells],Visited, ReachableCells):-
@@ -149,13 +175,18 @@ reachable(Cell,Visited,ReachableCells):-
 	append(AdjCells,Visited,A),
 	reachable(AdjCells,A,ReachableCells).
 
-% checks if AboveCell is above cell(_,Row,Col,_,X)
 insect_above(cell(_,Row,Col,_,X),AboveCell):-
 	AboveCell = cell(Bug,Row,Col,Color,Y),
 	get_cell(cell(_,Row,Col,_,_),
 			 cell(Bug,Row,Col,Color,Y)),
 	X < Y.
 
+insect_below(cell(_,Row,Col,_,X),BelowCell):-
+	BelowCell = cell(Bug,Row,Col,Color,Y),
+	get_cell(cell(_,Row,Col,_,_),
+			 cell(Bug,Row,Col,Color,Y)),
+	X > Y.
+	
 
 % triumph if the top level adjacent cell is from the same color 
 valid_adj_cell(N,Color):-

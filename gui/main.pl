@@ -77,8 +77,8 @@ gui_init :-
     menu_bar_setup(MainWin, Board, BlackPlayer, WhitePlayer),
 
     % Main Board Configs
-    send(Board, width, 1280),
-    send(Board, height, 720),
+    % send(Board, width, 1280),
+    % send(Board, height, 720),
     send(Board, recogniser,
             click_gesture(left, '', single,
                           message(@prolog, select_event, Board, @event?position, WhitePlayer, BlackPlayer))),
