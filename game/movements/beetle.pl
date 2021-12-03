@@ -14,8 +14,11 @@ valid_beetle_movement(SourceCell,DestCell):-
 
 valid_beetle_movement(SourceCell,DestCell):-
 	one_hive(SourceCell),
-	adjacent_cell(SourceCell,DestCell),
-	not(get_bug_type(DestCell,none)).
+	adjacent_cell(SourceCell, AdyCell),
+	not(get_bug_type(AdyCell,none)),
+    AdyCell = cell(_, Row, Col, _, Stack),
+    NewStack is Stack + 1,
+    DestCell = cell(none, Row, Col, none, NewStack).
 
 
 	
