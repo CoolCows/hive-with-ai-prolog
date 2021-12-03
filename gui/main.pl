@@ -49,6 +49,7 @@ start_game(Canvas, BlackCells, WhiteCells) :-
     nb_setval(scale, 0.75),
     nb_setval(move_cell, undefined),
     nb_setval(position_cell, undefined),
+    nb_setval(pillbug_effect, undefined),
     nb_setval(player_turn, white),
 
     get(Canvas, size, size(W, H)),

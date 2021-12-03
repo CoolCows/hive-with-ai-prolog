@@ -1,10 +1,11 @@
 :- module(gui_api,[
     gui_init_board/1,
     gui_init_players/1,
-    gui_put_cell/4,
+    gui_put_cell/3,
     gui_move_cell/3,
     gui_get_possible_moves/2,
-    gui_get_possible_positions/2
+    gui_get_possible_positions/2,
+	gui_get_pillbug_effect/2
 ]).
 
 :- use_module(player).
@@ -14,13 +15,12 @@
 
 dummy_init:-
     init_cell(queen, 0, 0, white, 0),
-    init_cell(spyder, 0, 1, black, 0),
-    init_cell(spyder, 0, -1, black, 0),
-    init_cell(spyder, 1, 0, black, 0),
-    init_cell(spyder, -1, -1, white, 0),
-    % init_cell(spyder, -1, 0, black, 0),
+    init_cell(spider, 1, 0, black, 0),
+    init_cell(spider, -1, -1, white, 0),
+    init_cell(beetle, -1, 0, black, 0),
     init_cell(ant, 0, 2, white, 0),
-    init_cell(spyder, -1, 1, black, 0).
+    init_cell(spider, -1, 1, black, 0),
+    init_cell(pillbug, -2, 1, white, 0).
 
 gui_init_board(-Board) :-
     % Call method that return the board
@@ -32,11 +32,11 @@ gui_init_players(-Players) :-
     init_player(black),
     players(Players).
 
-gui_put_cell(+Cell, +OldPlayer, -Board, -NewPlayer) :-
-    get_bug_type(Cell, BugType),
+gui_put_cell(+Cell, -Board, -NewPlayer) :-
     % This method is yet to be implemented
-    decrease_bug(BugType, OldPlayer), 
-    init_cell(Cell),
+    add_new_cell(Cell),
+    get_color(Cell, Color),
+    get_player(player(Color,_,_,_,_,_,_,_,_), NewPlayer),
     cells(Board).
 
 gui_move_cell(+SourceCell, +DestCell, -Board) :-
@@ -61,8 +61,16 @@ gui_get_possible_positions(+Color, -Board) :-
     % Possible position cells has color = bug = none
 
     % This method is yet to be implemented
-    valid_positions(Color, PosPositions),
+    bagof(ValidCell, valid_new_cell(Color, ValidCell), PosPositions),
     cells(Cells),
     append(PosPositions, Cells, Board).
+
+gui_get_pillbug_effect(+PillbugCell, -MovableBugs) :-
+    % call to method that with pillbug cells return 
+    % a list of MovableBugs
+	movable_cells_by_pillbug(PillbugCell,MovableBugs),
+	write_ln("HOlaajfkafadfasdfd"),
+	write_ln(MovableBugs),
+    true.
 
 % ALL RETURN TYPES MUST BE LISTS OF TYPE CELL

@@ -46,7 +46,7 @@ select_side_board(MainCanvas, SideCanvas, ClickPosition, Colour) :-
         ],
         [
            queen, ant, beetle, grasshopper, ladybug,
-           mosquito, pillbug, spyder
+           mosquito, pillbug, spider
         ],
         position(BugType, Index)
     ),

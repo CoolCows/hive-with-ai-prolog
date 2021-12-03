@@ -11,7 +11,9 @@
 					move_cell/3,
 					one_hive/1,
 					adjacent_to_hive/2,
-					adjacent_to_hive/1
+					adjacent_to_hive/1,
+					insect_above/2,
+					accesible_cell/2
 					]).
 
 :- use_module(cell).
@@ -173,3 +175,10 @@ adjacent_to_hive(Cell):-
 	cells(HiveCells),
 	adjacent_cell(Cell,AdjCell),
 	member(AdjCell,HiveCells),!.
+
+% triumph if DestCell is accesible from SourceCell through sliding 
+accesible_cell(SourceCell,DestCell):-
+	adjacent_cell(SourceCell,AdjCell),
+	adjacent_cell(DestCell,AdjCell),
+	get_bug_type(AdjCell,none).
+

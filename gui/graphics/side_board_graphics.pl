@@ -30,7 +30,7 @@ draw_side_board(Player, Colour, Canvas) :-
         ],
         [
            queen, ant, beetle, grasshopper, ladybug,
-           mosquito, pillbug, spyder
+           mosquito, pillbug, spider
         ]
     ).
 

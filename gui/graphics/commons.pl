@@ -21,7 +21,7 @@ draw_bug(Bug, X, Y, Canvas) :-
             (Bug = ant, new(BM, bitmap('./graphics/xpm/ant.xpm')));
             (Bug = beetle, new(BM, bitmap('./graphics/xpm/beetle.xpm')));
             (Bug = grasshopper, new(BM, bitmap('./graphics/xpm/grasshopper.xpm')));
-            (Bug = spyder, new(BM, bitmap('./graphics/xpm/spyder.xpm')));
+            (Bug = spider, new(BM, bitmap('./graphics/xpm/spyder.xpm')));
             (Bug = pillbug, new(BM, bitmap('./graphics/xpm/pillbug.xpm')));
             (Bug = mosquito, new(BM, bitmap('./graphics/xpm/mosquito.xpm')));
             (Bug = ladybug, new(BM, bitmap('./graphics/xpm/ladybug.xpm')))

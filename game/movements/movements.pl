@@ -1,4 +1,4 @@
-:- module(movements, [ valid_movement/2,valid_movements/2 ]).
+:- module(movements, [ valid_movement/2,valid_movements/2,movable_cells_by_pillbug/2 ]).
 
 :- use_module("../cell").
 :- use_module(ant).
@@ -7,6 +7,7 @@
 :- use_module(grasshopper).
 :- use_module(ladybug).
 :- use_module(beetle).
+:- use_module(pillbug).
 
 
 valid_movement(SourceCell,DestCell):-
@@ -37,6 +38,10 @@ valid_movement(SourceCell,DestCell):-
 	get_bug_type(SourceCell,ladybug),!,
 	valid_ladybug_movement(SourceCell,DestCell).
 
+
+valid_movement(SourceCell,DestCell):-
+	get_bug_type(SourceCell,pillbug),!,
+	valid_pillbug_movement(SourceCell,DestCell).
 
 % all possible movements of a given cell 
 valid_movements(SourceCell,DestCells):-

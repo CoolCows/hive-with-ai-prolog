@@ -5,7 +5,6 @@
 :- use_module("../utils").
 
 valid_ant_movement(SourceCell,DestCell):-
-	% TODO: checks if the cell is accesible
 	one_hive(SourceCell),
 	delete_cell(SourceCell),
 	ant_path(SourceCell,[],DestCells),
@@ -14,6 +13,7 @@ valid_ant_movement(SourceCell,DestCell):-
 
 non_visited_ant(Cell, Visited, AdjCell):-
 	adjacent_cell(Cell,AdjCell),
+	accesible_cell(Cell,AdjCell),
 	get_bug_type(AdjCell,none),
 	adjacent_to_hive(AdjCell),
 	not(member(AdjCell,Visited)).
