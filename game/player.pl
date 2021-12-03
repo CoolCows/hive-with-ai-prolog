@@ -69,7 +69,7 @@ get_pillbugs(player(_,_,_,_,_,_,_,Pillbugs,_),Pillbugs).
 
 get_spiders(player(_,_,_,_,_,_,_,_,Spiders),Spiders).
 
-set_queens(Queen, player(Color, Ants, Beetle, Grasshopper, Ladybug, Mosquito, Pillbug, Spider),
+set_queens(Queen, player(Color, _, Ants, Beetle, Grasshopper, Ladybug, Mosquito, Pillbug, Spider),
 		           player(Color,Queen, Ants, Beetle, Grasshopper, Ladybug, Mosquito, Pillbug, Spider)).
 
 set_ants(Ants, player(Color,Queen, _, Beetle, Grasshopper, Ladybug, Mosquito, Pillbug, Spider),
