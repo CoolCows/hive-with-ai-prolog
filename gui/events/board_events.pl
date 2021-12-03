@@ -30,7 +30,8 @@
 :- use_module("../../game/gui_api", [
     gui_put_cell/3,
     gui_move_cell/3,
-    gui_get_possible_moves/2
+    gui_get_possible_moves/2,
+    gui_get_board/1
 ]).
 
 select_event(Canvas, ClickPosition, WhiteCanvas, BlackCanvas) :-
@@ -39,12 +40,10 @@ select_event(Canvas, ClickPosition, WhiteCanvas, BlackCanvas) :-
     (
         (
             (
-                nb_getval(pillbug_effect, MovBugs),
                 not(nb_getval(pillbug_effect, undefined)),
-                member(CorrectCell, MovBugs),
-                move_cell(CorrectCell),
-                CorrectCell = cell(_, Row, Col, _, 0),
-                draw_selected_cell(cell(none, Row, Col, show, 1), Canvas)
+                nb_getval(pillbug_effect, [MovableBugs, PosPositions]),
+                member(CorrectCell, MovableBugs),
+                select_movable_bug(Canvas, CorrectCell, [MovableBugs, PosPositions])
             );
             (
                 not(get_bug_type(CorrectCell, none)),
@@ -113,12 +112,23 @@ select_cell(Canvas, CorrectCell) :-
     ),
     draw_selected_cell(cell(none, Row, Col, show, StackPos), Canvas).
 
-select_movable_bug(Canvas, CorrectCell) :-
+select_movable_bug(Canvas, CorrectCell, [MovBugs, MovPositions]) :-
+    move_cell(CorrectCell),
+    gui_get_board(-Board),
+    append(MovPositions, Board, NewBoard),
+    nb_setval(board, NewBoard),
+    write_ln(NewBoard),
+    draw_board(NewBoard, Canvas),
+    write_ln('Succesfully drawn'),
+    findall(cell(none, Row, Col, pillbug, 0), member(cell(_, Row, Col, _, _), MovBugs), ShowMovBugs),
+    CorrectCell = cell(_, Row, Col, _, 0),
+    draw_all(Canvas, ShowMovBugs),
+    draw_selected_cell(cell(none, Row, Col, show, 1), Canvas),
     true.
 
 handle_pillbug_effect(Canvas, CorrectCell) :-
-    gui_get_pillbug_effect(+CorrectCell, -MovBugs),
-    nb_setval(pillbug_effect, MovBugs),
+    gui_get_pillbug_effect(+CorrectCell, -[MovBugs, PosBugs]),
+    nb_setval(pillbug_effect, [MovBugs, PosBugs]),
     findall(cell(none, Row, Col, pillbug, 5), member(cell(_, Row, Col, _, _), MovBugs), ShowMovBugs),
     write_ln('Movable Cells Display'),
     write_ln(ShowMovBugs),

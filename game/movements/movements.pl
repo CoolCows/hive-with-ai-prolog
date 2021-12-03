@@ -1,4 +1,4 @@
-:- module(movements, [ valid_movement/2,valid_movements/2,movable_cells_by_pillbug/2 ]).
+:- module(movements, [ valid_movement/2,valid_movements/2,movable_cells_by_pillbug/2, movable_positions_by_pillbug/2 ]).
 
 :- use_module("../cell").
 :- use_module(ant).

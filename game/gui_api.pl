@@ -5,7 +5,8 @@
     gui_move_cell/3,
     gui_get_possible_moves/2,
     gui_get_possible_positions/2,
-	gui_get_pillbug_effect/2
+	gui_get_pillbug_effect/2,
+    gui_get_board/1
 ]).
 
 :- use_module(player).
@@ -25,6 +26,9 @@ dummy_init:-
 gui_init_board(-Board) :-
     % Call method that return the board
     dummy_init,
+    cells(Board).
+
+gui_get_board(-Board) :-
     cells(Board).
 
 gui_init_players(-Players) :-
@@ -65,11 +69,13 @@ gui_get_possible_positions(+Color, -Board) :-
     cells(Cells),
     append(PosPositions, Cells, Board).
 
-gui_get_pillbug_effect(+PillbugCell, -MovableBugs) :-
+gui_get_pillbug_effect(+PillbugCell, -[MovableBugs, MovablePositions]) :-
     % call to method that with pillbug cells return 
     % a list of MovableBugs
 	movable_cells_by_pillbug(PillbugCell,MovableBugs),
+    movable_positions_by_pillbug(PillbugCell, MovablePositions),
 	write_ln('Adding movable bugs'),
-	write_ln(MovableBugs).
+	write_ln(MovableBugs),
+    write_ln(MovablePositions).
 
 % ALL RETURN TYPES MUST BE LISTS OF TYPE CELL

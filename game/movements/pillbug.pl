@@ -1,4 +1,8 @@
-:- module(pillbug, [ valid_pillbug_movement/2,movable_cells_by_pillbug/2 ]).
+:- module(pillbug, [
+    valid_pillbug_movement/2,
+    movable_cells_by_pillbug/2,
+    movable_positions_by_pillbug/2
+]).
 
 :- use_module("../board").
 :- use_module("../cell").
@@ -23,4 +27,9 @@ movable_cell_by_pillbug(PillbugCell,MovableBug):-
 movable_cells_by_pillbug(PillbugCell,MovableBugs):-
 	findall(MovableBug,movable_cell_by_pillbug(PillbugCell,MovableBug),MovableBugs).
 
+movable_position_by_pillbug(PillbugCell, DestCell) :-
+    adjacent_cell(PillbugCell, DestCell),
+    DestCell = cell(none, _, _, none, 0).
 
+movable_positions_by_pillbug(PillbugCell, MovToCells) :-
+    findall(AdyCell, movable_position_by_pillbug(PillbugCell, AdyCell), MovToCells).
