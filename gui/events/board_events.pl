@@ -1,5 +1,5 @@
 :- module(board_events,[
-        select_event/2
+        select_event/4
     ]).
 
 :- use_module(library(pce)).
@@ -102,18 +102,35 @@ select_cell(Canvas, CorrectCell) :-
     gui_get_possible_moves(+CorrectCell, -NewBoard),
     nb_setval(board, NewBoard),
     move_cell(CorrectCell),
+    draw_board(NewBoard, Canvas),
     CorrectCell = cell(BugType, Row, Col, _, StackPos),
     (
         (
             BugType = pillbug,
-            gui_get_pillbug_effect(+CorrectCell, -MovBugs),
-            nb_setval(pillbug_effect, MovBugs)
+            handle_pillbug_effect(Canvas, CorrectCell)
         );
         true
     ),
-    draw_board(NewBoard, Canvas),
     draw_selected_cell(cell(none, Row, Col, show, StackPos), Canvas).
 
+select_movable_bug(Canvas, CorrectCell) :-
+    true.
+
+handle_pillbug_effect(Canvas, CorrectCell) :-
+    gui_get_pillbug_effect(+CorrectCell, -MovBugs),
+    nb_setval(pillbug_effect, MovBugs),
+    findall(cell(none, Row, Col, pillbug, 5), member(cell(_, Row, Col, _, _), MovBugs), ShowMovBugs),
+    write_ln('Movable Cells Display'),
+    write_ln(ShowMovBugs),
+    draw_all(Canvas, ShowMovBugs),
+    write_ln('a2').
+
+draw_all(_, []).
+draw_all(Canvas, [X|Rest]) :-
+    write_ln('a.12'),
+    draw_selected_cell(X, Canvas),
+    write_ln('a.14'),
+    draw_all(Canvas, Rest).
 
 get_correct_cells(CellList, ClickPosition, CorrectCell):-
     bagof(Cell, scan_board(CellList, ClickPosition, Cell), CorrectCells),
