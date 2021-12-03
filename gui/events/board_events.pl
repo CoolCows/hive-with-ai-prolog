@@ -15,6 +15,10 @@
     draw_selected_cell/2
 ]).
 
+:- use_module("../graphics/side_board_graphics", [
+    draw_side_board/3
+]).
+
 :- use_module("../../game/cell", [
         get_bug_type/2,
         get_row/2,
@@ -29,7 +33,7 @@
     gui_get_possible_moves/2
 ]).
 
-select_event(Canvas, ClickPosition) :-
+select_event(Canvas, ClickPosition, WhiteCanvas, BlackCanvas) :-
     nb_getval(board, Board),
     get_correct_cells(Board, ClickPosition, CorrectCell),
     (
@@ -53,7 +57,7 @@ select_event(Canvas, ClickPosition) :-
         (
             not(nb_getval(position_cell, undefined)), 
             write_ln('position_event'), 
-            position_cell(Canvas, CorrectCell)
+            position_cell(Canvas, CorrectCell, WhiteCanvas, BlackCanvas)
         );
         (
             not(nb_getval(move_cell, undefined)), 
@@ -62,7 +66,12 @@ select_event(Canvas, ClickPosition) :-
         )
     ).
 
-position_cell(Canvas, cell(none, Row, Col, none, Stack)) :-
+position_cell(
+    Canvas,
+    cell(none, Row, Col, none, Stack),
+    WhiteCanvas,
+    BlackCanvas
+) :-
     nb_getval(player_turn, Colour),
     nb_getval(position_cell, BugType),
     gui_put_cell(
@@ -70,8 +79,11 @@ position_cell(Canvas, cell(none, Row, Col, none, Stack)) :-
         -NewBoard,
         -NewPlayer
     ),
-    change_turn(NewBoard, _),
-    draw_board(NewBoard, Canvas),
+    (
+        (Colour = white, SideCanvas = WhiteCanvas);
+        (Colour = black, SideCanvas = BlackCanvas)
+    ),
+    change_turn(NewBoard, NewPlayer, Canvas, SideCanvas),
     write_ln('Correctly postioned').
     
 move_cell(Canvas, cell(none, Row, Col, none, Stack)) :-
@@ -82,8 +94,7 @@ move_cell(Canvas, cell(none, Row, Col, none, Stack)) :-
         +cell(BugType, Row, Col, Colour, Stack),
         -NewBoard
     ),
-    change_turn(NewBoard, NewPlayer),
-    draw_board(NewBoard, Canvas),
+    change_turn(NewBoard, Canvas),
     write_ln('Correctly moved').
     
 
@@ -119,7 +130,8 @@ get_top_cell([X, Y|Rest], TopCell) :-
     get_top_cell([Y|Rest], TopCell).
     
 
-change_turn(Board, Player) :-
+change_turn(Board, Canvas) :- change_turn(Board, _, Canvas, _).
+change_turn(Board, Player, Canvas, SideCanvas) :-
     nb_setval(board, Board),
     nb_setval(pillbug_effect, undefined),
     nb_setval(move_cell, undefined),
@@ -131,16 +143,19 @@ change_turn(Board, Player) :-
             Colour = white,
             nb_setval(player_turn, black),
             not(var(Player)),
-            nb_setval(white_player, Player)
+            nb_setval(white_player, Player),
+            draw_side_board(Player, Colour, SideCanvas)
         );
         (
             Colour = black, 
             nb_setval(player_turn, white),
             not(var(Player)),
-            nb_setval(black_player, Player)
+            nb_setval(black_player, Player),
+            draw_side_board(Player, Colour, SideCanvas)
         );
         true
-    ).
+    ),
+    draw_board(Board, Canvas).
 
 scan_board([Cell|Rest], ClickPosition, CorrectCell) :-
     click_inside(Cell, ClickPosition, CorrectCell);

@@ -2,7 +2,7 @@
 :- use_module(library(pce)).
 :- use_module("./graphics/board_graphics", [draw_board/2, refresh/1]).
 :- use_module("./graphics/side_board_graphics", [draw_side_board/3]).
-:- use_module("./events/board_events", [select_event/2]).
+:- use_module("./events/board_events", [select_event/4]).
 :- use_module("./events/side_board_events", [select_side_board/4]).
 :- use_module("../game/gui_api").
 
@@ -68,16 +68,20 @@ start_game(Canvas, BlackCells, WhiteCells) :-
     draw_board(Board, Canvas).
 
 gui_init :-
-    %Setting up Game Panel
+    % Setting up Game Panel
     new(MainWin, frame("CoolCows Hive Game")),
     send(MainWin, append, new(Board, picture("Board"))),
+
+    % Game Side Configs 
+    file_dialog_setup(Board, BlackPlayer, WhitePlayer),
+    menu_bar_setup(MainWin, Board, BlackPlayer, WhitePlayer),
+
+    % Main Board Configs
     send(Board, width, 1280),
     send(Board, height, 720),
     send(Board, recogniser,
             click_gesture(left, '', single,
-                          message(@prolog, select_event, Board, @event?position))),
-    file_dialog_setup(Board, BlackPlayer, WhitePlayer),
-    menu_bar_setup(MainWin, Board, BlackPlayer, WhitePlayer),
+                          message(@prolog, select_event, Board, @event?position, WhitePlayer, BlackPlayer))),
     send(MainWin, open).
 
 ?- gui_init.
