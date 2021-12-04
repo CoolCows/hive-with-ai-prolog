@@ -13,6 +13,7 @@
 :- use_module(cell).
 :- use_module("movements/movements").
 :- use_module(board).
+:- use_module(turns).
 
 dummy_init:-
 	write_ln("GAME STARTED").
@@ -27,6 +28,7 @@ dummy_init:-
 gui_init_board(-Board) :-
     % Call method that return the board
     dummy_init,
+	init_turns,
     cells(Board).
 
 gui_get_board(-Board) :-
@@ -42,19 +44,24 @@ gui_put_cell(+Cell, -Board, -NewPlayer) :-
     add_new_cell(Cell),
     get_color(Cell, Color),
     get_player(player(Color,_,_,_,_,_,_,_,_), NewPlayer),
+	write_ln("HOlaafaf"),
     cells(Board).
 
 gui_move_cell(+SourceCell, +DestCell, -Board) :-
     % Tries to move cell to a certain location
     % Returns the new board if succesful
-    delete_cell(SourceCell),
-    init_cell(DestCell),
+    % delete_cell(SourceCell),
+    % init_cell(DestCell),
+	move_cell(SourceCell,DestCell),
     cells(Board).
 
 gui_get_possible_moves(+Cell, -Board) :-
     % Get all Cells where a bug can be moved
     % return the board with possible positions.
     % Possible position cells has color = bug = none
+	% if there is no queen on the board cells cannot move
+	get_color(Cell,Color),
+	get_cell(cell(queen,_,_,Color,_),_),
     valid_movements(Cell, PosMoves),
 	write_ln(Cell),
     write_ln(PosMoves),
@@ -74,6 +81,9 @@ gui_get_possible_positions(+Color, -Board) :-
 gui_get_pillbug_effect(+PillbugCell, -[MovableBugs, MovablePositions]) :-
     % call to method that with pillbug cells return 
     % a list of MovableBugs
+	% if there is no queen on the board cells cannot move
+	get_color(PillbugCell,Color),
+	get_cell(cell(queen,_,_,Color,_),_),
 	movable_cells_by_pillbug(PillbugCell,MovableBugs),
     movable_positions_by_pillbug(PillbugCell, MovablePositions),
 	write_ln('Adding movable bugs'),

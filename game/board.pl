@@ -8,7 +8,7 @@
 					adjacent_cells/2,
 					add_new_cell/1,
 					valid_new_cell/2,
-					move_cell/3,
+					move_cell/2,
 					one_hive/1,
 					adjacent_to_hive/2,
 					adjacent_to_hive/1,
@@ -25,18 +25,25 @@
 % adds a new cell to the board 
 % NOTE: to find  new cells possible positions use findall with valid_new_cell/2
 add_new_cell(cell(Bug,Row,Col,Color,0)):-
+	current_player_turns(3),
+	not(get_cell(cell(queen,_,_,Color,_),_)),
+	Bug \= queen,!,
+	write_ln("QUEEN MUST BE ON BOARD ON THE 4TH MOVE"),
+	fail.
+
+add_new_cell(cell(Bug,Row,Col,Color,0)):-
 	get_player(player(Color,_,_,_,_,_,_,_,_),Player),
 	decrease_bug(Bug,Player,NewPlayer),
 	delete_player(Player),
 	init_player(NewPlayer),
-	init_cell(cell(Bug,Row,Col,Color,0)).
+	init_cell(cell(Bug,Row,Col,Color,0)),
+	increase_turns.
 
-% R is the result of moving cell(Bug,Row,Col,Color,X) to cell(_,NewRow,NewCol,_,Y) 
-move_cell(cell(Bug,Row,Col,Color,X),cell(_,NewRow,NewCol,_,Y),R):-
-	NewStackPos is Y + 1,
-	init_cell(Bug,NewRow,NewCol,Color,NewStackPos),
-	delete_cell(cell(Bug,Row,Col,Color,X)),
-	R = cell(Bug,NewRow,NewCol,Color,NewStackPos).
+
+move_cell(SourceCell,DestCell):-
+	delete_cell(SourceCell),
+	init_cell(DestCell),
+	increase_turns().
 
 
 adjacent_cell_1(cell(_,Row,Col,_,_),AdjCell):-

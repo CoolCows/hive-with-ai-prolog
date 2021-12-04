@@ -1,4 +1,4 @@
-:- module( turns,[ init_turns/0 ] ).
+:- module( turns,[ init_turns/0, increase_turns/0, current_player_turns/1 ] ).
 
 :- use_module(utils).
 :- dynamic turns/1.
