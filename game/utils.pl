@@ -1,7 +1,9 @@
 :-module(utils,[ push/3,
 				 pop/2,
 				 len/2,
-				 any/2
+				 any/2,
+				 is_odd/1,
+				 is_even/1
 				 ]).
 :- module_transparent(any/2).
 
@@ -23,3 +25,10 @@ any([X|Y], C) :-
 	T,
 	!;
 	any(Y,C).
+
+is_odd(X):-
+	1 is X mod 2.
+
+is_even(X):-
+	0 is X mod 2.
+
