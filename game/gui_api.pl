@@ -44,7 +44,6 @@ gui_put_cell(+Cell, -Board, -NewPlayer) :-
     add_new_cell(Cell),
     get_color(Cell, Color),
     get_player(player(Color,_,_,_,_,_,_,_,_), NewPlayer),
-	write_ln("HOlaafaf"),
     cells(Board).
 
 gui_move_cell(+SourceCell, +DestCell, -Board) :-
