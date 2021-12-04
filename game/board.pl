@@ -19,6 +19,8 @@
 :- use_module(cell).
 :- use_module(utils).
 :- use_module(player).
+:- use_module(turns).
+
 
 % adds a new cell to the board 
 % NOTE: to find  new cells possible positions use findall with valid_new_cell/2
@@ -36,15 +38,6 @@ move_cell(cell(Bug,Row,Col,Color,X),cell(_,NewRow,NewCol,_,Y),R):-
 	delete_cell(cell(Bug,Row,Col,Color,X)),
 	R = cell(Bug,NewRow,NewCol,Color,NewStackPos).
 
-
-%---------------------------------------------------------------%
-%                         ADJACENT CELLS                        %
-%---------------------------------------------------------------%
-%							   1 2                              %
-%						 	  3 0 4                             %
-%  	   						   5 6                              %
-%---------------------------------------------------------------%
-%---------------------------------------------------------------%
 
 adjacent_cell_1(cell(_,Row,Col,_,_),AdjCell):-
 	AdjRow is Row -1,
@@ -130,6 +123,17 @@ adjacent_cells(Cell, AdjCells):-
 %---------------------------------------------------------------%
 
 % checks if ValidCell is a valid cell position for player of color Color
+%
+
+valid_new_cell(_,ValidCell):-
+	cells([X|Y]),
+	len([X|Y],1),
+	adjacent_cell(X,ValidCell).
+
+valid_new_cell(_,ValidCell):-
+	cells([]),
+	ValidCell = cell(none,0,0,none,0).
+
 valid_new_cell(Color,ValidCell):-
 	get_cell(cell(_,_,_,Color,_),SameColorCell),
 	not(insect_above(SameColorCell,_)),
