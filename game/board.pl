@@ -21,7 +21,8 @@
 					set_fixed_cell/1,
 					delete_fixed_cell/1,
 					get_fixed_cell/2,
-					oponent_color/2
+					oponent_color/2,
+					top_level_cell/2
 					]).
 
 :- use_module(cell).
@@ -279,4 +280,11 @@ accesible_cell(SourceCell,DestCell):-
 	adjacent_cell(SourceCell,AdjCell),
 	adjacent_cell(DestCell,AdjCell),
 	get_bug_type(AdjCell,none).
+
+top_level_cell(Cell,TopCell):-
+	(
+		insect_above(Cell,AboveCell),
+		top_level_cell(AboveCell,TopCell),!
+	);
+	TopCell = Cell.
 

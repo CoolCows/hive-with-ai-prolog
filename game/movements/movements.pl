@@ -1,6 +1,7 @@
 :- module(movements, [ valid_movement/2,valid_movements/2,movable_cells_by_pillbug/2, movable_positions_by_pillbug/2 ]).
 
 :- use_module("../cell").
+:- use_module("../board").
 :- use_module(ant).
 :- use_module(queen).
 :- use_module(spider).
@@ -8,6 +9,7 @@
 :- use_module(ladybug).
 :- use_module(beetle).
 :- use_module(pillbug).
+:- use_module(mosquito).
 
 
 valid_movement(SourceCell,DestCell):-
@@ -43,8 +45,14 @@ valid_movement(SourceCell,DestCell):-
 	get_bug_type(SourceCell,pillbug),!,
 	valid_pillbug_movement(SourceCell,DestCell).
 
+
+valid_movement(SourceCell,DestCell):-
+	get_bug_type(SourceCell,mosquito),!,
+	valid_mosquito_movement(SourceCell,DestCell).
+
 % all possible movements of a given cell 
 valid_movements(SourceCell,DestCells):-
 	findall(DestCell, valid_movement(SourceCell,DestCell),A),
-	list_to_set(A,DestCells).
+	flatten(A,B),
+	list_to_set(B,DestCells).
 
