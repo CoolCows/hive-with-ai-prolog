@@ -32,6 +32,9 @@
 :- dynamic fixed_cell/2.
 :- dynamic last_moved_cell/2.
 
+oponent_color(white, black).
+oponent_color(black, white).
+
 last_moved_cell(cell(none,none,none,none,none),none).
 fixed_cell(cell(none,none,none,none,none),0).
 
@@ -277,5 +280,3 @@ accesible_cell(SourceCell,DestCell):-
 	adjacent_cell(DestCell,AdjCell),
 	get_bug_type(AdjCell,none).
 
-oponent_color(white, black).
-oponent_color(black, white).
