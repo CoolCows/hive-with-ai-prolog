@@ -2,7 +2,6 @@
     valid_pillbug_movement/2,
     movable_cells_by_pillbug/2,
     movable_positions_by_pillbug/2
-	% is_cell_moved_by_pillbug/2
 ]).
 
 :- use_module("../board").
@@ -37,12 +36,3 @@ movable_position_by_pillbug(PillbugCell, DestCell) :-
 movable_positions_by_pillbug(PillbugCell, MovToCells) :-
     findall(AdyCell, movable_position_by_pillbug(PillbugCell, AdyCell), MovToCells).
 
-% triumph if SourceCell-DestCell movement is done by pillbug
-% is_cell_moved_by_pillbug(SourceCell,DestCell):-
-% 	current_player_color(Color),
-% 	get_cell(cell(pillbug,_,_,Color,_),PillbugCell),
-% 	movable_cells_by_pillbug(PillbugCell,MovableBugs),
-%     movable_positions_by_pillbug(PillbugCell, MovablePositions),
-% 	member(SourceCell,MovableBugs),
-% 	member(DestCell,MovablePositions).
-	
