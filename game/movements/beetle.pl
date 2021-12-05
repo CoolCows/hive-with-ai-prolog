@@ -6,6 +6,7 @@
 valid_beetle_movement(SourceCell,DestCell):-
 	one_hive(SourceCell),
 	adjacent_cell(SourceCell,DestCell),
+	accesible_cell_top_level(SourceCell,DestCell),
 	get_bug_type(DestCell,none),
 	cells(Cells),
 	delete(Cells,SourceCell,CellsWithoutSourceCell),
@@ -15,6 +16,7 @@ valid_beetle_movement(SourceCell,DestCell):-
 valid_beetle_movement(SourceCell,DestCell):-
 	one_hive(SourceCell),
 	adjacent_cell(SourceCell, AdyCell),
+	accesible_cell_top_level(SourceCell,AdyCell),
 	not(get_bug_type(AdyCell,none)),
     AdyCell = cell(_, Row, Col, _, Stack),
     NewStack is Stack + 1,

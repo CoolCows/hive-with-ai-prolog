@@ -16,14 +16,14 @@
 :- use_module(turns).
 
 dummy_init:-
-	write_ln("GAME STARTED").
-    % init_cell(queen, 0, 0, white, 0),
-    % init_cell(spider, 1, 0, black, 0),
-    % init_cell(spider, -1, -1, white, 0),
-    % init_cell(beetle, -1, 0, black, 0),
-    % init_cell(ant, 0, 0, black, 0).
-    % init_cell(spider, -1, 1, black, 0),
-    % init_cell(pillbug, -2, 1, white, 0).
+	write_ln("GAME STARTED"),
+    init_cell(queen, 0, 0, white, 0),
+    init_cell(beetle, 1, 0, white, 0),
+    init_cell(spider, -1, -1, white, 0),
+    init_cell(beetle, -1, -1, black, 1),
+    init_cell(ant, -1, -1, black, 0),
+    init_cell(beetle, -1, 1, black, 1),
+    init_cell(ant, -1, 1, white, 0).
 
 gui_init_board(-Board) :-
     % Call method that return the board

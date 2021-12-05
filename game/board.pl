@@ -22,7 +22,8 @@
 					delete_fixed_cell/1,
 					get_fixed_cell/2,
 					oponent_color/2,
-					top_level_cell/2
+					top_level_cell/2,
+					accesible_cell_top_level/2
 					]).
 
 :- use_module(cell).
@@ -280,6 +281,12 @@ accesible_cell(SourceCell,DestCell):-
 	adjacent_cell(SourceCell,AdjCell),
 	adjacent_cell(DestCell,AdjCell),
 	get_bug_type(AdjCell,none).
+
+accesible_cell_top_level(SourceCell,DestCell):-
+	adjacent_cell(SourceCell,AdjCell),
+	adjacent_cell(DestCell,AdjCell),
+	not(insect_above(AdjCell,_)),
+	get_stack_pos(AdjCell,0).
 
 top_level_cell(Cell,TopCell):-
 	(
