@@ -1,8 +1,10 @@
-:- module( turns,[ init_turns/0, increase_turns/0, current_player_turns/1 ] ).
+:- module( turns,[ init_turns/0, increase_turns/0, current_player_turns/1, total_turns/1 ] ).
 
 :- use_module(utils).
 :- dynamic turns/1.
 
+total_turns(T):-
+	turns(T).
 
 init_turns():-
 	assertz(turns(0)).

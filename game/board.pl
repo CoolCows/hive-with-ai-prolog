@@ -13,7 +13,15 @@
 					adjacent_to_hive/2,
 					adjacent_to_hive/1,
 					insect_above/2,
-					accesible_cell/2
+					accesible_cell/2,
+					current_player_color/1,
+					set_last_moved_cell/2,
+					delete_last_moved_cell/2,
+					get_last_moved_cell/3,
+					set_fixed_cell/1,
+					delete_fixed_cell/1,
+					get_fixed_cell/2,
+					oponent_color/2
 					]).
 
 :- use_module(cell).
@@ -21,6 +29,31 @@
 :- use_module(player).
 :- use_module(turns).
 
+:- dynamic fixed_cell/2.
+:- dynamic last_moved_cell/2.
+
+last_moved_cell(cell(none,none,none,none,none),none).
+fixed_cell(cell(none,none,none,none,none),0).
+
+set_last_moved_cell(cell(Bug,Row,Col,Color,StackPos),PlayerColor):-
+	assertz(last_moved_cell(cell(Bug,Row,Col,Color,StackPos),PlayerColor)).
+
+delete_last_moved_cell(cell(Bug,Row,Col,Color,StackPos),PlayerColor):-
+	retract(last_moved_cell(cell(Bug,Row,Col,Color,StackPos),PlayerColor)).
+
+get_last_moved_cell(cell(Bug,Row,Col,Color,StackPos),PlayerColor,cell(Bug,Row,Col,Color,StackPos)):-
+	last_moved_cell(cell(Bug,Row,Col,Color,StackPos),PlayerColor).
+
+set_fixed_cell(cell(Bug,Row,Col,Color,StackPos)):-
+	total_turns(T),
+	NT is T + 1,
+	assertz(fixed_cell(cell(Bug,Row,Col,Color,StackPos),NT)).
+	
+delete_fixed_cell(cell(Bug,Row,Col,Color,StackPos)):-
+	retract(fixed_cell(cell(Bug,Row,Col,Color,StackPos),_)).
+
+get_fixed_cell(cell(Bug,Row,Col,Color,StackPos),cell(Bug,Row,Col,Color,StackPos)):-
+	fixed_cell(cell(Bug,Row,Col,Color,StackPos)).
 
 % adds a new cell to the board 
 % NOTE: to find  new cells possible positions use findall with valid_new_cell/2
@@ -37,14 +70,30 @@ add_new_cell(cell(Bug,Row,Col,Color,0)):-
 	delete_player(Player),
 	init_player(NewPlayer),
 	init_cell(cell(Bug,Row,Col,Color,0)),
-	increase_turns.
+	increase_turns().
 
 
 move_cell(SourceCell,DestCell):-
 	delete_cell(SourceCell),
 	init_cell(DestCell),
+	delete_last_moved_cell(_,_),
+	current_player_color(PlayerColor),
+	set_last_moved_cell(DestCell,PlayerColor),
+	write_ln("LAST MOVE CELL BY PLAYER"),
+	write_ln(PlayerColor),
+	write_ln(SourceCell),
 	increase_turns().
 
+
+current_player_color(Color):-
+	total_turns(T),
+	is_even(T),
+	Color = white.
+
+current_player_color(Color):-
+	total_turns(T),
+	is_odd(T),
+	Color = black.
 
 adjacent_cell_1(cell(_,Row,Col,_,_),AdjCell):-
 	AdjRow is Row - 1,
@@ -228,3 +277,5 @@ accesible_cell(SourceCell,DestCell):-
 	adjacent_cell(DestCell,AdjCell),
 	get_bug_type(AdjCell,none).
 
+oponent_color(white, black).
+oponent_color(black, white).
