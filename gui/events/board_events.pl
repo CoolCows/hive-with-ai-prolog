@@ -108,6 +108,9 @@ select_cell(Canvas, CorrectCell) :-
             BugType = pillbug,
             handle_pillbug_effect(Canvas, CorrectCell)
         );
+        (
+            BugType = mosquito
+        );
         true
     ),
     draw_selected_cell(cell(none, Row, Col, show, StackPos), Canvas).
@@ -134,6 +137,9 @@ handle_pillbug_effect(Canvas, CorrectCell) :-
     write_ln(ShowMovBugs),
     draw_all(Canvas, ShowMovBugs),
     write_ln('a2').
+
+handle_mosquito_effect(Canvas, CorrectCell) :- 
+    true.
 
 draw_all(_, []).
 draw_all(Canvas, [X|Rest]) :-
