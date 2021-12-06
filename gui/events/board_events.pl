@@ -31,7 +31,8 @@
     gui_put_cell/3,
     gui_move_cell/3,
     gui_get_possible_moves/2,
-    gui_get_board/1
+    gui_get_board/1,
+    gui_mosquito_adyacent_pillbug/1
 ]).
 
 select_event(Canvas, ClickPosition, WhiteCanvas, BlackCanvas) :-
@@ -93,8 +94,7 @@ move_cell(Canvas, cell(none, Row, Col, none, Stack)) :-
         +cell(BugType, Row, Col, Colour, Stack),
         -NewBoard
     ),
-    change_turn(NewBoard, Canvas),
-    write_ln('Correctly moved').
+    change_turn(NewBoard, Canvas).
     
 
 select_cell(Canvas, CorrectCell) :-
@@ -109,9 +109,10 @@ select_cell(Canvas, CorrectCell) :-
             handle_pillbug_effect(Canvas, CorrectCell)
         );
         (
-            BugType = mosquito
+            BugType = mosquito,
+            handle_mosquito_effect(Canvas, CorrectCell)
         );
-        true
+        nb_setval(pillbug_effect, undefined)
     ),
     draw_selected_cell(cell(none, Row, Col, show, StackPos), Canvas).
 
@@ -122,7 +123,6 @@ select_movable_bug(Canvas, CorrectCell, [MovBugs, MovPositions]) :-
     nb_setval(board, NewBoard),
     write_ln(NewBoard),
     draw_board(NewBoard, Canvas),
-    write_ln('Succesfully drawn'),
     findall(cell(none, Row, Col, pillbug, 0), member(cell(_, Row, Col, _, _), MovBugs), ShowMovBugs),
     CorrectCell = cell(_, Row, Col, _, 0),
     draw_all(Canvas, ShowMovBugs),
@@ -130,22 +130,21 @@ select_movable_bug(Canvas, CorrectCell, [MovBugs, MovPositions]) :-
     true.
 
 handle_pillbug_effect(Canvas, CorrectCell) :-
+    write_ln('Handling pillbug effect'),
     gui_get_pillbug_effect(+CorrectCell, -[MovBugs, PosBugs]),
     nb_setval(pillbug_effect, [MovBugs, PosBugs]),
     findall(cell(none, Row, Col, pillbug, 5), member(cell(_, Row, Col, _, _), MovBugs), ShowMovBugs),
-    write_ln('Movable Cells Display'),
     write_ln(ShowMovBugs),
-    draw_all(Canvas, ShowMovBugs),
-    write_ln('a2').
+    draw_all(Canvas, ShowMovBugs).
 
 handle_mosquito_effect(Canvas, CorrectCell) :- 
-    true.
+    write_ln('Handling mosquito effect'),
+    gui_mosquito_adyacent_pillbug(+CorrectCell),
+    handle_pillbug_effect(Canvas, CorrectCell).
 
 draw_all(_, []).
 draw_all(Canvas, [X|Rest]) :-
-    write_ln('a.12'),
     draw_selected_cell(X, Canvas),
-    write_ln('a.14'),
     draw_all(Canvas, Rest).
 
 get_correct_cells(CellList, ClickPosition, CorrectCell):-

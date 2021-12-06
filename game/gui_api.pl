@@ -17,13 +17,17 @@
 
 dummy_init:-
 	write_ln("GAME STARTED"),
-    init_cell(queen, 0, 0, white, 0),
-    init_cell(beetle, 1, 0, white, 0),
-    init_cell(spider, -1, -1, white, 0),
-    init_cell(beetle, -1, -1, black, 1),
-    init_cell(ant, -1, -1, black, 0),
-    init_cell(beetle, -1, 1, black, 1),
-    init_cell(ant, -1, 1, white, 0).
+    init_cell(cell(queen, 0, 0, white, 0)),
+    init_cell(cell(pillbug, 1, 0, white, 0)),
+    init_cell(cell(mosquito, 2, 0, white, 0)),
+    init_cell(cell(ant, 1, 1, white, 0)),
+    init_cell(cell(ant, 1, -1, white, 0)),
+    init_cell(cell(queen, -1, 0, black, 0)),
+    init_cell(cell(pillbug, -2, 0, black, 0)),
+    init_cell(cell(mosquito, -3, 0, black, 0)),
+    init_cell(cell(ant, -3, 0, black, 0)),
+    init_cell(cell(ant, -3, 1, black, 0)),
+    true.
 
 gui_init_board(-Board) :-
     % Call method that return the board
@@ -62,8 +66,6 @@ gui_get_possible_moves(+Cell, -Board) :-
 	get_color(Cell,Color),
 	get_cell(cell(queen,_,_,Color,_),_),
     valid_movements(Cell, PosMoves),
-	write_ln(Cell),
-    write_ln(PosMoves),
     cells(Cells),
     append(PosMoves, Cells, Board).
 
@@ -84,12 +86,9 @@ gui_get_pillbug_effect(+PillbugCell, -[MovableBugs, MovablePositions]) :-
 	get_color(PillbugCell,Color),
 	get_cell(cell(queen,_,_,Color,_),_),
 	movable_cells_by_pillbug(PillbugCell,MovableBugs),
-    movable_positions_by_pillbug(PillbugCell, MovablePositions),
-	write_ln('Adding movable bugs'),
-	write_ln(MovableBugs),
-    write_ln(MovablePositions).
+    movable_positions_by_pillbug(PillbugCell, MovablePositions).
 
-gui_adyacent_pillbug(+MosquitoCell) :-
-    true.
+gui_mosquito_adyacent_pillbug(+MosquitoCell) :-
+    mosquito_adyacent_to_pillbug(MosquitoCell).
 
 % ALL RETURN TYPES MUST BE LISTS OF TYPE CELL

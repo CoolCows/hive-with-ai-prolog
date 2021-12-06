@@ -50,6 +50,7 @@ select_side_board(MainCanvas, SideCanvas, ClickPosition, Colour) :-
         ],
         position(BugType, Index)
     ),
+    nb_setval(pillbug_effect, undefined),
     position_cell(BugType),
     gui_get_possible_positions(+Colour, -NewBoard),
     nb_setval(board, NewBoard),
