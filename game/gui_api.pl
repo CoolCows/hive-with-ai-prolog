@@ -25,7 +25,7 @@ dummy_init:-
     init_cell(cell(queen, -1, 0, black, 0)),
     init_cell(cell(pillbug, -2, 0, black, 0)),
     init_cell(cell(mosquito, -3, 0, black, 0)),
-    init_cell(cell(ant, -3, 0, black, 0)),
+    init_cell(cell(ant, -3, -1, black, 0)),
     init_cell(cell(ant, -3, 1, black, 0)),
     true.
 
