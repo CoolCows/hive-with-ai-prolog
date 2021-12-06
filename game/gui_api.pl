@@ -78,4 +78,7 @@ gui_get_pillbug_effect(+PillbugCell, -[MovableBugs, MovablePositions]) :-
 	write_ln(MovableBugs),
     write_ln(MovablePositions).
 
+gui_adyacent_pillbug(+MosquitoCell) :-
+    true.
+
 % ALL RETURN TYPES MUST BE LISTS OF TYPE CELL
