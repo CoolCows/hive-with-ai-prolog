@@ -40,8 +40,6 @@ gui_get_board(-Board) :-
     cells(Board).
 
 gui_init_players(-Players) :-
-    % init_player(white),
-    % init_player(black),
 	hive_init_players(),
     players(Players).
 
@@ -80,4 +78,7 @@ gui_get_pillbug_effect(+PillbugCell, -[MovableBugs, MovablePositions]) :-
 
 gui_mosquito_adyacent_pillbug(+MosquitoCell) :-
 	hive_mosquito_adyacent_pillbug(MosquitoCell).
+
+gui_skip_turn():-
+	hive_skip_turn().
 
