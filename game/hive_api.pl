@@ -5,7 +5,8 @@
     hive_move_cell/2,
     hive_get_possible_moves/2,
     hive_get_possible_positions/2,
-	hive_get_pillbug_effect/2
+	hive_get_pillbug_effect/2,
+	hive_skip_turn/1
 ]).
 
 :- use_module(player).
@@ -13,11 +14,6 @@
 :- use_module("movements/movements").
 :- use_module(board).
 :- use_module(turns).
-
-
-dummy_init:-
-	write_ln("GAME STARTED"),
-    true.
 
 hive_get_game_state(GameState):-
 	get_game_state(GameState).
@@ -56,8 +52,12 @@ hive_mosquito_adyacent_pillbug(MosquitoCell) :-
     mosquito_adyacent_to_pillbug(MosquitoCell).
 
 hive_skip_turn():-
-	true.
+	current_player_color(Color),
+	cells(Cells),
+	forall(member(cell(Bug,Row,Col,Color,StackPos),Cells),
+		  not(hive_get_possible_moves(cell(Bug,Row,Col,Color,StackPos),_))),
+	not(hive_get_possible_positions(Color,_)),
+	increase_turns().
 
 hive_game_over(Status):-
 	true.
-% ALL RETURN TYPES MUST BE LISTS OF TYPE CELL
