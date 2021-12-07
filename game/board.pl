@@ -25,7 +25,8 @@
 					top_level_cell/2,
 					accesible_cell_top_level/2,
 					get_game_state/1,
-					set_game_state/1
+					set_game_state/1,
+					game_status/1
 					]).
 
 :- use_module(cell).
@@ -323,3 +324,26 @@ top_level_cell(Cell,TopCell):-
 	);
 	TopCell = Cell.
 
+game_status(Status):-
+	get_cell(cell(queen,_,_,white,_),WhiteQueen),
+	forall( adjacent_cell(WhiteQueen,AdjCell),
+			not(get_bug_type(AdjCell,none))),
+	get_cell(cell(queen,_,_,black,_),BlackQueen),
+	forall( adjacent_cell(BlackQueen,AdjCell),
+			not(get_bug_type(AdjCell,none))),
+	Status = draw,!.
+
+game_status(Status):-
+	get_cell(cell(queen,_,_,white,_),WhiteQueen),
+	forall( adjacent_cell(WhiteQueen,AdjCell),
+			not(get_bug_type(AdjCell,none))),
+	Status = white_won,!.
+
+game_status(Status):-
+	get_cell(cell(queen,_,_,black,_),BlackQueen),!,
+	forall( adjacent_cell(BlackQueen,AdjCell),
+			not(get_bug_type(AdjCell,none))),
+	Status = black_won,!.
+
+game_status(Status):-
+	Status = non_terminal.

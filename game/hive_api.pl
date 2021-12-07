@@ -6,7 +6,9 @@
     hive_get_possible_moves/2,
     hive_get_possible_positions/2,
 	hive_get_pillbug_effect/2,
-	hive_skip_turn/1
+	hive_skip_turn/0,
+	hive_mosquito_adyacent_pillbug/1,
+	hive_game_status/1
 ]).
 
 :- use_module(player).
@@ -59,5 +61,6 @@ hive_skip_turn():-
 	not(hive_get_possible_positions(Color,_)),
 	increase_turns().
 
-hive_game_over(Status):-
-	true.
+hive_game_status(Status):-
+	game_status(Status).
+
