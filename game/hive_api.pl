@@ -15,10 +15,6 @@
 :- use_module(turns).
 
 
-dummy_init:-
-	write_ln("GAME STARTED"),
-    true.
-
 hive_get_game_state(GameState):-
 	get_game_state(GameState).
 
