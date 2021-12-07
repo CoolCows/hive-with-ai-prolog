@@ -1,0 +1,94 @@
+:- module(hive_api,[
+    hive_init_board/1,
+    hive_init_players/1,
+    hive_put_cell/3,
+    hive_move_cell/3,
+    hive_get_possible_moves/2,
+    hive_get_possible_positions/2,
+	hive_get_pillbug_effect/2,
+    hive_get_board/1
+]).
+
+:- use_module(player).
+:- use_module(cell).
+:- use_module("movements/movements").
+:- use_module(board).
+:- use_module(turns).
+
+dummy_init:-
+	write_ln("GAME STARTED"),
+    init_cell(cell(queen, 0, 0, white, 0)),
+    init_cell(cell(pillbug, 1, 0, white, 0)),
+    init_cell(cell(mosquito, 2, 0, white, 0)),
+    init_cell(cell(ant, 1, 1, white, 0)),
+    init_cell(cell(ant, 1, -1, white, 0)),
+    init_cell(cell(queen, -1, 0, black, 0)),
+    init_cell(cell(pillbug, -2, 0, black, 0)),
+    init_cell(cell(mosquito, -3, 0, black, 0)),
+    init_cell(cell(ant, -3, -1, black, 0)),
+    init_cell(cell(ant, -3, 1, black, 0)),
+    true.
+
+hive_init_board(-Board) :-
+    % Call method that return the board
+    dummy_init,
+	init_turns,
+    cells(Board).
+
+hive_get_board(-Board) :-
+    cells(Board).
+
+hive_init_players(-Players) :-
+    init_player(white),
+    init_player(black),
+    players(Players).
+
+hive_put_cell(+Cell, -Board, -NewPlayer) :-
+    % This method is yet to be implemented
+    add_new_cell(Cell),
+    get_color(Cell, Color),
+    get_player(player(Color,_,_,_,_,_,_,_,_), NewPlayer),
+    cells(Board).
+
+hive_move_cell(+SourceCell, +DestCell, -Board) :-
+    % Tries to move cell to a certain location
+    % Returns the new board if succesful
+    % delete_cell(SourceCell),
+    % init_cell(DestCell),
+	move_cell(SourceCell,DestCell),
+    cells(Board).
+
+hive_get_possible_moves(+Cell, -Board) :-
+    % Get all Cells where a bug can be moved
+    % return the board with possible positions.
+    % Possible position cells has color = bug = none
+	% if there is no queen on the board cells cannot move
+	get_color(Cell,Color),
+	get_cell(cell(queen,_,_,Color,_),_),
+    valid_movements(Cell, PosMoves),
+    cells(Cells),
+    append(PosMoves, Cells, Board).
+
+hive_get_possible_positions(+Color, -Board) :-
+    % Get all Cells where a bug by certain player can be put
+    % return the board with possible positions.
+    % Possible position cells has color = bug = none
+
+    % This method is yet to be implemented
+    bagof(ValidCell, valid_new_cell(Color, ValidCell), PosPositions),
+    cells(Cells),
+    append(PosPositions, Cells, Board).
+
+hive_get_pillbug_effect(+PillbugCell, -[MovableBugs, MovablePositions]) :-
+    % call to method that with pillbug cells return 
+    % a list of MovableBugs
+	% if there is no queen on the board cells cannot move
+	get_color(PillbugCell,Color),
+	get_cell(cell(queen,_,_,Color,_),_),
+	movable_cells_by_pillbug(PillbugCell,MovableBugs),
+    movable_positions_by_pillbug(PillbugCell, MovablePositions).
+
+hive_mosquito_adyacent_pillbug(+MosquitoCell) :-
+    mosquito_adyacent_to_pillbug(MosquitoCell).
+
+% ALL RETURN TYPES MUST BE LISTS OF TYPE CELL

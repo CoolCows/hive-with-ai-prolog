@@ -24,8 +24,8 @@
     get_spiders/2
 ]).
 
-:- use_module("../../game/gui_api", [
-    gui_get_possible_positions/2
+:- use_module("../../game/hive_api", [
+    hive_get_possible_positions/2
 ]).
 
 select_side_board(MainCanvas, SideCanvas, ClickPosition, Colour) :-
@@ -52,7 +52,7 @@ select_side_board(MainCanvas, SideCanvas, ClickPosition, Colour) :-
     ),
     nb_setval(pillbug_effect, undefined),
     position_cell(BugType),
-    gui_get_possible_positions(+Colour, -NewBoard),
+    hive_get_possible_positions(+Colour, -NewBoard),
     nb_setval(board, NewBoard),
     draw_board(NewBoard, MainCanvas),
     color_selected_cell(Index, Player, Colour, SideCanvas).
