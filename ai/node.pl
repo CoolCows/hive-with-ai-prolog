@@ -46,16 +46,17 @@ get_times_black_won(
 %
 % From parent address and Game State calculate node properties
 % and insert in tree_db.pl
-add_node(ParentAddress, GameState) :-
+add_node(ParentAddress, GameState, NodeType) :-
     keccak256(ParentAddress, GameState, NodeAddres),
     assert_node(
         NodeAddress, 
         ParentAddress, 
         GameState, 
-        undefined, 
-        undefined, 
-        undefined, 
-        undefined
+        NodeType, 
+        false, 
+        0, 
+        0,
+        0
     ).
 
 % returns a node by it's address
@@ -72,7 +73,7 @@ find_node(
 ).
 
 % For backpropagation:
-% 1. Finds node at NodeAddres
+% 1. Finds node at NodeAddress
 % 2. Updates properties
 % 3. Returns ParentAddress
 update_node(NodeAddress, NewExplored, NewWhiteWon, NewBlackWon, ParentAddress) :-
