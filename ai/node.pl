@@ -19,9 +19,7 @@ load_tree_db :-
 % From parent address and Game State calculate node properties
 % and insert in tree_db.pl
 add_node(ParentAddress, GameState) :-
-    term_string(GameState, StrGameState),
-    string_concat(ParentAddress, StrGameState, Seed),
-    crypto_data_hash(Seed, NodeAddress, [algorithm(sha3)]),
+    keccak256(ParentAddress, GameState, NodeAddres),
     assert_node(
         NodeAddress, 
         ParentAddress, 
@@ -51,7 +49,7 @@ find_node(
 % 3. Returns ParentAddress
 update_node(NodeAddress, NewExplored, NewWhiteWon, NewBlackWon, ParentAddress) :-
     find_node(NodeAddress, Node),
-    Node = node(_,ParentAddress, GameState, NodeType, Explored, WhiteWon, BlackWon),
+    Node = node(_, ParentAddress, GameState, NodeType, Explored, WhiteWon, BlackWon),
     retract_node(Node),
     assert_node(
         NodeAddres,
@@ -62,3 +60,7 @@ update_node(NodeAddress, NewExplored, NewWhiteWon, NewBlackWon, ParentAddress) :
         NewWhiteWon,
         NewBlackWon
     ).
+keccak256(ParentAdrress, GameState, Hash) :-
+    term_string(GameState, StrGameState),
+    string_concat(ParentAdrress, StrGameState, Seed),
+    crypto_data_hash(Seed, Hash, [algorithm(sha3)]).
