@@ -1,3 +1,11 @@
+:- module(node, [
+    get_times_explored/2,
+    get_times_white_won/2,
+    get_times_black_won/2,
+    add_node/2,
+    find_node/2
+]).
+
 :- use_module(library(persistency)).
 
 % define persistent game node
@@ -7,6 +15,7 @@
         parent_address:string,   
         game_state:list,         % [board, players, turns, last_played]
         node_type: atom,         % non_terminal | white_won | black_won | draw
+        node_visited: bool,      % true | false
         times_explored: integer,
         times_white_won: integer,
         times_black_won: integer
@@ -16,6 +25,25 @@
 load_tree_db :-
     db_attach('./tree_db.pl', []).
 
+% Properties:
+%
+get_times_explored(
+    node(_, _, _, _, _, Explored, _, _),
+    Explored
+).
+
+get_times_white_won(
+    node(_, _, _, _, _, _, WhiteWon, _),
+    WhiteWon
+).
+
+get_times_black_won(
+    node(_, _, _, _, _, _, _, BlackWon),
+    BlackWon
+).
+
+% Methods:
+%
 % From parent address and Game State calculate node properties
 % and insert in tree_db.pl
 add_node(ParentAddress, GameState) :-
@@ -60,6 +88,7 @@ update_node(NodeAddress, NewExplored, NewWhiteWon, NewBlackWon, ParentAddress) :
         NewWhiteWon,
         NewBlackWon
     ).
+
 keccak256(ParentAdrress, GameState, Hash) :-
     term_string(GameState, StrGameState),
     string_concat(ParentAdrress, StrGameState, Seed),
