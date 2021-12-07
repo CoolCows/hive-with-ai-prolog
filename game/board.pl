@@ -23,7 +23,9 @@
 					get_fixed_cell/2,
 					oponent_color/2,
 					top_level_cell/2,
-					accesible_cell_top_level/2
+					accesible_cell_top_level/2,
+					get_game_state/1,
+					set_game_state/1
 					]).
 
 :- use_module(cell).
@@ -37,8 +39,28 @@
 oponent_color(white, black).
 oponent_color(black, white).
 
-last_moved_cell(cell(none,none,none,none,none),none).
+last_moved_cell(cell(none,none,none,none,none),white).
+last_moved_cell(cell(none,none,none,none,none),black).
 fixed_cell(cell(none,none,none,none,none),0).
+
+get_game_state(game_state(Board,Turns,LastMovedCells,FixedCells,Players)):-
+	cells(Board),
+	total_turns(Turns),
+	last_moved_cells(LastMovedCells),
+	FixedCells = [], % TODO: implement get_fixed_cells
+	players(Players).
+
+set_game_state(game_state(game_state(Board,Turns,LastMovedCells,FixedCells,Players))):-
+	set_cells(Board),
+	set_turns(Turns),
+	set_last_moved_cells(LastMovedCells),
+	FixedCells = [], % TODO: implement set_fixed_cells
+	set_players(Players).
+
+set_last_moved_cells(NewLastMovedCells):-
+	last_moved_cells(LastMovedCells),
+	forall(member(LastMovedCell,LastMovedCells), retract(LastMovedCell)),
+	forall(member(NewLastMovedCell,NewLastMovedCells), assertz(NewLastMovedCell)).
 
 set_last_moved_cell(cell(Bug,Row,Col,Color,StackPos),PlayerColor):-
 	assertz(last_moved_cell(cell(Bug,Row,Col,Color,StackPos),PlayerColor)).
@@ -48,6 +70,12 @@ delete_last_moved_cell(cell(Bug,Row,Col,Color,StackPos),PlayerColor):-
 
 get_last_moved_cell(cell(Bug,Row,Col,Color,StackPos),PlayerColor,cell(Bug,Row,Col,Color,StackPos)):-
 	last_moved_cell(cell(Bug,Row,Col,Color,StackPos),PlayerColor).
+
+get_last_moved_cell(last_moved_cell(Cell,PlayerColor)):-
+	last_moved_cell(Cell,PlayerColor).
+
+last_moved_cells(LastMovedCells):-
+	findall(LastMovedCell, get_last_moved_cell(LastMovedCell),LastMovedCells).
 
 set_fixed_cell(cell(Bug,Row,Col,Color,StackPos)):-
 	total_turns(T),
@@ -81,8 +109,8 @@ add_new_cell(cell(Bug,Row,Col,Color,0)):-
 move_cell(SourceCell,DestCell):-
 	delete_cell(SourceCell),
 	init_cell(DestCell),
-	delete_last_moved_cell(_,_),
 	current_player_color(PlayerColor),
+	delete_last_moved_cell(_,PlayerColor),
 	set_last_moved_cell(DestCell,PlayerColor),
 	write_ln("LAST MOVE CELL BY PLAYER"),
 	write_ln(PlayerColor),

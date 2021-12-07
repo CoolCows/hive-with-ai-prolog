@@ -1,12 +1,11 @@
 :- module(hive_api,[
-    hive_init_board/1,
-    hive_init_players/1,
-    hive_put_cell/3,
-    hive_move_cell/3,
+    hive_init_board/0,
+    hive_init_players/0,
+    hive_put_cell/1,
+    hive_move_cell/2,
     hive_get_possible_moves/2,
     hive_get_possible_positions/2,
-	hive_get_pillbug_effect/2,
-    hive_get_board/1
+	hive_get_pillbug_effect/2
 ]).
 
 :- use_module(player).
@@ -15,80 +14,50 @@
 :- use_module(board).
 :- use_module(turns).
 
+
 dummy_init:-
 	write_ln("GAME STARTED"),
-    init_cell(cell(queen, 0, 0, white, 0)),
-    init_cell(cell(pillbug, 1, 0, white, 0)),
-    init_cell(cell(mosquito, 2, 0, white, 0)),
-    init_cell(cell(ant, 1, 1, white, 0)),
-    init_cell(cell(ant, 1, -1, white, 0)),
-    init_cell(cell(queen, -1, 0, black, 0)),
-    init_cell(cell(pillbug, -2, 0, black, 0)),
-    init_cell(cell(mosquito, -3, 0, black, 0)),
-    init_cell(cell(ant, -3, -1, black, 0)),
-    init_cell(cell(ant, -3, 1, black, 0)),
     true.
 
-hive_init_board(-Board) :-
-    % Call method that return the board
-    dummy_init,
-	init_turns,
-    cells(Board).
+hive_get_game_state(GameState):-
+	get_game_state(GameState).
 
-hive_get_board(-Board) :-
-    cells(Board).
+hive_set_game_state(GameState):-
+	set_game_state(GameState).
 
-hive_init_players(-Players) :-
+hive_init_board() :-
+	init_turns.
+
+hive_init_players() :-
     init_player(white),
-    init_player(black),
-    players(Players).
+    init_player(black).
 
-hive_put_cell(+Cell, -Board, -NewPlayer) :-
-    % This method is yet to be implemented
-    add_new_cell(Cell),
-    get_color(Cell, Color),
-    get_player(player(Color,_,_,_,_,_,_,_,_), NewPlayer),
-    cells(Board).
+hive_put_cell(Cell):-
+    add_new_cell(Cell).
 
-hive_move_cell(+SourceCell, +DestCell, -Board) :-
-    % Tries to move cell to a certain location
-    % Returns the new board if succesful
-    % delete_cell(SourceCell),
-    % init_cell(DestCell),
-	move_cell(SourceCell,DestCell),
-    cells(Board).
+hive_move_cell(SourceCell, DestCell) :-
+	move_cell(SourceCell,DestCell).
 
-hive_get_possible_moves(+Cell, -Board) :-
-    % Get all Cells where a bug can be moved
-    % return the board with possible positions.
-    % Possible position cells has color = bug = none
-	% if there is no queen on the board cells cannot move
+hive_get_possible_moves(Cell, PosMoves) :-
 	get_color(Cell,Color),
 	get_cell(cell(queen,_,_,Color,_),_),
-    valid_movements(Cell, PosMoves),
-    cells(Cells),
-    append(PosMoves, Cells, Board).
+    valid_movements(Cell, PosMoves).
 
-hive_get_possible_positions(+Color, -Board) :-
-    % Get all Cells where a bug by certain player can be put
-    % return the board with possible positions.
-    % Possible position cells has color = bug = none
+hive_get_possible_positions(Color,PosPositions) :-
+    bagof(ValidCell, valid_new_cell(Color, ValidCell), PosPositions).
 
-    % This method is yet to be implemented
-    bagof(ValidCell, valid_new_cell(Color, ValidCell), PosPositions),
-    cells(Cells),
-    append(PosPositions, Cells, Board).
-
-hive_get_pillbug_effect(+PillbugCell, -[MovableBugs, MovablePositions]) :-
-    % call to method that with pillbug cells return 
-    % a list of MovableBugs
-	% if there is no queen on the board cells cannot move
+hive_get_pillbug_effect(PillbugCell, [MovableBugs, MovablePositions]) :-
 	get_color(PillbugCell,Color),
 	get_cell(cell(queen,_,_,Color,_),_),
 	movable_cells_by_pillbug(PillbugCell,MovableBugs),
     movable_positions_by_pillbug(PillbugCell, MovablePositions).
 
-hive_mosquito_adyacent_pillbug(+MosquitoCell) :-
+hive_mosquito_adyacent_pillbug(MosquitoCell) :-
     mosquito_adyacent_to_pillbug(MosquitoCell).
 
+hive_skip_turn():-
+	true.
+
+hive_game_over(Status):-
+	true.
 % ALL RETURN TYPES MUST BE LISTS OF TYPE CELL

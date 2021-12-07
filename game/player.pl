@@ -18,7 +18,8 @@
 					 set_pillbugs/3,
 					 set_mosquitos/3,
 					 set_spiders/3,
-					 decrease_bug/3
+					 decrease_bug/3,
+					 set_players/1
 					 ] ).
 :- dynamic player/9.
 
@@ -41,7 +42,7 @@ init_player(player(Color,Queen, Ants, Beetle, Grasshopper, Ladybug, Mosquito, Pi
 init_player(Color):-
 	assertz(player(Color,1,3,2,3,1,1,1,2)),!.
 
-set_players(BlackPlayer,WhitePlayer):-
+set_players([BlackPlayer,WhitePlayer]):-
 	delete_player(player(white,_,_,_,_,_,_,_,_)),
 	delete_player(player(black,_,_,_,_,_,_,_,_)),
 	init_player(BlackPlayer),

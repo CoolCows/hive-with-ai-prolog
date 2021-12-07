@@ -27,13 +27,13 @@
         get_stack_pos/2
     ]).
 
-:- use_module("../../game/hive_api", [
-    hive_put_cell/3,
-    hive_move_cell/3,
-    hive_get_possible_moves/2,
-    hive_get_board/1,
-    hive_mosquito_adyacent_pillbug/1,
-	hive_get_pillbug_effect/2
+:- use_module("../../game/gui_api", [
+    gui_put_cell/3,
+    gui_move_cell/3,
+    gui_get_possible_moves/2,
+    gui_get_board/1,
+    gui_mosquito_adyacent_pillbug/1,
+	gui_get_pillbug_effect/2
 ]).
 
 select_event(Canvas, ClickPosition, WhiteCanvas, BlackCanvas) :-
@@ -75,7 +75,7 @@ position_cell(
 ) :-
     nb_getval(player_turn, Colour),
     nb_getval(position_cell, BugType),
-    hive_put_cell(
+    gui_put_cell(
         +cell(BugType, Row, Col, Colour, Stack),
         -NewBoard,
         -NewPlayer
@@ -90,7 +90,7 @@ position_cell(
 move_cell(Canvas, cell(none, Row, Col, none, Stack)) :-
     nb_getval(move_cell, SourceCell),
     SourceCell = cell(BugType, _, _, Colour, _),
-    hive_move_cell(
+    gui_move_cell(
         +SourceCell,
         +cell(BugType, Row, Col, Colour, Stack),
         -NewBoard
@@ -99,7 +99,7 @@ move_cell(Canvas, cell(none, Row, Col, none, Stack)) :-
     
 
 select_cell(Canvas, CorrectCell) :-
-    hive_get_possible_moves(+CorrectCell, -NewBoard),
+    gui_get_possible_moves(+CorrectCell, -NewBoard),
     nb_setval(board, NewBoard),
     move_cell(CorrectCell),
     draw_board(NewBoard, Canvas),
@@ -119,7 +119,7 @@ select_cell(Canvas, CorrectCell) :-
 
 select_movable_bug(Canvas, CorrectCell, [MovBugs, MovPositions]) :-
     move_cell(CorrectCell),
-    hive_get_board(-Board),
+    gui_get_board(-Board),
     append(MovPositions, Board, NewBoard),
     nb_setval(board, NewBoard),
     write_ln(NewBoard),
@@ -132,7 +132,7 @@ select_movable_bug(Canvas, CorrectCell, [MovBugs, MovPositions]) :-
 
 handle_pillbug_effect(Canvas, CorrectCell) :-
     write_ln('Handling pillbug effect'),
-    hive_get_pillbug_effect(+CorrectCell, -[MovBugs, PosBugs]),
+    gui_get_pillbug_effect(+CorrectCell, -[MovBugs, PosBugs]),
     nb_setval(pillbug_effect, [MovBugs, PosBugs]),
     findall(cell(none, Row, Col, pillbug, 5), member(cell(_, Row, Col, _, _), MovBugs), ShowMovBugs),
     write_ln(ShowMovBugs),
@@ -140,7 +140,7 @@ handle_pillbug_effect(Canvas, CorrectCell) :-
 
 handle_mosquito_effect(Canvas, CorrectCell) :- 
     write_ln('Handling mosquito effect'),
-    hive_mosquito_adyacent_pillbug(+CorrectCell),
+    gui_mosquito_adyacent_pillbug(+CorrectCell),
     handle_pillbug_effect(Canvas, CorrectCell).
 
 draw_all(_, []).
