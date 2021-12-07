@@ -6,7 +6,8 @@
     gui_get_possible_moves/2,
     gui_get_possible_positions/2,
 	gui_get_pillbug_effect/2,
-    gui_get_board/1
+    gui_get_board/1,
+	gui_mosquito_adyacent_pillbug/1
 ]).
 
 :- use_module(player).
@@ -82,3 +83,5 @@ gui_mosquito_adyacent_pillbug(+MosquitoCell) :-
 gui_skip_turn():-
 	hive_skip_turn().
 
+gui_game_status(Status):-
+	hive_game_status(Status).
