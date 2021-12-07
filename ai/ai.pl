@@ -10,8 +10,10 @@
 
 % Given a GameState and Color to play
 % choose a next Move
-run_simulation(GameState, Color, Move) :-
+run_simulation(Node, Color, Move) :-
     findall(NextMove, get_posible_next_nodes(GameState, Policy, NextMove), NextMoves),
+    % create some threads to analyse several path down 
+    true.
 
 % Consumes a GameState and produce a next move
 get_posible_next_nodes(GameState, Policy, NextMove) :-

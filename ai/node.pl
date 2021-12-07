@@ -2,8 +2,7 @@
     get_times_explored/2,
     get_times_white_won/2,
     get_times_black_won/2,
-    add_node/2,
-    find_node/2
+    get_node/2
 ]).
 
 :- use_module(library(persistency)).
@@ -27,6 +26,16 @@ load_tree_db :-
 
 % Properties:
 %
+get_address(
+    node(Address, _, _, _, _, _, _, _),
+    Address
+). 
+
+get_parent_address(
+    node(_, ParentAddress, _, _, _, _, _, _),
+    ParentAddress
+). 
+
 get_times_explored(
     node(_, _, _, _, _, Explored, _, _),
     Explored
@@ -43,11 +52,25 @@ get_times_black_won(
 ).
 
 % Methods:
-%
-% From parent address and Game State calculate node properties
-% and insert in tree_db.pl
-add_node(ParentAddress, GameState, NodeType) :-
-    keccak256(ParentAddress, GameState, NodeAddres),
+get_node(ParentAddress, GameState, NodeType, Node) :-
+   keccak256(ParentAddress, GameState, NodeAddress),
+   (
+        find_node(NodeAddress, Node);
+        add_node(
+            NodeAddres, ParentAddress, GameState, NodeType, Node
+        )
+    ).
+
+add_node(
+    NodeAddress,
+    ParentAddress, 
+    GameState, 
+    NodeType,
+    node(
+        NodeAddress, ParentAddress, GameState, NodeType,
+        false, 0, 0, 0
+    )
+):-
     assert_node(
         NodeAddress, 
         ParentAddress, 
@@ -90,7 +113,7 @@ update_node(NodeAddress, NewExplored, NewWhiteWon, NewBlackWon, ParentAddress) :
         NewBlackWon
     ).
 
-keccak256(ParentAdrress, GameState, Hash) :-
+keccak256(ParentAddress, GameState, Hash) :-
     term_string(GameState, StrGameState),
-    string_concat(ParentAdrress, StrGameState, Seed),
+    string_concat(ParentAddress, StrGameState, Seed),
     crypto_data_hash(Seed, Hash, [algorithm(sha3)]).
