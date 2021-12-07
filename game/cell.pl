@@ -13,7 +13,8 @@
 			  	  set_col/3,
 				  set_color/3,
 				  set_stack_pos/3,
-				  same_position/2
+				  same_position/2,
+				  set_cells/1
 			  	  ]).
 
 :- dynamic cell/5.
@@ -34,6 +35,11 @@ init_cell(Bug, Row, Col, Color, StackPos):-
 
 delete_cell(cell(Bug, Row, Col, Color, StackPos)):-
 	retract(cell(Bug,Row,Col,Color,StackPos)).
+
+set_cells(NewCells):-
+	cells(Cells),
+	forall(member(Cell,Cells),delete_cell(Cell)),
+	forall(member(NewCell,NewCells),init_cell(NewCell)).
 
 cells(Cells):-
 	findall(Cell, get_cell(Cell,_),Cells).

@@ -32,7 +32,8 @@
     gui_move_cell/3,
     gui_get_possible_moves/2,
     gui_get_board/1,
-    gui_mosquito_adyacent_pillbug/1
+    gui_mosquito_adyacent_pillbug/1,
+	gui_get_pillbug_effect/2
 ]).
 
 select_event(Canvas, ClickPosition, WhiteCanvas, BlackCanvas) :-
