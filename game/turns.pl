@@ -9,6 +9,10 @@ total_turns(T):-
 init_turns():-
 	assertz(turns(0)).
 
+set_turns(T):-
+	retract(turns(_)),
+	assertz(turns(T)).
+
 increase_turns():-
 	turns(T),
 	retract(turns(T)),
@@ -29,5 +33,4 @@ current_player_turns(P):-
 	is_odd(T),!,
 	NT is T - 1,
 	P is NT div 2.
-
 
