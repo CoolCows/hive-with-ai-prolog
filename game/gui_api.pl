@@ -40,6 +40,9 @@ gui_init_board(-Board) :-
 gui_get_board(-Board) :-
     cells(Board).
 
+gui_test_board(-Board) :-
+    cells(Board).
+
 gui_init_players(-Players) :-
 	hive_init_players(),
     players(Players).

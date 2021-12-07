@@ -12,6 +12,7 @@
         get_color/2,
         get_stack_pos/2
     ]).
+:- use_module("../../game/gui_api", [gui_test_board/1]).
 
 draw_board(Board, Canvas) :-
     send(Canvas, clear),
@@ -56,8 +57,9 @@ refresh(Canvas) :-
     get(Canvas, size, size(W, H)),
     CH is H/2, CW is W/2,
     nb_setval(center, point(CW, CH)),
-    nb_getval(board, Board),
-    draw_board(Board, Canvas).
+    gui_test_board(-NewBoard),
+    nb_setval(board, NewBoard),
+    draw_board(NewBoard, Canvas).
 
 quick_sort([], []).
 quick_sort([Cell|Rest], Sorted) :-
