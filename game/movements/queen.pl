@@ -7,6 +7,7 @@
 valid_queen_movement(SourceCell, DestCell) :-
 	one_hive(SourceCell),
     adjacent_cell(SourceCell, DestCell),
+	accesible_cell(SourceCell,DestCell),
 	get_bug_type(DestCell,none),
 	cells(Cells),
 	delete(Cells,SourceCell,CellsWithoutSourceCell),
