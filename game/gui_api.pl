@@ -1,5 +1,5 @@
 :- module(gui_api,[
-    gui_start_game/2,
+    gui_start_game/3,
     gui_put_cell/3,
     gui_move_cell/3,
     gui_get_possible_moves/2,

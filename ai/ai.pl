@@ -98,7 +98,6 @@ analyze_moves(Address, [Move|NextMoves], MaxValue, TopMoves, BestMoves) :-
     ).
 
 % Get all possible moves
-<<<<<<< HEAD
 possible_moves(Color,move(SourceCell,DestCell)):-
 	hive_get_cell(cell(_,_,_,Color,_),SourceCell),
 	hive_get_possible_moves(SourceCell,PosMoves),

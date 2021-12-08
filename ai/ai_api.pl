@@ -1,6 +1,6 @@
 :- module(ai, [
     ai_vs_human_init/0,
-    ai_vs_human/3,
+    ai_vs_human/1,
     ai_vs_ai_init/1,
     ai_get_game_state/1,
     ai_set_game_state/1,
