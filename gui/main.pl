@@ -17,10 +17,10 @@ menu_bar_setup(MainWin, Board, BlackCells, WhiteCells) :-
                 [new(Opt, popup(new_Game)),
                  menu_item(exit, message(MainWin, destroy))]),
     send_list(Opt, append,
-                [menu_item(local_game, message(
-                        @prolog, start_game, human, Board, BlackCells, WhiteCells)),
-                 menu_item(against_AI, message(
+                [menu_item(against_AI, message(
                         @prolog, start_game, ai, Board, BlackCells, WhiteCells)),
+                 menu_item(local_game, message(
+                        @prolog, start_game, human, Board, BlackCells, WhiteCells)),
                  menu_item(online)]).
 
 file_dialog_setup(Canvas, BlackCells, WhiteCells) :-
