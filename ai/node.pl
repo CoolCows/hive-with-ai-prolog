@@ -77,7 +77,8 @@ get_times_black_won(
     BlackWon
 ).
 
-% Finds a Node, if it does not exist, it's created
+% Finds a Node and returns it
+% If node does not exist, it creates a new Node and returns it
 force_find_node(ParentAddress, GameState, EdgeMove, NodeType, Node) :-
     force_find_node(ParentAddress, GameState, EdgeMove, NodeType, false, Node).
 force_find_node(ParentAddress, GameState, EdgeMove, NodeType, NodeVisited, Node) :-
@@ -114,18 +115,18 @@ add_node(
     ParentAddress, 
     GameState, 
     NodeType,
+    NodeVisited,
     node(
-        NodeAddress, AuxAddress, ParentAddress, GameState,
-        NodeType, false, 0, 0, 0
+        NodeAddress, AuxAddress, ParentAddress,
+        NodeType, NodeVisited, 0, 0, 0
     )
 ):-
     assert_node(
         NodeAddress, 
         AuxAddress,
         ParentAddress, 
-        GameState, 
         NodeType, 
-        false, 
+        NodeVisited, 
         0, 
         0,
         0
@@ -138,6 +139,8 @@ find_node_by_game_state(
         NodeAddress, 
         AuxAddress,
         ParentAddress, 
+        NodeType,
+        NodeVisited,
         Explored, 
         WhiteWon, 
         BlackWon
@@ -147,6 +150,8 @@ find_node_by_game_state(
         NodeAddress, 
         AuxAddress,
         ParentAddress, 
+        NodeType,
+        NodeVisited,
         Explored, 
         WhiteWon, 
         BlackWon
@@ -177,7 +182,7 @@ find_node_by_edge_move(
 % 2. Updates properties
 % 3. Returns ParentAddress
 update_node(Node, Color) :-
-    Node = node(Address, AuxAddress, ParentAddress, GameState, NodeType, Explored, WhiteWon, BlackWon),
+    Node = node(Address, AuxAddress, ParentAddress, NodeType, Explored, WhiteWon, BlackWon),
     retract_node(Node),
     NewExplored is Explored + 1,
     (
@@ -188,8 +193,8 @@ update_node(Node, Color) :-
         Address,
         AuxAddress,
         ParentAddress,
-        GameState,
         NodeType,
+        NodeVisited,
         NewExplored,
         NewWhiteWon,
         NewBlackWon
