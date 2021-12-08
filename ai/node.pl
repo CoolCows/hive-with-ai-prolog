@@ -99,7 +99,7 @@ start_up_ia :-
     load_tree_db.
 
 add_initial_node:-
-    find_node_by_game_state("1", _);
+    find_node_by_game_state('1', _);
     (
         write_ln('No node found'),
         init_total_visits,
