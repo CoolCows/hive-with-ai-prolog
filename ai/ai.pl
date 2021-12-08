@@ -12,6 +12,7 @@
     ai_current_player_color/1,
     ai_update_state/2
 ]).
+:- use_module("../game/hive_api").
 :- use_module(total_visits, [increase_total_visits/0]).
 
 run_simulation(Node, Node) :-
@@ -94,8 +95,52 @@ analyze_moves(Address, [Move|NextMoves], MaxValue, TopMoves, BestMoves) :-
     ).
 
 % Get all possible moves
-get_next_moves(GameState, NextMoves) :-
-    true.
+possible_moves(Color,move(SourceCell,DestCell)):-
+	hive_get_cell(cell(_,_,_,Color,_),SourceCell),
+	hive_get_possible_moves(SourceCell,PosMoves),
+	member(DestCell,PosMoves).
+
+possible_place(Color,place(Cell)):-
+	hive_get_player(player(Color,_, _, _, _, _, _, _, _),
+					player(Color,Queen, Ants, Beetle, Grasshopper, Ladybug, Mosquito, Pillbug, Spider)),
+	hive_get_possible_positions(Color,PosPositions),
+	member(cell(_,Row,Col,_,_,_),PosPositions),
+	(
+		(
+			Ants > 0,
+			Cell = cell(ant,Row,Col,Color,0) 
+		);
+		(
+			Beetle > 0,
+			Cell = cell(beetle,Row,Col,Color,0) 
+		);
+		(
+			Grasshopper > 0,
+			Cell = cell(grasshopper,Row,Col,Color,0) 
+		);
+		(
+			Ladybug > 0,
+			Cell = cell(ladybug,Row,Col,Color,0) 
+		);
+		(
+			Mosquito > 0,
+			Cell = cell(mosquito,Row,Col,Color,0) 
+		);
+		(
+			Pillbug > 0,
+			Cell = cell(pillbug,Row,Col,Color,0) 
+		);
+		(
+			Spider > 0,
+			Cell = cell(spider,Row,Col,Color,0) 
+		)
+	).
+
+get_next_moves(NextMoves) :-
+	hive_current_player_color(Color),
+	findall(Move,possible_moves(Color,Move), Moves ),
+	findall(Place, possible_place(Color,Place),Places),
+	append(Moves,Places,NextMoves).
 
 update_game_state(NextMove) :-
     (
