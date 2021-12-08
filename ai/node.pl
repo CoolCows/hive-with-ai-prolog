@@ -12,6 +12,7 @@
 ]).
 
 :- use_module(library(persistency)).
+:- use_module(total_visits, [init_total_visits/0]).
 
 % define persistent game node
 :- persistent
@@ -29,7 +30,7 @@
 
 % load stored tree
 load_tree_db :-
-    db_attach('./tree_db.pl', []).
+    db_attach('./db/tree_db.pl', []).
 
 % Properties:
 
@@ -84,16 +85,19 @@ force_find_node(ParentAddress, GameState, EdgeMove, NodeType, Node) :-
 
 add_initial_node:-
     find_node_by_game_state(1, _);
-    assert_node(
-        1,
-        1,
-        0,
-        %define game state
-        non_terminal,
-        true,
-        0,
-        0,
-        0
+    (
+        init_total_visits,
+        assert_node(
+            1,
+            1,
+            0,
+            %define game state
+            non_terminal,
+            true,
+            0,
+            0,
+            0
+        )
     ).
 
 add_node(
