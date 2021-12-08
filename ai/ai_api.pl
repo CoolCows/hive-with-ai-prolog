@@ -4,6 +4,7 @@
     ai_vs_ai_init/1,
     ai_get_game_state/1,
     ai_set_game_state/1,
+    ai_game_status/1,
     ai_update_state/2
 ]).
 
@@ -35,6 +36,12 @@ ai_vs_ai(Node, EndNode) :-
 ai_play(Node, NewNode) :-
     true.
 
+ai_put_cell(Cell) :-
+    hive_put_cell(Cell).
+
+ai_move_cell(SourceCell, DestCell) :-
+    hive_move_cell(SourceCell, DestCell).
+
 ai_get_game_state(State) :-
     hive_get_game_state(State).
 
@@ -44,6 +51,9 @@ ai_set_game_state(State) :-
 ai_update_state(NewState, OldState) :-
     hive_get_game_state(OldState),
     hive_set_game_state(NewState).
+
+ai_game_status(Status) :-
+    game_status(Status).
 
 ai_current_player_color(Color) :-
     hive_current_player_color(Color).
