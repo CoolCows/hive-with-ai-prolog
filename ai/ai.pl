@@ -8,26 +8,36 @@
 %
 % Use reinforced learning 
 
-:- use_module(ai_api, [ai_current_player_color/1]).
+:- use_module(ai_api, [
+    ai_current_player_color/1,
+    ai_update_state/2
+]).
+:- use_module(total_visits, [increase_total_visits/0]).
 
 run_simulation(Node, Node) :-
     not(get_type(Node, non_terminal)).
 run_simulation(Node, NextNode) :-
+    ai_get_game_state(RealGameState),
+
     % For multi-threading (for later)
-    % findall(NextMove, get_posible_next_nodes(GameState, Policy, NextMove), NextMoves),
+    % Make the dynamic predicates thread independent
+    % Use mutexes to when writing to database
     % create some threads to analyse several path down 
-    true.
+
+    ai_set_game_state(RealGameState).
 
 search(Node, Node) :-
     not(get_type(Node, non_terminal)),!,
     ai_current_player_color(Color),
+    increase_total_visits,
     backpropagate(Node, Color).
 search(
-    node(Address, _, GameState, Type, Visited, Explored, WhiteWon, BlackWon),
+    node(Address, _, _, GameState, Type, Visited, Explored, WhiteWon, BlackWon),
     EndNode
 ) :-
     select_next_move(Address, GameState, NextMoves, NextMove),
     % Create or find the node with new Game State representing the new move done
+    % Set the new Game State
     % Repeat the search with the new Node
     true.
 
@@ -60,19 +70,20 @@ analyze_moves(Address, GameState, [Move|NextMoves], MaxValue, TopMoves, BestMove
         );
         (
             % Call to Heuristics and Multiply for constant Value
+            total_visits(TotalVisits),
             NewValue is sqrt(TotalVisits)
         )
     ),
     (
         (
             NewValue > MaxValue,!, 
-            analyze_move(Address, GameState, NextMoves, NewValue, [Move], BestMoves)
+            analyze_moves(Address, GameState, NextMoves, NewValue, [Move], BestMoves)
         );
         (
             NewValue =:= MaxValue,!,
-            analyze_move(Address, GameState, NextMoves, MaxValue, [Move|TopMoves], BestMoves)
+            analyze_moves(Address, GameState, NextMoves, MaxValue, [Move|TopMoves], BestMoves)
         );
-        analyze_move(Address, GameState, NextMoves, MaxValue, TopMoves, BestMoves)
+        analyze_moves(Address, GameState, NextMoves, MaxValue, TopMoves, BestMoves)
     ).
 
 % Upper Confidence Bound
@@ -83,4 +94,5 @@ uct(node(_, _, _, _, Explored, WhiteWon, BlackWon), Result) :-
         TimesWon = BlackWon 
     ),
     % Apply Heuristics
+    total_visits(TotalVisits),
     Result is TimesWon/Explored + sqrt(TotalVisits)/Explored.
