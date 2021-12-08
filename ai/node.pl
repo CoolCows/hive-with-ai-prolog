@@ -86,7 +86,7 @@ force_find_node(ParentAddress, GameState, EdgeMove, NodeType, NodeVisited, Node)
         (
             keccak256(ParentAddress, EdgeMove, AuxAddress),
             add_node(
-                NodeAddres, AuxAddress, ParentAddress, NodeType, NodeVisited, Node
+                NodeAddress, AuxAddress, ParentAddress, NodeType, NodeVisited, Node
             )
         )
     ).
