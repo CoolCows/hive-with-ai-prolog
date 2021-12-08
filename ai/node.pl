@@ -1,6 +1,7 @@
 :- module(node, [
     get_address/2,
     get_type/2,
+    get_stats/4,
     get_times_explored/2,
     get_times_white_won/2,
     get_times_black_won/2,
@@ -22,7 +23,6 @@
         address:string,          % hash(parent_address + str(game_state))
         auxiliar_address:string, % hash(parent_address + str(move that made new_state from old_state))
         parent_address:string,   
-        game_state:list,         % [board, players, turns, last_played]
         node_type: atom,         % non_terminal | white_won | black_won | draw
         node_visited: bool,      % true | false
         times_explored: integer,
@@ -56,6 +56,10 @@ get_type(
     Type
 ).
 
+get_stats(
+    node(_, _, _, _, _, _, Explored, WhiteWon, BlackWon),
+    Explored, WhiteWon, BlackWon
+).
 
 get_times_explored(
     node(_, _, _, _, _, _, Explored, _, _),
@@ -82,7 +86,7 @@ force_find_node(ParentAddress, GameState, EdgeMove, NodeType, NodeVisited, Node)
         (
             keccak256(ParentAddress, EdgeMove, AuxAddress),
             add_node(
-                NodeAddres, AuxAddress, ParentAddress, GameState, NodeType, NodeVisited, Node
+                NodeAddres, AuxAddress, ParentAddress, NodeType, NodeVisited, Node
             )
         )
     ).
@@ -95,7 +99,6 @@ add_initial_node:-
             1,
             1,
             0,
-            %define game state
             non_terminal,
             true,
             0,
