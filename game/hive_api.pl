@@ -65,6 +65,9 @@ hive_skip_turn():-
 	not(hive_get_possible_positions(Color,_)),
 	increase_turns().
 
+hive_current_player_color(Color):-
+    current_player_color(Color).
+
 hive_game_status(Status):-
 	game_status(Status).
 

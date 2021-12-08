@@ -150,12 +150,16 @@ find_node_by_edge_move(
 % 1. Finds node at NodeAddress
 % 2. Updates properties
 % 3. Returns ParentAddress
-update_node(NodeAddress, NewExplored, NewWhiteWon, NewBlackWon) :-
-    find_node(NodeAddress, Node),
-    Node = node(_, AuxAddress, ParentAddress, GameState, NodeType, Explored, WhiteWon, BlackWon),
+update_node(Node, Color) :-
+    Node = node(Address, AuxAddress, ParentAddress, GameState, NodeType, Explored, WhiteWon, BlackWon),
     retract_node(Node),
+    NewExplored is Explored + 1,
+    (
+        (Color = black, NewBlackWon is BlackWon + 1, NewWhiteWon = WhiteWon);
+        (Color = white, NewBlackWon = BlackWon, NewWhiteWon + 1 is WhiteWon)
+    ),
     assert_node(
-        NodeAddres,
+        Address,
         AuxAddress,
         ParentAddress,
         GameState,

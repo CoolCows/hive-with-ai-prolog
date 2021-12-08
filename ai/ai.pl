@@ -8,6 +8,8 @@
 %
 % Use reinforced learning 
 
+:- use_module(ai_api, [ai_current_player_color/1]).
+
 run_simulation(Node, Node) :-
     not(get_type(Node, non_terminal)).
 run_simulation(Node, NextNode) :-
@@ -17,22 +19,35 @@ run_simulation(Node, NextNode) :-
     true.
 
 search(Node, Node) :-
-    not(get_type(Node, non_terminal)),!.
+    not(get_type(Node, non_terminal)),!,
+    ai_current_player_color(Color),
+    backpropagate(Node, Color).
 search(
     node(Address, _, GameState, Type, Visited, Explored, WhiteWon, BlackWon),
     EndNode
 ) :-
     select_next_move(Address, GameState, NextMoves, NextMove),
-    % Create new node with new Game State
+    % Create or find the node with new Game State representing the new move done
+    % Repeat the search with the new Node
+    true.
+
+backpropagate(Node, Color) :-
+    get_parent_address(Node, 0),!,
+    update_node(Node, Color).
+backpropagate(Node, Color) :-
+    update_node(Node, Color),
+    get_parent_address(Node, ParentGameStateAddress),
+    find_node_by_game_state(ParentGameStateAddress, ParentNode),
+    backpropagate(ParentNode, Color).
+
+select_next_move(Address, GameState, NextMove) :-
+    get_next_moves(GameState, NextMoves),
+    % Set Game State
+    analyze_moves(Address, GameState, NextMoves, -2^64, [], [NextMove|_]),
     true.
 
 % Get all possible moves
 get_next_moves(GameState, NextMoves) :-
-    true.
-
-select_next_move(Address, GameState, NextMove) :-
-    get_next_moves(GameState, NextMoves),
-    analyze_moves(Address, GameState, NextMoves, -2^64, [], [NextMove|_]),
     true.
 
 analyze_moves(_, _, [], _, BestMoves, BestMoves).
@@ -44,8 +59,8 @@ analyze_moves(Address, GameState, [Move|NextMoves], MaxValue, TopMoves, BestMove
             uct(Node, NewValue)
         );
         (
-            NewValue is sqrt(TotalVisits)
             % Call to Heuristics and Multiply for constant Value
+            NewValue is sqrt(TotalVisits)
         )
     ),
     (
@@ -61,5 +76,11 @@ analyze_moves(Address, GameState, [Move|NextMoves], MaxValue, TopMoves, BestMove
     ).
 
 % Upper Confidence Bound
-uct(Node, Result) :-
-    true.
+uct(node(_, _, _, _, Explored, WhiteWon, BlackWon), Result) :-
+    ai_current_player_color(Color),
+    (
+        (Color = white, TimesWon = WhiteWon);
+        TimesWon = BlackWon 
+    ),
+    % Apply Heuristics
+    Result is TimesWon/Explored + sqrt(TotalVisits)/Explored.
