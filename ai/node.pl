@@ -15,6 +15,8 @@
 :- use_module(total_visits, [init_total_visits/0]).
 
 % define persistent game node
+% TODO
+% There is no need to keep game_state!!!
 :- persistent
     node(
         address:string,          % hash(parent_address + str(game_state))
@@ -70,15 +72,17 @@ get_times_black_won(
     BlackWon
 ).
 
-% Methods:
+% Finds a Node, if it does not exist, it's created
 force_find_node(ParentAddress, GameState, EdgeMove, NodeType, Node) :-
+    force_find_node(ParentAddress, GameState, EdgeMove, NodeType, false, Node).
+force_find_node(ParentAddress, GameState, EdgeMove, NodeType, NodeVisited, Node) :-
    keccak256(ParentAddress, GameState, NodeAddress),
    (
         find_node_by_game_state(NodeAddress, Node);
         (
             keccak256(ParentAddress, EdgeMove, AuxAddress),
             add_node(
-                NodeAddres, AuxAddress, ParentAddress, GameState, NodeType, Node
+                NodeAddres, AuxAddress, ParentAddress, GameState, NodeType, NodeVisited, Node
             )
         )
     ).
