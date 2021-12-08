@@ -28,12 +28,14 @@
     ]).
 
 :- use_module("../../game/gui_api", [
-    gui_put_cell/3,
-    gui_move_cell/3,
+    gui_change_game_state/1,
+    gui_ai_turn/1,
+    gui_get_visual_game_state/2,
     gui_get_possible_moves/2,
     gui_get_board/1,
     gui_mosquito_adyacent_pillbug/1,
-	gui_get_pillbug_effect/2
+	gui_get_pillbug_effect/2,
+    gui_test_board/1
 ]).
 
 select_event(Canvas, ClickPosition, WhiteCanvas, BlackCanvas) :-
@@ -63,7 +65,7 @@ select_event(Canvas, ClickPosition, WhiteCanvas, BlackCanvas) :-
         (
             not(nb_getval(move_cell, undefined)), 
             write_ln('moving_cell'), 
-            move_cell(Canvas, CorrectCell)
+            move_cell(Canvas, CorrectCell, WhiteCanvas, BlackCanvas)
         )
     ).
 
@@ -75,29 +77,20 @@ position_cell(
 ) :-
     nb_getval(player_turn, Colour),
     nb_getval(position_cell, BugType),
-    gui_put_cell(
-        +cell(BugType, Row, Col, Colour, Stack),
-        -NewBoard,
-        -NewPlayer
-    ),
-    (
-        (Colour = white, SideCanvas = WhiteCanvas);
-        (Colour = black, SideCanvas = BlackCanvas)
-    ),
-    change_turn(NewBoard, NewPlayer, Canvas, SideCanvas),
-    write_ln('Correctly postioned').
+    change_turn(place(cell(BugType, Row, Col, Colour, Stack)), Canvas, WhiteCanvas, BlackCanvas).
     
-move_cell(Canvas, cell(none, Row, Col, none, Stack)) :-
+move_cell(Canvas, cell(none, Row, Col, none, Stack), WhiteCanvas, BlackCanvas) :-
     nb_getval(move_cell, SourceCell),
     SourceCell = cell(BugType, _, _, Colour, _),
-    gui_move_cell(
-        +SourceCell,
-        +cell(BugType, Row, Col, Colour, Stack),
-        -NewBoard
+    (
+        (
+            nb_getval(pillbug_effect, undefined),
+            MoveType = move(SourceCell, cell(BugType, Row, Col, Colour, Stack))
+        );
+        MoveType = pillbug(SourceCell, cell(BugType, Row, Col, Colour, Stack))
     ),
-    change_turn(NewBoard, Canvas).
+    change_turn(MoveType, Canvas, WhiteCanvas, BlackCanvas).
     
-
 select_cell(Canvas, CorrectCell) :-
     gui_get_possible_moves(+CorrectCell, -NewBoard),
     nb_setval(board, NewBoard),
@@ -118,20 +111,19 @@ select_cell(Canvas, CorrectCell) :-
     draw_selected_cell(cell(none, Row, Col, show, StackPos), Canvas).
 
 select_movable_bug(Canvas, CorrectCell, [MovBugs, MovPositions]) :-
+    % Set Cell to be moved
     move_cell(CorrectCell),
+    % Draw New Board to show cells to be movables
     gui_get_board(-Board),
     append(MovPositions, Board, NewBoard),
     nb_setval(board, NewBoard),
-    write_ln(NewBoard),
     draw_board(NewBoard, Canvas),
     findall(cell(none, Row, Col, pillbug, 0), member(cell(_, Row, Col, _, _), MovBugs), ShowMovBugs),
     CorrectCell = cell(_, Row, Col, _, 0),
     draw_all(Canvas, ShowMovBugs),
-    draw_selected_cell(cell(none, Row, Col, show, 1), Canvas),
-    true.
+    draw_selected_cell(cell(none, Row, Col, show, 1), Canvas).
 
 handle_pillbug_effect(Canvas, CorrectCell) :-
-    write_ln('Handling pillbug effect'),
     gui_get_pillbug_effect(+CorrectCell, -[MovBugs, PosBugs]),
     nb_setval(pillbug_effect, [MovBugs, PosBugs]),
     findall(cell(none, Row, Col, pillbug, 5), member(cell(_, Row, Col, _, _), MovBugs), ShowMovBugs),
@@ -163,31 +155,46 @@ get_top_cell([X, Y|Rest], TopCell) :-
     get_top_cell([Y|Rest], TopCell).
     
 
-change_turn(Board, Canvas) :- change_turn(Board, _, Canvas, _).
-change_turn(Board, Player, Canvas, SideCanvas) :-
-    nb_setval(board, Board),
+change_turn(MoveType, Canvas, WhiteCanvas, BlackCanvas) :-
     nb_setval(pillbug_effect, undefined),
     nb_setval(move_cell, undefined),
     nb_setval(position_cell, undefined),
 
+    handle_opponent(MoveType, Canvas, WhiteCanvas, BlackCanvas).
+
+handle_opponent(MoveType, Canvas, WhiteCanvas, BlackCanvas) :-
+    nb_getval(opponent, human),
+    gui_change_game_state(MoveType),
+    gui_get_visual_game_state(Board, [WhitePlayer, BlackPlayer]),
+    nb_setval(board, Board),
     nb_getval(player_turn, Colour),
     (
         (   
             Colour = white,
             nb_setval(player_turn, black),
-            not(var(Player)),
-            nb_setval(white_player, Player),
-            draw_side_board(Player, Colour, SideCanvas)
+            MoveType = place(_),
+            nb_setval(white_player, WhitePlayer),
+            draw_side_board(WhitePlayer, Colour, WhiteCanvas)
         );
         (
             Colour = black, 
             nb_setval(player_turn, white),
-            not(var(Player)),
-            nb_setval(black_player, Player),
-            draw_side_board(Player, Colour, SideCanvas)
+            MoveType = place(_),
+            nb_setval(black_player, BlackPlayer),
+            draw_side_board(BlackPlayer, Colour, BlackCanvas)
         );
         true
     ),
+    draw_board(Board, Canvas).
+
+
+handle_opponent(MoveType, Canvas, WhiteCanvas, BlackCanvas):-
+    nb_getval(opponent, ai),
+    gui_ai_turn(MoveType),
+    gui_get_visual_game_state(Board, [WhitePlayer, BlackPlayer]),
+    nb_setval(board, Board),
+    draw_side_board(WhitePlayer, white, WhiteCanvas),
+    draw_side_board(BlackPlayer, black, BlackCanvas),
     draw_board(Board, Canvas).
 
 scan_board([Cell|Rest], ClickPosition, CorrectCell) :-

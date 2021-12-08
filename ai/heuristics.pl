@@ -1,6 +1,5 @@
 :- module( heuristics, [ 
-    apply_heuristics/2,
-    surround_queen/1 
+    apply_heuristics/2
 ] ).
 
 :- use_module("../game/hive_api").

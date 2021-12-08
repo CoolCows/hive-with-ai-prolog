@@ -5,7 +5,8 @@
     get_times_explored/2,
     get_times_white_won/2,
     get_times_black_won/2,
-    force_find_node/4,
+    force_find_node/5,
+    force_find_node/6,
     add_initial_node/0,
     find_node_by_game_state/2,
     find_node_by_edge_move/2,
@@ -86,7 +87,7 @@ force_find_node(ParentAddress, GameState, EdgeMove, NodeType, NodeVisited, Node)
         (
             keccak256(ParentAddress, EdgeMove, AuxAddress),
             add_node(
-                NodeAddres, AuxAddress, ParentAddress, NodeType, NodeVisited, Node
+                NodeAddress, AuxAddress, ParentAddress, NodeType, NodeVisited, Node
             )
         )
     ).
@@ -137,12 +138,19 @@ find_node_by_game_state(
         NodeAddress, 
         AuxAddress,
         ParentAddress, 
-        GameState, 
         Explored, 
         WhiteWon, 
         BlackWon
     )
-).
+):-
+    node(
+        NodeAddress, 
+        AuxAddress,
+        ParentAddress, 
+        Explored, 
+        WhiteWon, 
+        BlackWon
+    ).
 
 find_node_by_edge_move(
     AuxAddress,
@@ -150,12 +158,19 @@ find_node_by_edge_move(
         NodeAddress, 
         AuxAddress,
         ParentAddress, 
-        GameState, 
         Explored, 
         WhiteWon, 
         BlackWon
     )
-).
+):-
+    node(
+        NodeAddress, 
+        AuxAddress,
+        ParentAddress, 
+        Explored, 
+        WhiteWon, 
+        BlackWon
+    ).
 
 % For backpropagation:
 % 1. Finds node at NodeAddress

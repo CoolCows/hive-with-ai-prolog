@@ -13,6 +13,7 @@
 	hive_get_cell/2,
 	hive_get_game_state/1,
 	hive_set_game_state/1,
+    hive_change_game_state/1,
 	hive_get_player/2
 ]).
 
@@ -34,6 +35,12 @@ hive_init_board() :-
 hive_init_players() :-
     init_player(white),
     init_player(black).
+
+hive_change_game_state(MoveType) :-
+    (MoveType = place(Cell), add_new_cell(Cell));
+    (MoveType = move(SourceCell, DestCell), move_cell(SourceCell, DestCell));
+    (MoveType = pillbug(SourceCell, DestCell), move_cell(SourceCell, DestCell)).
+
 
 hive_put_cell(Cell):-
     add_new_cell(Cell).
