@@ -8,7 +8,11 @@
 	hive_get_pillbug_effect/2,
 	hive_skip_turn/0,
 	hive_mosquito_adyacent_pillbug/1,
-	hive_game_status/1
+	hive_game_status/1,
+	hive_current_player_color/1,
+	hive_get_cell/2,
+	hive_get_game_state/1,
+	hive_set_game_state/1
 ]).
 
 :- use_module(player).
@@ -63,4 +67,10 @@ hive_skip_turn():-
 
 hive_game_status(Status):-
 	game_status(Status).
+
+hive_current_player_color(Color):-
+	current_player_color(Color).
+
+hive_get_cell(cell(Bug, Row, Col, Color, StackPos), cell(Bug, Row, Col, Color, StackPos)):-
+	get_cell(cell(Bug, Row, Col, Color, StackPos), cell(Bug, Row, Col, Color, StackPos)).
 

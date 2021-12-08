@@ -27,6 +27,7 @@
 					get_game_state/1,
 					set_game_state/1,
 					game_status/1
+					% current_player_color/2
 					]).
 
 :- use_module(cell).
@@ -107,15 +108,15 @@ add_new_cell(cell(Bug,Row,Col,Color,0)):-
 	increase_turns().
 
 
-move_cell(SourceCell,DestCell):-
-	delete_cell(SourceCell),
-	init_cell(DestCell),
+move_cell(cell(B1,R1,C1,D1,S1),cell(B2,R2,C2,D2,S2)):-
+	delete_cell(cell(B1,R1,C1,D1,S1)),
+	init_cell(cell(B1,R2,C2,D1,S2)),
 	current_player_color(PlayerColor),
 	delete_last_moved_cell(_,PlayerColor),
-	set_last_moved_cell(DestCell,PlayerColor),
+	set_last_moved_cell(cell(B1,R2,C2,D1,S2),PlayerColor),
 	write_ln("LAST MOVE CELL BY PLAYER"),
 	write_ln(PlayerColor),
-	write_ln(SourceCell),
+	write_ln(cell(B1,R1,C1,C1,S1)),
 	increase_turns().
 
 
