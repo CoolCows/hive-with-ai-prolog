@@ -7,25 +7,35 @@
 % Total explorations
 %
 % Use reinforced learning 
-:- module(ai, [run_simulation/2]).
+:- module(ai, [
+    run_simulation/2
+]).
 
 :- use_module(ai_api, [
     ai_current_player_color/1,
-    ai_update_state/2
+    ai_update_state/2,
+    ai_get_game_state/1,
+    ai_set_game_state/1
 ]).
 :- use_module("../game/hive_api").
 :- use_module(total_visits, [increase_total_visits/0]).
 :- use_module(heuristics).
+:- use_module(node).
 
 run_simulation(Node, Node) :-
-    not(get_type(Node, non_terminal)).
+    not(get_type(Node, non_terminal)),!,
+    write_ln('End Case Simulation').
 run_simulation(
     Node,
     NextNode
 ) :-
+    write_ln('Running simulation'),
     get_address(Node, Address),
+    write_ln(Address),
     ai_get_game_state(RealGameState),
+    write_ln(RealGameState),
     select_next_move(Address, NextMove),  
+    write_ln(NextMove),
     % ===== Multi-Threading (for later) =====
     % Make the dynamic predicates thread independent
     % Use mutexes to when writing to database
@@ -38,7 +48,8 @@ run_simulation(
     update_game_state(NextMove),
     get_game_state(NewGameState),
     ai_game_status(NodeType),
-    force_find_node(Address, NewGameState, NextMove, NodeType, true, NextNode).
+    force_find_node(Address, NewGameState, NextMove, NodeType, true, NextNode),
+    write_ln('Simulation Ended').
 
 search(Node, Node) :-
     not(get_type(Node, non_terminal)),!,

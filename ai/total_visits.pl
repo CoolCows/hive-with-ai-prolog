@@ -1,4 +1,5 @@
 :- module(total_visits, [
+    load_total_visits_db/0,
     init_total_visits/0,
     increase_total_visits/0
 ]).
@@ -8,7 +9,7 @@
 :- persistent total_visits(num: integer).
 
 load_total_visits_db :-
-    db_attach('./db/total_visits_db.pl', []).
+    db_attach('../ai/db/total_visits_db.pl', []).
 
 init_total_visits :-
     assert_total_visits(0).
