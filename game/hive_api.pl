@@ -70,7 +70,11 @@ hive_skip_turn():-
 	cells(Cells),
 	forall(member(cell(Bug,Row,Col,Color,StackPos),Cells),
 		  not(hive_get_possible_moves(cell(Bug,Row,Col,Color,StackPos),_))),
-	not(hive_get_possible_positions(Color,_)),
+  	(
+	not(hive_get_possible_positions(Color,_));
+	get_player(player(Color,0,0,0,0,0,0,0,0))
+  	),
+	% TODO: Handle pillbug effect
 	increase_turns().
 
 hive_current_player_color(Color):-
