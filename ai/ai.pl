@@ -46,9 +46,10 @@ search(Node, Node) :-
     increase_total_visits,
     backpropagate(Node, Color).
 search(
-    node(Address, _, _, _, _, _, Explored, WhiteWon, BlackWon),
+    Node,
     EndNode
 ) :-
+    get_address(Node, Address),
     select_next_move(Address, NextMove),
     update_game_state(NextMove),
     get_game_state(NewGameState),

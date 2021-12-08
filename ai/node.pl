@@ -138,12 +138,19 @@ find_node_by_game_state(
         NodeAddress, 
         AuxAddress,
         ParentAddress, 
-        GameState, 
         Explored, 
         WhiteWon, 
         BlackWon
     )
-).
+):-
+    node(
+        NodeAddress, 
+        AuxAddress,
+        ParentAddress, 
+        Explored, 
+        WhiteWon, 
+        BlackWon
+    ).
 
 find_node_by_edge_move(
     AuxAddress,
@@ -151,12 +158,19 @@ find_node_by_edge_move(
         NodeAddress, 
         AuxAddress,
         ParentAddress, 
-        GameState, 
         Explored, 
         WhiteWon, 
         BlackWon
     )
-).
+):-
+    node(
+        NodeAddress, 
+        AuxAddress,
+        ParentAddress, 
+        Explored, 
+        WhiteWon, 
+        BlackWon
+    ).
 
 % For backpropagation:
 % 1. Finds node at NodeAddress

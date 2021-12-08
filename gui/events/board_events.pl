@@ -34,7 +34,8 @@
     gui_get_possible_moves/2,
     gui_get_board/1,
     gui_mosquito_adyacent_pillbug/1,
-	gui_get_pillbug_effect/2
+	gui_get_pillbug_effect/2,
+    gui_test_board/1
 ]).
 
 select_event(Canvas, ClickPosition, WhiteCanvas, BlackCanvas) :-
@@ -76,7 +77,7 @@ position_cell(
 ) :-
     nb_getval(player_turn, Colour),
     nb_getval(position_cell, BugType),
-    change_turn(place(cell(BugType, Row, Colour, Stack)), Canvas, WhiteCanvas, BlackCanvas).
+    change_turn(place(cell(BugType, Row, Col, Colour, Stack)), Canvas, WhiteCanvas, BlackCanvas).
     
 move_cell(Canvas, WhiteCanvas, BlackCanvas, cell(none, Row, Col, none, Stack)) :-
     nb_getval(move_cell, SourceCell),
@@ -192,7 +193,6 @@ handle_opponent(MoveType, Canvas, WhiteCanvas, BlackCanvas):-
     gui_ai_turn(MoveType),
     gui_get_visual_game_state(Board, [WhitePlayer, BlackPlayer]),
     nb_setval(board, Board),
-    nb_getval(player_turn, Colour),
     draw_side_board(WhitePlayer, white, WhiteCanvas),
     draw_side_board(BlackPlayer, black, BlackCanvas),
     draw_board(Board, Canvas).

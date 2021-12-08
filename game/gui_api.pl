@@ -6,6 +6,7 @@
     gui_get_possible_positions/2,
 	gui_get_pillbug_effect/2,
     gui_get_board/1,
+    gui_test_board/1,
 	gui_mosquito_adyacent_pillbug/1,
     gui_change_game_state/1,
     gui_get_visual_game_state/2,
@@ -18,7 +19,7 @@
 :- use_module(board).
 :- use_module(turns).
 :- use_module(hive_api).
-:- use_module("../ai/ai_api", [ai_vs_human_init/0, ai_vs_human/2]).
+:- use_module("../ai/ai_api", [ai_vs_human_init/0, ai_vs_human/1]).
 
 gui_start_game(+Opponent, -Board, -Players) :-
     (
