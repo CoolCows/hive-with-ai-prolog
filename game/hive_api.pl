@@ -12,7 +12,8 @@
 	hive_current_player_color/1,
 	hive_get_cell/2,
 	hive_get_game_state/1,
-	hive_set_game_state/1
+	hive_set_game_state/1,
+	hive_get_player/2
 ]).
 
 :- use_module(player).
@@ -83,3 +84,10 @@ hive_current_player_color(Color):-
 hive_get_cell(cell(Bug, Row, Col, Color, StackPos), cell(Bug, Row, Col, Color, StackPos)):-
 	get_cell(cell(Bug, Row, Col, Color, StackPos), cell(Bug, Row, Col, Color, StackPos)).
 
+hive_get_player(player(Color,Queen, Ants, Beetle, Grasshopper, Ladybug, Mosquito, Pillbug, Spider),
+		   player(Color,Queen, Ants, Beetle, Grasshopper, Ladybug, Mosquito, Pillbug, Spider)):-
+	get_player(player(Color,Queen, Ants, Beetle, Grasshopper, Ladybug, Mosquito, Pillbug, Spider),
+		   player(Color,Queen, Ants, Beetle, Grasshopper, Ladybug, Mosquito, Pillbug, Spider)
+	).
+
+	
