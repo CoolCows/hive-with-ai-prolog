@@ -1,4 +1,4 @@
-:- module(ai, [
+:- module(ai_api, [
     ai_vs_human_init/0,
     ai_vs_human/1,
     ai_vs_ai_init/1,
