@@ -31,9 +31,9 @@ run_simulation(
 ) :-
     write_ln('Running simulation'),
     get_address(Node, Address),
-    write_ln(Address),
-    ai_get_game_state(RealGameState),
-    write_ln(RealGameState),
+    write_ln('Got Node Address'),
+    ai_get_game_state(RealGameState),!,
+    write_ln('Got Game State'),
     select_next_move(Address, NextMove),  
     write_ln(NextMove),
     % ===== Multi-Threading (for later) =====
@@ -78,7 +78,10 @@ backpropagate(Node, Color) :-
     backpropagate(ParentNode, Color).
 
 select_next_move(Address, NextMove) :-
+    write_ln('Selecting Next Move'),
     get_next_moves(NextMoves), 
+    write_ln(NextMoves),
+    write_ln('Analyzing Next Moves'),
     analyze_moves(Address, NextMoves, -2^64, [], [NextMove|_]),
     true.
 
