@@ -1,13 +1,15 @@
 :- module(gui_api,[
-    gui_init_board/1,
-    gui_init_players/1,
+    gui_start_game/2,
     gui_put_cell/3,
     gui_move_cell/3,
     gui_get_possible_moves/2,
     gui_get_possible_positions/2,
 	gui_get_pillbug_effect/2,
     gui_get_board/1,
-	gui_mosquito_adyacent_pillbug/1
+	gui_mosquito_adyacent_pillbug/1,
+    gui_change_game_state/1,
+    gui_get_visual_game_state/2,
+    gui_ai_turn/1
 ]).
 
 :- use_module(player).
@@ -16,25 +18,16 @@
 :- use_module(board).
 :- use_module(turns).
 :- use_module(hive_api).
+:- use_module("../ai/ai_api", [ai_vs_human_init/0, ai_vs_human/2]).
 
-dummy_init:-
-	write_ln("GAME STARTED"),
-    % init_cell(cell(queen, 0, 0, white, 0)),
-    % init_cell(cell(pillbug, 1, 0, white, 0)),
-    % init_cell(cell(mosquito, 2, 0, white, 0)),
-    % init_cell(cell(ant, 1, 1, white, 0)),
-    % init_cell(cell(ant, 1, -1, white, 0)),
-    % init_cell(cell(queen, -1, 0, black, 0)),
-    % init_cell(cell(pillbug, -2, 0, black, 0)),
-    % init_cell(cell(mosquito, -3, 0, black, 0)),
-    % init_cell(cell(ant, -3, -1, black, 0)),
-    % init_cell(cell(ant, -3, 1, black, 0)),
-    true.
-
-gui_init_board(-Board) :-
-    % Call method that return the board
-    dummy_init,
+gui_start_game(+Opponent, -Board, -Players) :-
+    (
+        (Opponent = ai, ai_vs_human_init);
+        true
+    ),
 	init_turns,
+	hive_init_players(),
+    players(Players),
     cells(Board).
 
 gui_get_board(-Board) :-
@@ -42,10 +35,6 @@ gui_get_board(-Board) :-
 
 gui_test_board(-Board) :-
     cells(Board).
-
-gui_init_players(-Players) :-
-	hive_init_players(),
-    players(Players).
 
 gui_put_cell(+Cell, -Board, -NewPlayer) :-
 	hive_put_cell(Cell),
@@ -82,6 +71,16 @@ gui_get_pillbug_effect(+PillbugCell, -[MovableBugs, MovablePositions]) :-
 
 gui_mosquito_adyacent_pillbug(+MosquitoCell) :-
 	hive_mosquito_adyacent_pillbug(MosquitoCell).
+
+gui_change_game_state(MoveType) :-
+    hive_change_game_state(MoveType).
+
+gui_get_visual_game_state(Board, Players) :-
+    cells(Board),
+    players(Players).
+
+gui_ai_turn(MoveType) :-
+    ai_vs_human(MoveType).
 
 gui_skip_turn():-
 	hive_skip_turn().

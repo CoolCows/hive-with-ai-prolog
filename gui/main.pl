@@ -56,11 +56,10 @@ start_game(Canvas, BlackCells, WhiteCells) :-
     CH is H/2, CW is W/2,
     nb_setval(center, point(CW, CH)),
 
-    gui_init_players(-[Player1, Player2]),
+    gui_start_game(-Board, -[Player1, Player2]),
     nb_setval(white_player, Player1),
     nb_setval(black_player, Player2),
-
-    gui_init_board(-Board),
+    write_ln(Board),write_ln(Player1),write_ln(Player2),
     nb_setval(board, Board),
 
     draw_side_board(Player1, white, WhiteCells),
