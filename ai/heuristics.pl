@@ -1,8 +1,25 @@
-:- module( heuristic, [ surround_queen/1 ] ).
+:- module( heuristics, [ 
+    apply_heuristics/2,
+    surround_queen/1 
+] ).
 
 :- use_module("../game/hive_api").
 :- use_module("../game/board").
 
+apply_heuristics(Move, Value) :-
+    (
+        (surround_enemy_queen(Move), A = 3);
+        (A = 0)
+    ),
+    (
+        (free_current_player_queen(Move), B = 2);
+        (B = 0)
+    ),
+    (
+        (block_enemy_queen(Move), C = 1.5);
+        (C = 0)
+    ),
+    Value is A + B + C.
 
 surround_enemy_queen(move(cell(B1,R1,C1,D1,S1),cell(B2,R2,C2,D2,S2))):-
 	DestCell = cell(B1,R2,C2,D1,S2),

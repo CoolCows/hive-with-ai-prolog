@@ -7,6 +7,7 @@
 % Total explorations
 %
 % Use reinforced learning 
+:- module(ai, [run_simulation/2]).
 
 :- use_module(ai_api, [
     ai_current_player_color/1,
@@ -14,6 +15,7 @@
 ]).
 :- use_module("../game/hive_api").
 :- use_module(total_visits, [increase_total_visits/0]).
+:- use_module(heuristics).
 
 run_simulation(Node, Node) :-
     not(get_type(Node, non_terminal)).
@@ -74,12 +76,13 @@ analyze_moves(Address, [Move|NextMoves], MaxValue, TopMoves, BestMoves) :-
     (
         (
             find_node_by_edge_move(AuxAddress, Node),
-            uct(Node, NewValue)
+            uct(Node, Move, NewValue)
         );
         (
             % Call to Heuristics and Multiply for constant Value
+            apply_heuristics(Move, C),
             total_visits(TotalVisits),
-            NewValue is sqrt(TotalVisits)
+            NewValue is C*sqrt(TotalVisits)
         )
     ),
     (
@@ -95,6 +98,7 @@ analyze_moves(Address, [Move|NextMoves], MaxValue, TopMoves, BestMoves) :-
     ).
 
 % Get all possible moves
+<<<<<<< HEAD
 possible_moves(Color,move(SourceCell,DestCell)):-
 	hive_get_cell(cell(_,_,_,Color,_),SourceCell),
 	hive_get_possible_moves(SourceCell,PosMoves),
@@ -153,12 +157,12 @@ update_game_state(NextMove) :-
     ).
 
 % Upper Confidence Bound
-uct(node(_, _, _, _, Explored, WhiteWon, BlackWon), Result) :-
+uct(Node, Move, Result) :-
     ai_current_player_color(Color),
     (
-        (Color = white, TimesWon = WhiteWon);
-        TimesWon = BlackWon 
+        (Color = white, get_stats(Node, TimesWon, _, Explored));
+        get_stats(Node, _, TimesWon, Explored)
     ),
-    % Apply Heuristics
+    apply_heuristics(Move, C),
     total_visits(TotalVisits),
-    Result is TimesWon/Explored + sqrt(TotalVisits)/Explored.
+    Result is TimesWon/Explored + C*sqrt(TotalVisits)/Explored.
