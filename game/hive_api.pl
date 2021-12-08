@@ -13,6 +13,7 @@
 	hive_get_cell/2,
 	hive_get_game_state/1,
 	hive_set_game_state/1,
+    hive_change_game_state/1,
 	hive_get_player/2
 ]).
 

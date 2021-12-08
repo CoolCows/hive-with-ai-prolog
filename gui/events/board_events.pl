@@ -65,7 +65,7 @@ select_event(Canvas, ClickPosition, WhiteCanvas, BlackCanvas) :-
         (
             not(nb_getval(move_cell, undefined)), 
             write_ln('moving_cell'), 
-            move_cell(Canvas, CorrectCell)
+            move_cell(Canvas, CorrectCell, WhiteCanvas, BlackCanvas)
         )
     ).
 
@@ -79,7 +79,7 @@ position_cell(
     nb_getval(position_cell, BugType),
     change_turn(place(cell(BugType, Row, Col, Colour, Stack)), Canvas, WhiteCanvas, BlackCanvas).
     
-move_cell(Canvas, WhiteCanvas, BlackCanvas, cell(none, Row, Col, none, Stack)) :-
+move_cell(Canvas, cell(none, Row, Col, none, Stack), WhiteCanvas, BlackCanvas) :-
     nb_getval(move_cell, SourceCell),
     SourceCell = cell(BugType, _, _, Colour, _),
     (

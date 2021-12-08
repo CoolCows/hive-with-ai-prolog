@@ -17,8 +17,10 @@ menu_bar_setup(MainWin, Board, BlackCells, WhiteCells) :-
                 [new(Opt, popup(new_Game)),
                  menu_item(exit, message(MainWin, destroy))]),
     send_list(Opt, append,
-                [menu_item(local_game, message(@prolog, start_game, Board, BlackCells, WhiteCells)),
-                 menu_item(against_AI),
+                [menu_item(local_game, message(
+                        @prolog, start_game, human, Board, BlackCells, WhiteCells)),
+                 menu_item(against_AI, message(
+                        @prolog, start_game, ai, Board, BlackCells, WhiteCells)),
                  menu_item(online)]).
 
 file_dialog_setup(Canvas, BlackCells, WhiteCells) :-
@@ -44,19 +46,20 @@ file_dialog_setup(Canvas, BlackCells, WhiteCells) :-
     send(button(refresh, message(@prolog, refresh, Canvas)), below, WhiteCells).
 
 
-start_game(Canvas, BlackCells, WhiteCells) :-
+start_game(Opponent, Canvas, BlackCells, WhiteCells) :-
     % Init Global Vars
     nb_setval(scale, 0.75),
     nb_setval(move_cell, undefined),
     nb_setval(position_cell, undefined),
     nb_setval(pillbug_effect, undefined),
     nb_setval(player_turn, white),
+    nb_setval(opponent, Opponent),
 
     get(Canvas, size, size(W, H)),
     CH is H/2, CW is W/2,
     nb_setval(center, point(CW, CH)),
 
-    gui_start_game(-Board, -[Player1, Player2]),
+    gui_start_game(+Opponent, -Board, -[Player1, Player2]),
     nb_setval(white_player, Player1),
     nb_setval(black_player, Player2),
     write_ln(Board),write_ln(Player1),write_ln(Player2),
