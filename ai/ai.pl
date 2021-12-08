@@ -16,15 +16,26 @@
 
 run_simulation(Node, Node) :-
     not(get_type(Node, non_terminal)).
-run_simulation(Node, NextNode) :-
+run_simulation(
+    Node,
+    NextNode
+) :-
+    get_address(Node, Address),
     ai_get_game_state(RealGameState),
-
-    % For multi-threading (for later)
+    select_next_move(Address, NextMove),  
+    % ===== Multi-Threading (for later) =====
     % Make the dynamic predicates thread independent
     % Use mutexes to when writing to database
     % create some threads to analyse several path down 
+    % =====          End                =====
 
-    ai_set_game_state(RealGameState).
+    % After simulation select cells to move
+    ai_set_game_state(RealGameState),
+    select_next_move(Address, NextMove),
+    update_game_state(NextMove),
+    get_game_state(NewGameState),
+    ai_game_status(NodeType),
+    force_find_node(Address, NewGameState, NextMove, NodeType, true, NextNode).
 
 search(Node, Node) :-
     not(get_type(Node, non_terminal)),!,
@@ -32,14 +43,15 @@ search(Node, Node) :-
     increase_total_visits,
     backpropagate(Node, Color).
 search(
-    node(Address, _, _, GameState, Type, Visited, Explored, WhiteWon, BlackWon),
+    node(Address, _, _, _, _, _, Explored, WhiteWon, BlackWon),
     EndNode
 ) :-
-    select_next_move(Address, GameState, NextMoves, NextMove),
-    % Create or find the node with new Game State representing the new move done
-    % Set the new Game State
-    % Repeat the search with the new Node
-    true.
+    select_next_move(Address, NextMove),
+    update_game_state(NextMove),
+    get_game_state(NewGameState),
+    ai_game_status(NodeType),
+    force_find_node(Address, NewGameState, NextMove, NodeType, Node),
+    search(Node, EndNode).
 
 backpropagate(Node, Color) :-
     get_parent_address(Node, 0),!,
@@ -50,18 +62,13 @@ backpropagate(Node, Color) :-
     find_node_by_game_state(ParentGameStateAddress, ParentNode),
     backpropagate(ParentNode, Color).
 
-select_next_move(Address, GameState, NextMove) :-
-    get_next_moves(GameState, NextMoves),
-    % Set Game State
-    analyze_moves(Address, GameState, NextMoves, -2^64, [], [NextMove|_]),
+select_next_move(Address, NextMove) :-
+    get_next_moves(NextMoves), 
+    analyze_moves(Address, NextMoves, -2^64, [], [NextMove|_]),
     true.
 
-% Get all possible moves
-get_next_moves(GameState, NextMoves) :-
-    true.
-
-analyze_moves(_, _, [], _, BestMoves, BestMoves).
-analyze_moves(Address, GameState, [Move|NextMoves], MaxValue, TopMoves, BestMoves) :-
+analyze_moves(_, [], _, BestMoves, BestMoves).
+analyze_moves(Address, [Move|NextMoves], MaxValue, TopMoves, BestMoves) :-
     keccak256(Address, Move, AuxAddress),
     (
         (
@@ -77,13 +84,27 @@ analyze_moves(Address, GameState, [Move|NextMoves], MaxValue, TopMoves, BestMove
     (
         (
             NewValue > MaxValue,!, 
-            analyze_moves(Address, GameState, NextMoves, NewValue, [Move], BestMoves)
+            analyze_moves(Address, NextMoves, NewValue, [Move], BestMoves)
         );
         (
             NewValue =:= MaxValue,!,
-            analyze_moves(Address, GameState, NextMoves, MaxValue, [Move|TopMoves], BestMoves)
+            analyze_moves(Address, NextMoves, MaxValue, [Move|TopMoves], BestMoves)
         );
-        analyze_moves(Address, GameState, NextMoves, MaxValue, TopMoves, BestMoves)
+        analyze_moves(Address, NextMoves, MaxValue, TopMoves, BestMoves)
+    ).
+
+% Get all possible moves
+get_next_moves(GameState, NextMoves) :-
+    true.
+
+update_game_state(NextMove) :-
+    (
+        NextMove = place(Cell),
+        ai_put_cell(Cell)
+    );
+    (
+        NextMove = move(SourceCell, DestCell),
+        ai_move_cell(SourceCell, DestCell)
     ).
 
 % Upper Confidence Bound
