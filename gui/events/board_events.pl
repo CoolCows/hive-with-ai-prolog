@@ -28,8 +28,9 @@
     ]).
 
 :- use_module("../../game/gui_api", [
-    gui_put_cell/3,
-    gui_move_cell/3,
+    gui_change_game_state/1,
+    gui_ai_turn/1,
+    gui_get_visual_game_state/2,
     gui_get_possible_moves/2,
     gui_get_board/1,
     gui_mosquito_adyacent_pillbug/1,
@@ -191,7 +192,7 @@ handle_opponent(MoveType, Canvas, WhiteCanvas, BlackCanvas):-
     gui_ai_turn(MoveType),
     gui_get_visual_game_state(Board, [WhitePlayer, BlackPlayer]),
     nb_setval(board, Board),
-
+    nb_getval(player_turn, Colour),
     draw_side_board(WhitePlayer, white, WhiteCanvas),
     draw_side_board(BlackPlayer, black, BlackCanvas),
     draw_board(Board, Canvas).
