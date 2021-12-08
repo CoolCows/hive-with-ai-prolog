@@ -10,14 +10,17 @@
 
 :- use_module("../game/hive_api").
 :- use_module(node). 
+:- use_module(ai).
 
 ai_vs_human_init :-
     add_initial_node,
     nb_setval(parent_address, 0).
 
-ai_vs_human(GameState, EdgeMove, NewGameState) :-
+
+ai_vs_human(_) :-
+    not(hive_game_status(non_terminal)).
+ai_vs_human(EdgeMove) :-
     nb_getval(parent_address, ParentAddress),
-    hive_game_status(non_terminal),
     force_find_node(ParentAddress, GameState, EdgeMove, GameStatus, Node),
     ai_play(Node, node(Address, _, _, NewGameState, _, _, _, _, _)),
     nb_setval(parent_address, Address).
@@ -28,13 +31,14 @@ ai_vs_ai_init(EndNode) :-
     find_node_by_game_state(1, Node),
     ai_vs_ai(Node, EndNode).
 
+ai_vs_ai(Node, Node) :-
+    not(get_type(Node, non_terminal)).
 ai_vs_ai(Node, EndNode) :-
-    get_type(Node, non_terminal),
     ai_play(Node, NewNode),
     ai_vs_ai(NewNode, EndNode).
 
 ai_play(Node, NewNode) :-
-    true.
+    run_simulation(Node, NewNode).
 
 ai_put_cell(Cell) :-
     hive_put_cell(Cell).
