@@ -15,6 +15,7 @@
 :- use_module("../../game/gui_api", [gui_test_board/1]).
 
 draw_board(Board, Canvas) :-
+    write_ln('draw_board'),   
     send(Canvas, clear),
     send(Canvas, background, colour(brown)),
     
