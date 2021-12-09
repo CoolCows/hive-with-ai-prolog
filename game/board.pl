@@ -50,7 +50,8 @@ get_game_state(game_state(Board,Turns,LastMovedCells,FixedCells,Players)):-
 	cells(Board),
 	total_turns(Turns),
 	last_moved_cells(LastMovedCells),
-	FixedCells = [], % TODO: implement get_fixed_cells
+	FixedCells = [],
+	% get_fixed_cells(FixedCells),
 	players(Players).
 
 set_game_state(game_state(game_state(Board,Turns,LastMovedCells,FixedCells,Players))):-
@@ -87,6 +88,9 @@ set_fixed_cell(cell(Bug,Row,Col,Color,StackPos)):-
 	
 delete_fixed_cell(fixed_cell(cell(Bug,Row,Col,Color,StackPos),T)):-
 	retract(fixed_cell(cell(Bug,Row,Col,Color,StackPos),T)).
+
+get_fixed_cells(FixedCells):-
+	findall(FixedCell, get_fixed_cell(_,FixedCell),FixedCells).
 
 get_fixed_cell(fixed_cell(cell(Bug,Row,Col,Color,StackPos),T),
 			   fixed_cell(cell(Bug,Row,Col,Color,StackPos),T)):-
