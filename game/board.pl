@@ -9,6 +9,7 @@
 					add_new_cell/1,
 					valid_new_cell/2,
 					move_cell/2,
+					pillbug_move/2,
 					one_hive/1,
 					adjacent_to_hive/2,
 					adjacent_to_hive/1,
@@ -84,11 +85,22 @@ set_fixed_cell(cell(Bug,Row,Col,Color,StackPos)):-
 	NT is T + 1,
 	assertz(fixed_cell(cell(Bug,Row,Col,Color,StackPos),NT)).
 	
-delete_fixed_cell(cell(Bug,Row,Col,Color,StackPos)):-
-	retract(fixed_cell(cell(Bug,Row,Col,Color,StackPos),_)).
+delete_fixed_cell(fixed_cell(cell(Bug,Row,Col,Color,StackPos),T)):-
+	retract(fixed_cell(cell(Bug,Row,Col,Color,StackPos),T)).
 
-get_fixed_cell(cell(Bug,Row,Col,Color,StackPos),cell(Bug,Row,Col,Color,StackPos)):-
-	fixed_cell(cell(Bug,Row,Col,Color,StackPos)).
+get_fixed_cell(fixed_cell(cell(Bug,Row,Col,Color,StackPos),T),
+			   fixed_cell(cell(Bug,Row,Col,Color,StackPos),T)):-
+	fixed_cell(cell(Bug,Row,Col,Color,StackPos),T).
+
+remove_expired_fixed_cell():-
+	total_turns(CurrentTurn),
+	get_fixed_cell(fixed_cell(_,Turn),fixed_cell(_,Turn)),
+	Turn < CurrentTurn,
+	delete_fixed_cell(fixed_cell(_,Turn)).
+
+remove_expired_fixed_cells():-
+	findall(_,remove_expired_fixed_cell(),_).
+	
 
 % adds a new cell to the board 
 % NOTE: to find  new cells possible positions use findall with valid_new_cell/2
@@ -105,7 +117,8 @@ add_new_cell(cell(Bug,Row,Col,Color,0)):-
 	delete_player(Player),
 	init_player(NewPlayer),
 	init_cell(cell(Bug,Row,Col,Color,0)),
-	increase_turns().
+	increase_turns(),
+	remove_expired_fixed_cells().
 
 
 move_cell(cell(B1,R1,C1,D1,S1),cell(B2,R2,C2,D2,S2)):-
@@ -117,8 +130,15 @@ move_cell(cell(B1,R1,C1,D1,S1),cell(B2,R2,C2,D2,S2)):-
 	write_ln("LAST MOVE CELL BY PLAYER"),
 	write_ln(PlayerColor),
 	write_ln(cell(B1,R1,C1,C1,S1)),
-	increase_turns().
+	increase_turns(),
+	remove_expired_fixed_cells().
 
+pillbug_move(cell(B1,R1,C1,D1,S1),cell(B2,R2,C2,D2,S2)):-
+	delete_cell(cell(B1,R1,C1,D1,S1)),
+	init_cell(cell(B1,R2,C2,D1,S2)),
+	set_fixed_cell(cell(B1,R2,C2,D1,S2)),
+	increase_turns(),
+	remove_expired_fixed_cells().
 
 current_player_color(Color):-
 	total_turns(T),

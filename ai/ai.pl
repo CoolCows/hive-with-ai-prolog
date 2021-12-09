@@ -122,7 +122,7 @@ possible_place(Color,place(Cell)):-
 	hive_get_player(player(Color,_, _, _, _, _, _, _, _),
 					player(Color,Queen, Ants, Beetle, Grasshopper, Ladybug, Mosquito, Pillbug, Spider)),
 	hive_get_possible_positions(Color,PosPositions),
-	member(cell(_,Row,Col,_,_,_),PosPositions),
+	member(cell(_,Row,Col,_,_),PosPositions),
 	(
 		(
 			Ants > 0,
@@ -156,7 +156,9 @@ possible_place(Color,place(Cell)):-
 
 get_next_moves(NextMoves) :-
 	hive_current_player_color(Color),
+	write_ln("GETTING POSSIBLE MOVES"),
 	findall(Move,possible_moves(Color,Move), Moves ),
+	write_ln(Moves),
 	findall(Place, possible_place(Color,Place),Places),
 	append(Moves,Places,NextMoves).
 

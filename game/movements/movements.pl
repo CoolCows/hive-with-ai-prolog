@@ -58,6 +58,7 @@ valid_movement(SourceCell,DestCell):-
 
 % all possible movements of a given cell 
 valid_movements(SourceCell,DestCells):-
+	not(get_fixed_cell(fixed_cell(SourceCell,_),_)),
 	not(insect_above(SourceCell,_)),
 	findall(DestCell, valid_movement(SourceCell,DestCell),A),
 	flatten(A,B),
