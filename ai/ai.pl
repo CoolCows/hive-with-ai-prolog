@@ -35,7 +35,7 @@ run_simulation(
     ai_get_game_state(RealGameState),
     get_next_moves(AllPosMoves),
     analyze_moves(Address, AllPosMoves, 0, [], BestMoves),
-    do_searches(Address, RealGameState, BestMoves, 10),
+    do_searches(Address, RealGameState, BestMoves, 2),
     write_ln('Do searches completed'),
   
     % ===== Multi-Threading (for later) =====

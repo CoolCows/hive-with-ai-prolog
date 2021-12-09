@@ -17,7 +17,8 @@
     hive_change_game_state/1,
 	hive_get_player/2,
 	hive_current_player_turns/1,
-	hive_possible_plays/2
+	hive_possible_plays/2,
+	hive_distance/3
 ]).
 
 :- use_module(player).
@@ -176,4 +177,5 @@ hive_get_player(player(Color,Queen, Ants, Beetle, Grasshopper, Ladybug, Mosquito
 hive_current_player_turns(P):-
 	current_player_turns(P).
 	
-	
+hive_distance(cell(_,R1,C1,_,_),cell(_,R2,C2,_,_),R):-
+	R is  abs(C1 - C2).
