@@ -18,6 +18,7 @@ valid_pillbug_movement(SourceCell,DestCell):-
 
 movable_cell_by_pillbug(PillbugCell,MovableBug):-
 	adjacent_cell(PillbugCell,MovableBug),
+	not(get_fixed_cell(fixed_cell(MovableBug,_),_)),
 	accesible_cell_top_level(PillbugCell,MovableBug),
 	one_hive(MovableBug),
 	not(insect_above(MovableBug,_)),
@@ -36,5 +37,5 @@ movable_position_by_pillbug(PillbugCell, DestCell) :-
     DestCell = cell(none, _, _, none, 0).
 
 movable_positions_by_pillbug(PillbugCell, MovToCells) :-
-    findall(AdyCell, movable_position_by_pillbug(PillbugCell, AdyCell), MovToCells).
+    findall(AdjCell, movable_position_by_pillbug(PillbugCell, AdjCell), MovToCells).
 

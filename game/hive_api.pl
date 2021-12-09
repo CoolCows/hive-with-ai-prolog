@@ -39,7 +39,7 @@ hive_init_players() :-
 hive_change_game_state(MoveType) :-
     (MoveType = place(Cell), add_new_cell(Cell));
     (MoveType = move(SourceCell, DestCell), move_cell(SourceCell, DestCell));
-    (MoveType = pillbug(SourceCell, DestCell), move_cell(SourceCell, DestCell)).
+    (MoveType = pillbug(SourceCell, DestCell), pillbug_move(SourceCell, DestCell)).
 
 
 hive_put_cell(Cell):-
@@ -75,7 +75,8 @@ hive_skip_turn():-
 	get_player(player(Color,0,0,0,0,0,0,0,0))
   	),
 	% TODO: Handle pillbug effect
-	increase_turns().
+	increase_turns(),
+	remove_expired_fixed_cells().
 
 hive_current_player_color(Color):-
     current_player_color(Color).

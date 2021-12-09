@@ -164,6 +164,8 @@ change_turn(MoveType, Canvas, WhiteCanvas, BlackCanvas) :-
 
 handle_opponent(MoveType, Canvas, WhiteCanvas, BlackCanvas) :-
     nb_getval(opponent, human),
+	write_ln("hfasfadsf"),
+	write_ln(MoveType),
     gui_change_game_state(MoveType),
     gui_get_visual_game_state(Board, [WhitePlayer, BlackPlayer]),
     nb_setval(board, Board),
