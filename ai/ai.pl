@@ -119,8 +119,8 @@ analyze_moves(Address, [Move|NextMoves], MaxValue, TopMoves, BestMoves) :-
         );
         (
             % Call to Heuristics and Multiply for constant Value
-            % apply_heuristics(Move, C),
-			C =1,
+            apply_heuristics(Move, C),
+			% C =1,
             get_total_visits(TotalVisits),
             NewValue is C*sqrt(TotalVisits)
         )
