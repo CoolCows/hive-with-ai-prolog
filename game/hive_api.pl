@@ -41,7 +41,7 @@ hive_init_players() :-
 hive_change_game_state(MoveType) :-
     (MoveType = place(Cell), add_new_cell(Cell));
     (MoveType = move(SourceCell, DestCell), move_cell(SourceCell, DestCell));
-    (MoveType = pillbug(SourceCell, DestCell), pillbug_move(SourceCell, DestCell)),
+    (MoveType = pillbug(SourceCell, DestCell), pillbug_move(SourceCell, DestCell));
     (MoveType = skip_move, hive_force_skip_turn()).
 
 hive_put_cell(Cell):-
