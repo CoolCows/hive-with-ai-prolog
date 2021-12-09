@@ -353,6 +353,11 @@ game_status(Status):-
     Turns >= 100,
     Status = draw,!.
 
+%game_status(Status) :-
+%hive_zero_moves(white),
+%hive_zero_moves(black),
+%Status = draw,!.
+
 game_status(Status):-
 	get_cell(cell(queen,_,_,white,_),WhiteQueen),
 	forall( adjacent_cell(WhiteQueen,AdjCell),

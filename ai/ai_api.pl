@@ -28,7 +28,8 @@ ai_vs_human(EdgeMove) :-
     ai_get_game_state(GameState),
     ai_game_status(NodeType),
     force_find_node(ParentAddress, GameState, EdgeMove, NodeType, Node),
-    ai_play(Node, node(Address, _, _, _, _, _, _, _)),
+    ai_play(Node, ResultNode),
+    get_address(Node, Address),
     nb_setval(parent_address, Address),
     write_ln('Ai ended its turn').
 

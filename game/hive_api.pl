@@ -7,6 +7,7 @@
     hive_get_possible_positions/2,
 	hive_get_pillbug_effect/2,
 	hive_skip_turn/0,
+    hive_zero_moves/1,
 	hive_force_skip_turn/0,
 	hive_mosquito_adjacent_pillbug/1,
 	hive_game_status/1,
@@ -69,16 +70,35 @@ hive_mosquito_adjacent_pillbug(MosquitoCell) :-
 
 hive_skip_turn():-
 	current_player_color(Color),
-	cells(Cells),
-	forall(member(cell(Bug,Row,Col,Color,StackPos),Cells),
-		  not(hive_get_possible_moves(cell(Bug,Row,Col,Color,StackPos),_))),
-  	(
-	not(hive_get_possible_positions(Color,_));
-	get_player(player(Color,0,0,0,0,0,0,0,0))
-  	),
-	% TODO: Handle pillbug effect
+    hive_zero_moves(Color),
 	increase_turns(),
 	remove_expired_fixed_cells().
+
+hive_zero_moves(Color):-
+    cells(Cells),
+    forall(member(cell(Bug,Row,Col,Color,StackPos),Cells),
+		  not(hive_get_possible_moves(cell(Bug,Row,Col,Color,StackPos),_))), 
+  	(
+	    get_player(player(Color,0,0,0,0,0,0,0,0));
+	    not(hive_get_possible_positions(Color,_))
+  	),
+    PCell = cell(pillbug, PRow, PCol, Color, 0),
+    member(PCell, Cells),
+    not(member(cell(_, PRow, PCol, _, 1), Cells)),
+    zero_pillbug_movements(PillbugCell),
+
+    MCell = cell(mosquito, MRow, MCol, Color, 0),
+    member(MCell, Cells),
+    not(member(cell(_, MRow, MCol, _, 1), Cells)),
+    adjacent_cell(MCell, cell(pillbug, _, _, _, _)),
+    zero_pillbug_movements(MCell).
+
+zero_pillbug_movements(PillbugCell) :-
+    hive_get_pillbug_effect(PillbugCell, MovableBugs, MovablePositions),
+    (
+        MovableBugs = [];
+        MovablePositions = []
+    ).
 
 hive_force_skip_turn() :-
     increase_turns(),
