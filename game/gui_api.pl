@@ -71,7 +71,7 @@ gui_get_pillbug_effect(+PillbugCell, -[MovableBugs, MovablePositions]) :-
  	hive_get_pillbug_effect(PillbugCell,[MovableBugs,MovablePositions]).
 
 gui_mosquito_adyacent_pillbug(+MosquitoCell) :-
-	hive_mosquito_adyacent_pillbug(MosquitoCell).
+	hive_mosquito_adjacent_pillbug(MosquitoCell).
 
 gui_change_game_state(MoveType) :-
     hive_change_game_state(MoveType).

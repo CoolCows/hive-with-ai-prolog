@@ -1,4 +1,4 @@
-:- module(mosquito, [valid_mosquito_movement/2, mosquito_adyacent_to_pillbug/1]).
+:- module(mosquito, [valid_mosquito_movement/2, mosquito_adjacent_to_pillbug/1]).
 
 :- use_module("../board").
 :- use_module("../cell").
@@ -64,6 +64,7 @@ valid_movement(SourceCell,DestCell):-
 	get_bug_type(SourceCell,pillbug),!,
 	valid_pillbug_movement(SourceCell,DestCell).
 
-mosquito_adyacent_to_pillbug(SourceCell) :-
+mosquito_adjacent_to_pillbug(SourceCell) :-
+	get_stack_pos(SourceCell,0),
     adjacent_cell(SourceCell, DestCell),
     DestCell = cell(pillbug, _, _, _, _).

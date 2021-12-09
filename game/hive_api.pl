@@ -7,7 +7,7 @@
     hive_get_possible_positions/2,
 	hive_get_pillbug_effect/2,
 	hive_skip_turn/0,
-	hive_mosquito_adyacent_pillbug/1,
+	hive_mosquito_adjacent_pillbug/1,
 	hive_game_status/1,
 	hive_current_player_color/1,
 	hive_get_cell/2,
@@ -62,8 +62,8 @@ hive_get_pillbug_effect(PillbugCell, [MovableBugs, MovablePositions]) :-
 	movable_cells_by_pillbug(PillbugCell,MovableBugs),
     movable_positions_by_pillbug(PillbugCell, MovablePositions).
 
-hive_mosquito_adyacent_pillbug(MosquitoCell) :-
-    mosquito_adyacent_to_pillbug(MosquitoCell).
+hive_mosquito_adjacent_pillbug(MosquitoCell) :-
+    mosquito_adjacent_to_pillbug(MosquitoCell).
 
 hive_skip_turn():-
 	current_player_color(Color),

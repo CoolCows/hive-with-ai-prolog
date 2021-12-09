@@ -3,7 +3,7 @@
     valid_movements/2,
     movable_cells_by_pillbug/2,
     movable_positions_by_pillbug/2,
-    mosquito_adyacent_to_pillbug/1
+    mosquito_adjacent_to_pillbug/1
 ]).
 
 :- use_module("../cell").
