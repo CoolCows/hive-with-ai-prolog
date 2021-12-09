@@ -35,13 +35,9 @@ run_simulation(
     get_address(Node, Address),
     ai_get_game_state(RealGameState),!,
     get_next_moves(AllPosMoves),
-    analyze_moves(Address, AllPosMoves, 0, [], [NextMove|BestMoves]),
-    explore_node(Address, NextMove, NewNode),
-    search(NewNode, EndNode),
-    increase_total_visits,
-    ai_game_status(Status),
-    backpropagate(EndNode, Status),
-
+    analyze_moves(Address, AllPosMoves, 0, [], BestMoves),
+    do_searchs(Address, BestMoves),
+  
     % ===== Multi-Threading (for later) =====
     % Make the dynamic predicates thread independent
     % Use mutexes to when writing to database
@@ -55,6 +51,19 @@ run_simulation(
     select_next_move(Address, FinalNextMove),
     explore_node(Address, FinalNextMove, true, NextNode),
     write_ln('Simulation Ended').
+
+do_searchs(_, _, 0).
+do_searchs(_, [], _).
+do_searchs(Address, [BestMove|OtherMoves], Amount) :-
+    explore_node(Address, NextMove, Node),
+    search(Node, EndNode),
+    increase_total_visits,
+    ai_game_status(Status),
+    backpropagate(EndNode, Status),
+    
+    DecAmount is Amount - 1,
+    do_searchs(Address, OtherMoves, DecAmount).
+  
 
 search(Node, Node) :-
     not(get_type(Node, non_terminal)),!.
