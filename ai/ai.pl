@@ -117,13 +117,17 @@ analyze_moves(Address, [Move|NextMoves], MaxValue, TopMoves, BestMoves) :-
             NewValue is C*sqrt(TotalVisits)
         )
     ),
+    write_ln(NewValue),
+    write_ln(MaxValue),
     (
         (
-            NewValue > MaxValue,!, 
+            NewValue > MaxValue, 
+            write_ln('Found Best Move'),
+            write_ln(Move),
             analyze_moves(Address, NextMoves, NewValue, [Move], BestMoves)
         );
         (
-            NewValue =:= MaxValue,!,
+            NewValue =:= MaxValue,
             analyze_moves(Address, NextMoves, MaxValue, [Move|TopMoves], BestMoves)
         );
         analyze_moves(Address, NextMoves, MaxValue, TopMoves, BestMoves)
@@ -205,7 +209,6 @@ uct(Node, Move, Result) :-
         (Color = white, get_stats(Node, TimesWon, _, Explored));
         get_stats(Node, _, TimesWon, Explored)
     ),
-	%apply_heuristics(Move, C),
-    C = 1,
+	apply_heuristics(Move, C),
     get_total_visits(TotalVisits),
     Result is TimesWon/Explored + C*sqrt(TotalVisits)/Explored.

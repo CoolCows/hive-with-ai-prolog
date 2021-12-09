@@ -36,6 +36,9 @@
 load_tree_db :-
     db_attach('../ai/db/tree_db.pl', []).
 
+sync_tree_db :-
+    db_sync(gc).
+
 % Properties:
 
 get_address(
