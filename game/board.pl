@@ -361,7 +361,7 @@ game_status(Status):-
 	Status = white_won,!.
 
 game_status(Status):-
-	get_cell(cell(queen,_,_,black,_),BlackQueen),!,
+	get_cell(cell(queen,_,_,black,_),BlackQueen),
 	forall( adjacent_cell(BlackQueen,AdjCell),
 			not(get_bug_type(AdjCell,none))),
 	Status = black_won,!.

@@ -53,6 +53,10 @@ run_simulation(
     write_ln('Updated Game State'),
     write_ln(NewGameState),
     ai_game_status(NodeType),
+	write_ln("hfkadffjakfsfsddf"),
+	write_ln("\n"),
+	write_ln(NodeType),
+
     force_find_node(Address, NewGameState, NextMove, NodeType, true, NextNode),
     write_ln('Simulation Ended').
 
@@ -100,7 +104,8 @@ analyze_moves(Address, [Move|NextMoves], MaxValue, TopMoves, BestMoves) :-
         );
         (
             % Call to Heuristics and Multiply for constant Value
-            apply_heuristics(Move, C),
+            % apply_heuristics(Move, C),
+			C =1,
             get_total_visits(TotalVisits),
             NewValue is C*sqrt(TotalVisits)
         )
@@ -190,6 +195,6 @@ uct(Node, Move, Result) :-
         (Color = white, get_stats(Node, TimesWon, _, Explored));
         get_stats(Node, _, TimesWon, Explored)
     ),
-    apply_heuristics(Move, C),
+	%apply_heuristics(Move, C),
     get_total_visits(TotalVisits),
     Result is TimesWon/Explored + C*sqrt(TotalVisits)/Explored.
