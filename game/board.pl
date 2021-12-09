@@ -241,13 +241,12 @@ adjacent_cells(Cell, AdjCells):-
 %
 
 valid_new_cell(_,ValidCell):-
-	cells([X|Y]),
-	len([X|Y],1),
-	adjacent_cell(X,ValidCell).
-
-valid_new_cell(_,ValidCell):-
 	cells([]),
 	ValidCell = cell(none,0,0,none,0).
+
+valid_new_cell(_,ValidCell):-
+	cells([X]),
+	adjacent_cell_1(X,ValidCell).
 
 valid_new_cell(Color,ValidCell):-
 	get_cell(cell(_,_,_,Color,_),SameColorCell),
