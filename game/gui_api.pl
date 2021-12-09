@@ -89,7 +89,6 @@ gui_get_visual_game_state(Board, [BlackPlayer, WhitePlayer]) :-
             WhitePlayer = Player1
         )
     ).
-    write_ln(Players).
 
 gui_ai_turn(MoveType) :-
     ai_vs_human(MoveType).
