@@ -14,7 +14,8 @@
 	hive_get_game_state/1,
 	hive_set_game_state/1,
     hive_change_game_state/1,
-	hive_get_player/2
+	hive_get_player/2,
+	hive_current_player_turns/1
 ]).
 
 :- use_module(player).
@@ -40,7 +41,6 @@ hive_change_game_state(MoveType) :-
     (MoveType = place(Cell), add_new_cell(Cell));
     (MoveType = move(SourceCell, DestCell), move_cell(SourceCell, DestCell));
     (MoveType = pillbug(SourceCell, DestCell), pillbug_move(SourceCell, DestCell)).
-
 
 hive_put_cell(Cell):-
     add_new_cell(Cell).
@@ -96,4 +96,7 @@ hive_get_player(player(Color,Queen, Ants, Beetle, Grasshopper, Ladybug, Mosquito
 		   player(Color,Queen, Ants, Beetle, Grasshopper, Ladybug, Mosquito, Pillbug, Spider)
 	).
 
+hive_current_player_turns(P):-
+	current_player_turns(P).
+	
 	

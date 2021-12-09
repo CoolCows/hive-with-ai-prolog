@@ -104,7 +104,7 @@ analyze_moves(Address, [Move|NextMoves], MaxValue, TopMoves, BestMoves) :-
         );
         (
             % Call to Heuristics and Multiply for constant Value
-            % apply_heuristics(Move, C),
+			%apply_heuristics(Move, C),
             C = 1,
             get_total_visits(TotalVisits),
             NewValue is C*sqrt(TotalVisits)
@@ -122,20 +122,31 @@ analyze_moves(Address, [Move|NextMoves], MaxValue, TopMoves, BestMoves) :-
         analyze_moves(Address, NextMoves, MaxValue, TopMoves, BestMoves)
     ).
 
+% Get all possible moves
 get_next_moves(NextMoves) :-
 	hive_current_player_color(Color),
 	write_ln("GETTING POSSIBLE MOVES"),
 	findall(Move,possible_moves(Color,Move), Moves ),
 	write_ln(Moves),
+	write_ln("GETTING POSSIBLE PLACE"),
 	findall(Place, possible_place(Color,Place),Places),
+	write_ln(Places),
 	append(Moves,Places,NextMoves).
 
 
-% Get all possible moves
 possible_moves(Color,move(SourceCell,DestCell)):-
 	hive_get_cell(cell(_,_,_,Color,_),SourceCell),
 	hive_get_possible_moves(SourceCell,PosMoves),
 	member(DestCell,PosMoves).
+
+possible_place(Color,place(Cell)):-
+	hive_current_player_turns(3),
+	hive_get_player(player(Color,_, _, _, _, _, _, _, _),
+					player(Color,Queen, Ants, Beetle, Grasshopper, Ladybug, Mosquito, Pillbug, Spider)),
+	Queen = 1,	
+	hive_get_possible_positions(Color,PosPositions),!,
+	member(cell(_,Row,Col,_,_),PosPositions),
+	Cell = cell(queen,Row,Col,Color,0).
 
 possible_place(Color,place(Cell)):-
 	hive_get_player(player(Color,_, _, _, _, _, _, _, _),
@@ -143,6 +154,10 @@ possible_place(Color,place(Cell)):-
 	hive_get_possible_positions(Color,PosPositions),
 	member(cell(_,Row,Col,_,_),PosPositions),
 	(
+		(
+			Queen > 0,
+			Cell = cell(queen,Row,Col,Color,0) 
+		);
 		(
 			Ants > 0,
 			Cell = cell(ant,Row,Col,Color,0) 
