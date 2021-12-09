@@ -13,12 +13,13 @@
 
 :- use_module(ai_api, [
     ai_current_player_color/1,
-    ai_update_state/2,
+    ai_game_status/1,
     ai_get_game_state/1,
-    ai_set_game_state/1
+    ai_set_game_state/1,
+    ai_change_game_state/1
 ]).
 :- use_module("../game/hive_api").
-:- use_module(total_visits, [increase_total_visits/0]).
+:- use_module(total_visits, [increase_total_visits/0, get_total_visits/1]).
 :- use_module(heuristics).
 :- use_module(node).
 
@@ -35,6 +36,7 @@ run_simulation(
     ai_get_game_state(RealGameState),!,
     write_ln('Got Game State'),
     select_next_move(Address, NextMove),  
+    write_ln('Got Next Move'),
     write_ln(NextMove),
     % ===== Multi-Threading (for later) =====
     % Make the dynamic predicates thread independent
@@ -43,10 +45,10 @@ run_simulation(
     % =====          End                =====
 
     % After simulation select cells to move
-    ai_set_game_state(RealGameState),
-    select_next_move(Address, NextMove),
-    update_game_state(NextMove),
-    get_game_state(NewGameState),
+    % ai_set_game_state(RealGameState),
+    % select_next_move(Address, NextMove),
+    ai_change_game_state(NextMove),
+    ai_get_game_state(NewGameState),
     ai_game_status(NodeType),
     force_find_node(Address, NewGameState, NextMove, NodeType, true, NextNode),
     write_ln('Simulation Ended').
@@ -62,7 +64,7 @@ search(
 ) :-
     get_address(Node, Address),
     select_next_move(Address, NextMove),
-    update_game_state(NextMove),
+    ai_change_game_state(NextMove),
     get_game_state(NewGameState),
     ai_game_status(NodeType),
     force_find_node(Address, NewGameState, NextMove, NodeType, Node),
@@ -80,9 +82,9 @@ backpropagate(Node, Color) :-
 select_next_move(Address, NextMove) :-
     write_ln('Selecting Next Move'),
     get_next_moves(NextMoves), 
-    write_ln(NextMoves),
     write_ln('Analyzing Next Moves'),
-    analyze_moves(Address, NextMoves, -2^64, [], [NextMove|_]),
+    write_ln(Address),
+    analyze_moves(Address, NextMoves, 0, [], [NextMove|_]),
     true.
 
 analyze_moves(_, [], _, BestMoves, BestMoves).
@@ -96,7 +98,7 @@ analyze_moves(Address, [Move|NextMoves], MaxValue, TopMoves, BestMoves) :-
         (
             % Call to Heuristics and Multiply for constant Value
             apply_heuristics(Move, C),
-            total_visits(TotalVisits),
+            get_total_visits(TotalVisits),
             NewValue is C*sqrt(TotalVisits)
         )
     ),
@@ -111,6 +113,15 @@ analyze_moves(Address, [Move|NextMoves], MaxValue, TopMoves, BestMoves) :-
         );
         analyze_moves(Address, NextMoves, MaxValue, TopMoves, BestMoves)
     ).
+
+get_next_moves(NextMoves) :-
+	hive_current_player_color(Color),
+	write_ln("GETTING POSSIBLE MOVES"),
+	findall(Move,possible_moves(Color,Move), Moves ),
+	write_ln(Moves),
+	findall(Place, possible_place(Color,Place),Places),
+	append(Moves,Places,NextMoves).
+
 
 % Get all possible moves
 possible_moves(Color,move(SourceCell,DestCell)):-
@@ -154,24 +165,6 @@ possible_place(Color,place(Cell)):-
 		)
 	).
 
-get_next_moves(NextMoves) :-
-	hive_current_player_color(Color),
-	write_ln("GETTING POSSIBLE MOVES"),
-	findall(Move,possible_moves(Color,Move), Moves ),
-	write_ln(Moves),
-	findall(Place, possible_place(Color,Place),Places),
-	append(Moves,Places,NextMoves).
-
-update_game_state(NextMove) :-
-    (
-        NextMove = place(Cell),
-        ai_put_cell(Cell)
-    );
-    (
-        NextMove = move(SourceCell, DestCell),
-        ai_move_cell(SourceCell, DestCell)
-    ).
-
 % Upper Confidence Bound
 uct(Node, Move, Result) :-
     ai_current_player_color(Color),
@@ -180,5 +173,5 @@ uct(Node, Move, Result) :-
         get_stats(Node, _, TimesWon, Explored)
     ),
     apply_heuristics(Move, C),
-    total_visits(TotalVisits),
+    get_total_visits(TotalVisits),
     Result is TimesWon/Explored + C*sqrt(TotalVisits)/Explored.

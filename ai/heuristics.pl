@@ -4,6 +4,7 @@
 
 :- use_module("../game/hive_api").
 :- use_module("../game/board").
+:- use_module("../game/cell").
 
 apply_heuristics(Move, Value) :-
     (
@@ -15,7 +16,7 @@ apply_heuristics(Move, Value) :-
         (B = 0)
     ),
     (
-        (block_enemy_queen(Move), C = 1.5);
+        (block_enemy_bug(Move), C = 1.5);
         (C = 0)
     ),
     Value is A + B + C.
