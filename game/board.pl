@@ -366,13 +366,13 @@ game_status(Status):-
 	get_cell(cell(queen,_,_,white,_),WhiteQueen),
 	forall( adjacent_cell(WhiteQueen,AdjCell),
 			not(get_bug_type(AdjCell,none))),
-	Status = white_won,!.
+	Status = black_won,!.
 
 game_status(Status):-
 	get_cell(cell(queen,_,_,black,_),BlackQueen),
 	forall( adjacent_cell(BlackQueen,AdjCell),
 			not(get_bug_type(AdjCell,none))),
-	Status = black_won,!.
+	Status = white_won,!.
 
 game_status(Status):-
 	Status = non_terminal.
