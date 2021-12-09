@@ -63,9 +63,10 @@ block_enemy_bug(move(cell(B1,R1,C1,D1,S1),cell(B2,R2,C2,D2,S2))):-
 	init_cell(DestCell),
 	adjacent_cell(DestCell,AdjCell),
 	get_color(AdjCell,OponentColor),
-	gui_get_possible_moves(AdjCell,[]),
+	hive_get_possible_moves(AdjCell, Cond),
 	delete_cell(DestCell),
-	init_cell(SourceCell).
+	init_cell(SourceCell),
+    Cond = [].
 
 block_enemy_bug(place(Cell)):-
 	hive_current_player_color(Color),
@@ -73,6 +74,7 @@ block_enemy_bug(place(Cell)):-
 	init_cell(Cell),
 	adjacent_cell(Cell,AdjCell),
 	get_color(AdjCell,OponentColor),
-	gui_get_possible_moves(AdjCell,[]),
-	delete_cell(Cell).
+	hive_get_possible_moves(AdjCell, Cond),
+	delete_cell(Cell),
+    Cond = [].
 

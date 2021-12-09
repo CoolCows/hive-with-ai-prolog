@@ -14,11 +14,8 @@
 :- use_module(ai).
 
 ai_vs_human_init :-
-    write_ln('initiating ai vs human'),
-    write_ln('starting up ai'),
     start_up_ia,
     add_initial_node,
-    write_ln('initiation complete'),
     nb_setval(parent_address, '1').
 
 
@@ -38,7 +35,7 @@ ai_vs_human(EdgeMove) :-
 ai_vs_ai_init(EndNode) :-
     % Init Game State
     add_initial_node,
-    find_node_by_game_state(1, Node),
+    find_node_by_game_state('1', Node),
     ai_vs_ai(Node, EndNode).
 
 ai_vs_ai(Node, Node) :-
