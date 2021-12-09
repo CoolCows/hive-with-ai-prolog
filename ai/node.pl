@@ -84,15 +84,10 @@ force_find_node(ParentAddress, GameState, EdgeMove, NodeType, Node) :-
     force_find_node(ParentAddress, GameState, EdgeMove, NodeType, false, Node).
 force_find_node(ParentAddress, GameState, EdgeMove, NodeType, NodeVisited, Node) :-
    keccak256(ParentAddress, GameState, NodeAddress),
-   write_ln(ParentAddress),
-   write_ln('Force Find Node'),
-   write_ln(NodeAddress),
    (
         find_node_by_game_state(NodeAddress, Node);
         (
             keccak256(ParentAddress, EdgeMove, AuxAddress),
-            write_ln('AuxAddress'),
-            write_ln(AuxAddress),
             add_node(
                 NodeAddress, AuxAddress, ParentAddress, NodeType, NodeVisited, Node
             )
@@ -106,9 +101,7 @@ start_up_ia :-
 add_initial_node:-
     find_node_by_game_state('1', _);
     (
-        write_ln('No node found'),
         init_total_visits,
-        write_ln('Initializing total visits'),
         assert_node(
             '1',
             '1',
@@ -118,8 +111,7 @@ add_initial_node:-
             0,
             0,
             0
-        ),
-        write_ln('First node added')
+        )
     ).
 
 add_node(
@@ -133,12 +125,6 @@ add_node(
         NodeType, NodeVisited, 0, 0, 0
     )
 ):-
-    write_ln('Adding Node'),
-    write_ln(NodeAddress),
-    write_ln(AuxAddress),
-    write_ln(ParentAddress),
-    write_ln(NodeType),
-    write_ln(NodeVisited),
     assert_node(
         NodeAddress, 
         AuxAddress,
