@@ -33,10 +33,12 @@ run_simulation(
     write_ln('Running simulation'),
     write_ln(Node),
     get_address(Node, Address),
-    ai_get_game_state(RealGameState),!,
+    ai_get_game_state(RealGameState),
+    write_ln('S1'),
     get_next_moves(AllPosMoves),
-    analyze_moves(Address, AllPosMoves, 0, [], BestMoves),
-    do_searches(Address, BestMoves),
+    write_ln('S2'),
+    % analyze_moves(Address, AllPosMoves, 0, [], BestMoves),
+    % do_searches(Address, BestMoves),
   
     % ===== Multi-Threading (for later) =====
     % Make the dynamic predicates thread independent
@@ -44,8 +46,10 @@ run_simulation(
     % create some threads to analyse several path down 
     % =====          End                =====
     
-    ai_set_game_state(RealGameState),
+    % ai_set_game_state(RealGameState),
+    write_ln('S3'),
     select_next_move(Address, AllPosMoves, FinalNextMove),
+    write_ln('S4'),
     explore_node(Address, FinalNextMove, true, NextNode),
     write_ln('Simulation Ended').
 
@@ -76,9 +80,13 @@ search(
 explore_node(Address, NextMove, Node) :-
     explore_node(Address, NextMove, false, Node).
 explore_node(Address, NextMove, Visited, Node) :-
+    write_ln('E1'),
     ai_change_game_state(NextMove),
+    write_ln('E2'),
     ai_get_game_state(GameState),
+    write_ln('E3'),
     ai_game_status(NodeType),
+    write_ln('E4'),
     force_find_node(Address, GameState, NextMove, NodeType, Visited, Node).
 
 backpropagate(Node, Color) :-
