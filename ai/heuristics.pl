@@ -9,13 +9,13 @@
 apply_heuristics(Move, Value) :-
     %write_ln("MOVE"),
     %write_ln(Move),
-    %write_ln("HEURISTICS METRICS"),
+    write_ln("HEURISTICS METRICS"),
 	surround_enemy_queen(Move, H1P),
     free_enemy_queen(Move, H1N),
     free_ally_queen(Move, H2P),
     surround_ally_queen(Move, H2N),
     hive_current_player_color(Color),
-    oponent_color(OpponentColor),
+    oponent_color(Color, OpponentColor),
     block_bug(Move, OpponentColor, H3P),
     block_bug(Move, Color, H3N),
     PreValue is H1P + H1N + H2P + H2N + H3P - H3N,
@@ -30,6 +30,7 @@ surround_enemy_queen(move(cell(B1,R1,C1,D1,S1),cell(B2,R2,C2,D2,S2)),Value):-
 	init_cell(DestCell),
 	surround_enemy_queen_aux(DestCell,Value),
 	delete_cell(DestCell).
+surround_enemy_queen(_, 0).
 
 surround_enemy_queen_aux(DestCell,Value):-
 	hive_current_player_color(Color),
