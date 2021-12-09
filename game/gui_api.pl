@@ -77,8 +77,8 @@ gui_change_game_state(MoveType) :-
     hive_change_game_state(MoveType).
 
 gui_get_visual_game_state(Board, Players) :-
-    cells(Board),
-    players(Players).
+    get_game_state(game_state(Board, _, _, _, Players)),
+    write_ln(Players).
 
 gui_ai_turn(MoveType) :-
     ai_vs_human(MoveType).

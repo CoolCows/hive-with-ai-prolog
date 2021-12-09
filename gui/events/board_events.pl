@@ -164,10 +164,9 @@ change_turn(MoveType, Canvas, WhiteCanvas, BlackCanvas) :-
 
 handle_opponent(MoveType, Canvas, WhiteCanvas, BlackCanvas) :-
     nb_getval(opponent, human),
-	write_ln("hfasfadsf"),
 	write_ln(MoveType),
     gui_change_game_state(MoveType),
-    gui_get_visual_game_state(Board, [WhitePlayer, BlackPlayer]),
+    gui_get_visual_game_state(Board, [BlackPlayer, WhitePlayer]),
     nb_setval(board, Board),
     nb_getval(player_turn, Colour),
     (
@@ -175,6 +174,7 @@ handle_opponent(MoveType, Canvas, WhiteCanvas, BlackCanvas) :-
             Colour = white,
             nb_setval(player_turn, black),
             MoveType = place(_),
+            write_ln('Updating white player'),
             nb_setval(white_player, WhitePlayer),
             draw_side_board(WhitePlayer, Colour, WhiteCanvas)
         );
@@ -183,6 +183,7 @@ handle_opponent(MoveType, Canvas, WhiteCanvas, BlackCanvas) :-
             nb_setval(player_turn, white),
             MoveType = place(_),
             nb_setval(black_player, BlackPlayer),
+            write_ln('Updating black player'),
             draw_side_board(BlackPlayer, Colour, BlackCanvas)
         );
         true
@@ -193,7 +194,7 @@ handle_opponent(MoveType, Canvas, WhiteCanvas, BlackCanvas) :-
 handle_opponent(MoveType, Canvas, WhiteCanvas, BlackCanvas):-
     nb_getval(opponent, ai),
     gui_ai_turn(MoveType),
-    gui_get_visual_game_state(Board, [WhitePlayer, BlackPlayer]),
+    gui_get_visual_game_state(Board, [BlackPlayer, WhitePlayer]),
     nb_setval(board, Board),
     draw_side_board(WhitePlayer, white, WhiteCanvas),
     draw_side_board(BlackPlayer, black, BlackCanvas),
