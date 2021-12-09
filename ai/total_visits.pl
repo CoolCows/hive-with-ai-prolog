@@ -18,7 +18,10 @@ init_total_visits :-
 increase_total_visits :-
     retract_total_visits(TotalVisits),
     NewTotalVisits is TotalVisits + 1,
-    assert_total_visits(NewTotalVisits).
+    assert_total_visits(NewTotalVisits),
+    db_sync(gc).
 
+get_total_visits(1) :-
+    total_visits(0).
 get_total_visits(X) :-
     total_visits(X).

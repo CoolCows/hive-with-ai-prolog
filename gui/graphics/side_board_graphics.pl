@@ -14,8 +14,6 @@
 ]).
 
 draw_side_board(Player, Colour, Canvas) :-
-    write_ln('Drawing side board'),
-    write_ln(Player),
     send(Canvas, clear),
     color_side_board(Colour, Canvas),
     
