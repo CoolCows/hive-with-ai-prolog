@@ -19,7 +19,7 @@ ai_vs_human_init :-
     start_up_ia,
     add_initial_node,
     write_ln('initiation complete'),
-    nb_setval(parent_address, "0").
+    nb_setval(parent_address, '1').
 
 
 ai_vs_human(_) :-
@@ -27,6 +27,7 @@ ai_vs_human(_) :-
 ai_vs_human(EdgeMove) :-
     write_ln('Playing Ai vs human'),
     nb_getval(parent_address, ParentAddress),
+    ai_change_game_state(EdgeMove),
     ai_get_game_state(GameState),
     ai_game_status(NodeType),
     force_find_node(ParentAddress, GameState, EdgeMove, NodeType, Node),

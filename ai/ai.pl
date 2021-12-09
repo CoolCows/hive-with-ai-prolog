@@ -31,13 +31,14 @@ run_simulation(
     NextNode
 ) :-
     write_ln('Running simulation'),
+    write_ln(Node),
     get_address(Node, Address),
     write_ln('Got Node Address'),
     ai_get_game_state(RealGameState),!,
     write_ln('Got Game State'),
+    write_ln(RealGameState),
     select_next_move(Address, NextMove),  
     write_ln('Got Next Move'),
-    write_ln(NextMove),
     % ===== Multi-Threading (for later) =====
     % Make the dynamic predicates thread independent
     % Use mutexes to when writing to database
@@ -47,10 +48,16 @@ run_simulation(
     % After simulation select cells to move
     % ai_set_game_state(RealGameState),
     % select_next_move(Address, NextMove),
+    write_ln('Definitive Move:'),
+    write_ln(NextMove),
     ai_change_game_state(NextMove),
     ai_get_game_state(NewGameState),
+    write_ln('New Game State'),
+    write_ln(NewGameState),
     ai_game_status(NodeType),
     force_find_node(Address, NewGameState, NextMove, NodeType, true, NextNode),
+    write_ln('Found node'),
+    write_ln(NextNode),
     write_ln('Simulation Ended').
 
 search(Node, Node) :-
@@ -97,7 +104,8 @@ analyze_moves(Address, [Move|NextMoves], MaxValue, TopMoves, BestMoves) :-
         );
         (
             % Call to Heuristics and Multiply for constant Value
-            apply_heuristics(Move, C),
+            % apply_heuristics(Move, C),
+            C = 1,
             get_total_visits(TotalVisits),
             NewValue is C*sqrt(TotalVisits)
         )
@@ -172,6 +180,7 @@ uct(Node, Move, Result) :-
         (Color = white, get_stats(Node, TimesWon, _, Explored));
         get_stats(Node, _, TimesWon, Explored)
     ),
-    apply_heuristics(Move, C),
+    % apply_heuristics(Move, C),
+    C = 1,
     get_total_visits(TotalVisits),
     Result is TimesWon/Explored + C*sqrt(TotalVisits)/Explored.
