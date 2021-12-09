@@ -345,6 +345,11 @@ top_level_cell(Cell,TopCell):-
 	TopCell = Cell.
 
 game_status(Status):-
+    total_turns(Turns),
+    Turns >= 100,
+    Status = draw,!.
+
+game_status(Status):-
 	get_cell(cell(queen,_,_,white,_),WhiteQueen),
 	forall( adjacent_cell(WhiteQueen,AdjCell),
 			not(get_bug_type(AdjCell,none))),
