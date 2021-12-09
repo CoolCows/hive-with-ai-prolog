@@ -7,33 +7,31 @@
 :- use_module("../game/cell").
 
 apply_heuristics(Move, Value) :-
-    (
-        (surround_enemy_queen(Move), A = 3);
-        (A = 0)
-    ),
-    (
-        (free_current_player_queen(Move), B = 2);
-        (B = 0)
-    ),
-    (
-        (block_enemy_bug(Move), C = 1.5);
-        (C = 0)
-    ),
-    Value is A + B + C.
+	write_ln("MOVE"),
+	write_ln(Move),
+	write_ln("HEURISTICS METRICS"),
+	surround_enemy_queen(Move,A),
+	write_ln(A),
+	Value is A.
 
-surround_enemy_queen(move(cell(B1,R1,C1,D1,S1),cell(B2,R2,C2,D2,S2))):-
+surround_enemy_queen(move(cell(B1,R1,C1,D1,S1),cell(B2,R2,C2,D2,S2)),Value):-
 	DestCell = cell(B1,R2,C2,D1,S2),
+	init_cell(DestCell),
+	surround_enemy_queen_aux(DestCell,Value),
+	delete_cell(DestCell).
+
+surround_enemy_queen(place(Cell),Value):-
+	init_cell(Cell),
+	surround_enemy_queen_aux(Cell,Value),
+	delete_cell(Cell).
+
+surround_enemy_queen_aux(DestCell,Value):-
 	hive_current_player_color(Color),
 	oponent_color(Color,OponentColor),
 	hive_get_cell(cell(queen,_,_,OponentColor,_),QueenCell),
-	adjacent_cell(QueenCell,DestCell).
-
-surround_enemy_queen(place(Cell)):-
-	% hive_current_player_color(Color),
-	% oponent_color(Color,OponentColor),
-	% hive_get_cell(cell(queen,_,_,OponentColor,_),QueenCell),
-	% adjacent_cell(QueenCell,Cell).
-	false.
+	adjacent_cell(QueenCell,DestCell),
+	Value = 1,!.
+surround_enemy_queen_aux(DestCell,0).
 
 free_current_player_queen(cell(B1,R1,C1,D1,S1),cell(B2,R2,C2,D2,S2)):-
 	DestCell = cell(B1,R2,C2,D1,S2),
