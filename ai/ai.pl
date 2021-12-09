@@ -8,7 +8,9 @@
 %
 % Use reinforced learning 
 :- module(ai, [
-    run_simulation/2
+    run_simulation/2,
+    explore_node/4,
+    backpropagate/2
 ]).
 
 :- use_module(ai_api, [
@@ -45,9 +47,14 @@ run_simulation(
     % =====          End                =====
     
     select_next_move(Address, AllPosMoves, FinalNextMove),
+    write_ln('Final Next Move'),
+    write_ln(FinalNextMove),
     explore_node(Address, FinalNextMove, true, NextNode),
-    get_stats(NextNode, E, WW, BW),
-    write_ln(E),
+    ai_game_status(Status),
+    (
+        (not(Status = non_terminal), backpropagate(NextNode, Status));
+        true
+    ),
     write_ln('Simulation Ended').
 
 do_searches(_, _, _, 0):-

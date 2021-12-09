@@ -16,7 +16,8 @@
 draw_side_board(Player, Colour, Canvas) :-
     send(Canvas, clear),
     color_side_board(Colour, Canvas),
-    
+    write_ln('draw_side_board'),   
+    write_ln(Player),
     draw_remaining_cells(
         Canvas,
         Player,

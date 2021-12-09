@@ -35,10 +35,14 @@
     gui_get_board/1,
     gui_mosquito_adyacent_pillbug/1,
 	gui_get_pillbug_effect/2,
-    gui_test_board/1
+    gui_test_board/1,
+    gui_game_status/1,
+    gui_ai_vs_ai_visual/2
 ]).
 
 select_event(Canvas, ClickPosition, WhiteCanvas, BlackCanvas) :-
+    gui_game_status(non_terminal),
+    not(handle_ai_visual(Canvas, WhiteCanvas, BlackCanvas)),
     nb_getval(board, Board),
     get_correct_cells(Board, ClickPosition, CorrectCell),
     (
@@ -134,6 +138,17 @@ handle_mosquito_effect(Canvas, CorrectCell) :-
     write_ln('Handling mosquito effect'),
     gui_mosquito_adyacent_pillbug(+CorrectCell),
     handle_pillbug_effect(Canvas, CorrectCell).
+
+handle_ai_visual(Canvas, WhiteCanvas, BlackCanvas) :-
+    nb_getval(opponent, ai_vs_ai_visual),
+    nb_getval(last_node, LastNode),
+    gui_ai_vs_ai_visual(LastNode, NextNode),
+    nb_setval(last_node, NextNode),
+
+    gui_get_visual_game_state(Board, [BlackPlayer, WhitePlayer]),
+    draw_side_board(WhitePlayer, white, WhiteCanvas),
+    draw_side_board(BlackPlayer, black, BlackCanvas),
+    draw_board(Board, Canvas).
 
 draw_all(_, []).
 draw_all(Canvas, [X|Rest]) :-

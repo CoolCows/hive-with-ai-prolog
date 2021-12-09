@@ -10,7 +10,9 @@
 	gui_mosquito_adyacent_pillbug/1,
     gui_change_game_state/1,
     gui_get_visual_game_state/2,
-    gui_ai_turn/1
+    gui_ai_turn/1,
+    gui_ai_vs_ai_visual/2,
+    gui_game_status/1
 ]).
 
 :- use_module(player).
@@ -19,11 +21,17 @@
 :- use_module(board).
 :- use_module(turns).
 :- use_module(hive_api).
-:- use_module("../ai/ai_api", [ai_vs_human_init/0, ai_vs_human/1]).
+:- use_module("../ai/ai_api", [
+    ai_vs_human_init/0,
+    ai_vs_ai_init/1,
+    ai_vs_human/1,
+    ai_vs_ai_visual/2
+]).
 
 gui_start_game(+Opponent, -Board, -Players) :-
     (
         (Opponent = ai, ai_vs_human_init);
+        (Opponent = ai_vs_ai_visual, ai_vs_ai_init(Node), nb_setval(last_node, Node));
         true
     ),
 	init_turns,
@@ -92,6 +100,9 @@ gui_get_visual_game_state(Board, [BlackPlayer, WhitePlayer]) :-
 
 gui_ai_turn(MoveType) :-
     ai_vs_human(MoveType).
+
+gui_ai_vs_ai_visual(Node, NextNode) :-
+    ai_vs_ai_visual(Node, NextNode).
 
 gui_skip_turn():-
 	hive_skip_turn().

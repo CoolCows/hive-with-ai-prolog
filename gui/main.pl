@@ -19,6 +19,8 @@ menu_bar_setup(MainWin, Board, BlackCells, WhiteCells) :-
     send_list(Opt, append,
                 [menu_item(against_AI, message(
                         @prolog, start_game, ai, Board, BlackCells, WhiteCells)),
+                 menu_item(aI_vs_AI, message(
+                        @prolog, start_game, ai_vs_ai_visual, Board, BlackCells, WhiteCells)),
                  menu_item(local_game, message(
                         @prolog, start_game, human, Board, BlackCells, WhiteCells)),
                  menu_item(online)]).
