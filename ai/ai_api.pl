@@ -5,8 +5,8 @@
     ai_get_game_state/1,
     ai_set_game_state/1,
     ai_game_status/1,
-    ai_update_state/2,
-    ai_current_player_color/1
+    ai_current_player_color/1,
+    ai_change_game_state/1
 ]).
 
 :- use_module("../game/hive_api").
@@ -19,7 +19,7 @@ ai_vs_human_init :-
     start_up_ia,
     add_initial_node,
     write_ln('initiation complete'),
-    nb_setval(parent_address, "0").
+    nb_setval(parent_address, '1').
 
 
 ai_vs_human(_) :-
@@ -27,6 +27,7 @@ ai_vs_human(_) :-
 ai_vs_human(EdgeMove) :-
     write_ln('Playing Ai vs human'),
     nb_getval(parent_address, ParentAddress),
+    ai_change_game_state(EdgeMove),
     ai_get_game_state(GameState),
     ai_game_status(NodeType),
     force_find_node(ParentAddress, GameState, EdgeMove, NodeType, Node),
@@ -61,9 +62,8 @@ ai_get_game_state(State) :-
 ai_set_game_state(State) :-
     hive_set_game_state(State).
 
-ai_update_state(NewState, OldState) :-
-    hive_get_game_state(OldState),
-    hive_set_game_state(NewState).
+ai_change_game_state(MoveType) :-
+    hive_change_game_state(MoveType).
 
 ai_game_status(Status) :-
     hive_game_status(Status).

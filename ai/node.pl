@@ -84,10 +84,15 @@ force_find_node(ParentAddress, GameState, EdgeMove, NodeType, Node) :-
     force_find_node(ParentAddress, GameState, EdgeMove, NodeType, false, Node).
 force_find_node(ParentAddress, GameState, EdgeMove, NodeType, NodeVisited, Node) :-
    keccak256(ParentAddress, GameState, NodeAddress),
+   write_ln(ParentAddress),
+   write_ln('Force Find Node'),
+   write_ln(NodeAddress),
    (
         find_node_by_game_state(NodeAddress, Node);
         (
             keccak256(ParentAddress, EdgeMove, AuxAddress),
+            write_ln('AuxAddress'),
+            write_ln(AuxAddress),
             add_node(
                 NodeAddress, AuxAddress, ParentAddress, NodeType, NodeVisited, Node
             )
@@ -128,6 +133,12 @@ add_node(
         NodeType, NodeVisited, 0, 0, 0
     )
 ):-
+    write_ln('Adding Node'),
+    write_ln(NodeAddress),
+    write_ln(AuxAddress),
+    write_ln(ParentAddress),
+    write_ln(NodeType),
+    write_ln(NodeVisited),
     assert_node(
         NodeAddress, 
         AuxAddress,
@@ -170,6 +181,8 @@ find_node_by_edge_move(
         NodeAddress, 
         AuxAddress,
         ParentAddress, 
+        NodeType,
+        NodeVisited,
         Explored, 
         WhiteWon, 
         BlackWon
@@ -179,6 +192,8 @@ find_node_by_edge_move(
         NodeAddress, 
         AuxAddress,
         ParentAddress, 
+        NodeType,
+        NodeVisited,
         Explored, 
         WhiteWon, 
         BlackWon
@@ -210,7 +225,7 @@ update_node(Node, Color) :-
 % ParentAddress: str
 % Salt: term
 % Hash: str (returns)
-keccak256(ParentAddress, Salt, StrHash) :-
+keccak256(ParentAddress, Salt, Hash) :-
     term_string(Salt, StrSalt),
     string_concat(ParentAddress, StrSalt, Seed),
     crypto_data_hash(Seed, Hash, [algorithm(sha256)]).
