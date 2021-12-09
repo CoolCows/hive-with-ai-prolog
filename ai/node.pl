@@ -189,13 +189,13 @@ find_node_by_edge_move(
 % 1. Finds node at NodeAddress
 % 2. Updates properties
 % 3. Returns ParentAddress
-update_node(Node, Color) :-
+update_node(Node, Status) :-
     Node = node(Address, AuxAddress, ParentAddress, NodeType, Explored, WhiteWon, BlackWon),
     retract_node(Node),
     NewExplored is Explored + 1,
     (
-        (Color = black, NewBlackWon is BlackWon + 1, NewWhiteWon = WhiteWon);
-        (Color = white, NewBlackWon = BlackWon, NewWhiteWon + 1 is WhiteWon)
+        (Status = black_won, NewBlackWon is BlackWon + 1, NewWhiteWon = WhiteWon);
+        (Status = white_won, NewBlackWon = BlackWon, NewWhiteWon is WhiteWon + 1)
     ),
     assert_node(
         Address,
