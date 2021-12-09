@@ -165,71 +165,12 @@ analyze_moves(Address, [Move|NextMoves], MaxValue, TopMoves, BestMoves) :-
 % Get all possible moves
 get_next_moves(NextMoves) :-
 	hive_current_player_color(Color),
-	write_ln("GETTING POSSIBLE MOVES"),
-	findall(Move,possible_moves(Color,Move), Moves ),
-	write_ln(Moves),
-	write_ln("GETTING POSSIBLE PLACE"),
-	findall(Place, possible_place(Color,Place),Places),
-	write_ln(Places),
-    (
-	    (Moves = [], Place = [], NextMoves = [skip_move]);
-        append(Moves,Places,NextMoves)
-    ).
-
-
-possible_moves(Color,move(SourceCell,DestCell)):-
-	hive_get_cell(cell(_,_,_,Color,_),SourceCell),
-	hive_get_possible_moves(SourceCell,PosMoves),
-	member(DestCell,PosMoves).
-
-possible_place(Color,place(Cell)):-
-	hive_current_player_turns(3),
-	hive_get_player(player(Color,_, _, _, _, _, _, _, _),
-					player(Color,Queen, Ants, Beetle, Grasshopper, Ladybug, Mosquito, Pillbug, Spider)),
-	Queen = 1,	
-	hive_get_possible_positions(Color,PosPositions),!,
-	member(cell(_,Row,Col,_,_),PosPositions),
-	Cell = cell(queen,Row,Col,Color,0).
-
-possible_place(Color,place(Cell)):-
-	hive_get_player(player(Color,_, _, _, _, _, _, _, _),
-					player(Color,Queen, Ants, Beetle, Grasshopper, Ladybug, Mosquito, Pillbug, Spider)),
-	hive_get_possible_positions(Color,PosPositions),
-	member(cell(_,Row,Col,_,_),PosPositions),
+ 	hive_possible_plays(Color, Moves),
 	(
-		(
-			Queen > 0,
-			Cell = cell(queen,Row,Col,Color,0) 
-		);
-		(
-			Ants > 0,
-			Cell = cell(ant,Row,Col,Color,0) 
-		);
-		(
-			Beetle > 0,
-			Cell = cell(beetle,Row,Col,Color,0) 
-		);
-		(
-			Grasshopper > 0,
-			Cell = cell(grasshopper,Row,Col,Color,0) 
-		);
-		(
-			Ladybug > 0,
-			Cell = cell(ladybug,Row,Col,Color,0) 
-		);
-		(
-			Mosquito > 0,
-			Cell = cell(mosquito,Row,Col,Color,0) 
-		);
-		(
-			Pillbug > 0,
-			Cell = cell(pillbug,Row,Col,Color,0) 
-		);
-		(
-			Spider > 0,
-			Cell = cell(spider,Row,Col,Color,0) 
-		)
+		Moves = [],NextMove = [skip_move];
+		NextMoves = Moves
 	).
+
 
 % Upper Confidence Bound
 uct(Node, Move, Result) :-

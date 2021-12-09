@@ -27,7 +27,8 @@
 					accesible_cell_top_level/2,
 					get_game_state/1,
 					set_game_state/1,
-					game_status/1
+					game_status/1,
+					remove_expired_fixed_cells/0
 					% current_player_color/2
 					]).
 
