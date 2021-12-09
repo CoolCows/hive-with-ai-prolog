@@ -9,7 +9,7 @@
 apply_heuristics(Move, Value) :-
 	surround_enemy_queen(Move,A),
 	closer_to_enemy_queen(Move,B),
-	Value is A +  B.
+	Value is A + B.
 
 surround_enemy_queen(move(cell(B1,R1,C1,D1,S1),cell(B2,R2,C2,D2,S2)),Value):-
 	DestCell = cell(B1,R2,C2,D1,S2),
@@ -29,7 +29,7 @@ surround_enemy_queen_aux(SourceCell,DestCell,Value):-
 	hive_get_cell(cell(queen,_,_,OponentColor,_),QueenCell),
 	not(adjacent_cell(SourceCell,QueenCell)),
 	adjacent_cell(QueenCell,DestCell),
-	Value = 1,!.
+	Value = 0.1,!.
 surround_enemy_queen_aux(SourceCell,DestCell,0).
 
 
