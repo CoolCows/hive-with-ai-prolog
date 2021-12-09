@@ -170,6 +170,8 @@ find_node_by_edge_move(
         NodeAddress, 
         AuxAddress,
         ParentAddress, 
+        NodeType,
+        NodeVisited,
         Explored, 
         WhiteWon, 
         BlackWon
@@ -179,6 +181,8 @@ find_node_by_edge_move(
         NodeAddress, 
         AuxAddress,
         ParentAddress, 
+        NodeType,
+        NodeVisited,
         Explored, 
         WhiteWon, 
         BlackWon
