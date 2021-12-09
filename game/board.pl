@@ -138,6 +138,8 @@ move_cell(cell(B1,R1,C1,D1,S1),cell(B2,R2,C2,D2,S2)):-
 	remove_expired_fixed_cells().
 
 pillbug_move(cell(B1,R1,C1,D1,S1),cell(B2,R2,C2,D2,S2)):-
+	write_ln(cell(B1,R1,C1,D1,S1)),
+	write_ln(cell(B2,R2,C2,D2,S2)),
 	delete_cell(cell(B1,R1,C1,D1,S1)),
 	init_cell(cell(B1,R2,C2,D1,S2)),
 	set_fixed_cell(cell(B1,R2,C2,D1,S2)),

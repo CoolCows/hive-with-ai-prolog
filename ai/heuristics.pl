@@ -12,7 +12,7 @@ apply_heuristics(Move, Value) :-
 	write_ln("HEURISTICS METRICS"),
 	surround_enemy_queen(Move,A),
 	write_ln(A),
-	Value = A.
+	Value is A.
 
 surround_enemy_queen(move(cell(B1,R1,C1,D1,S1),cell(B2,R2,C2,D2,S2)),Value):-
 	DestCell = cell(B1,R2,C2,D1,S2),
