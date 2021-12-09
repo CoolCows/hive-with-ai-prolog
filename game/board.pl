@@ -54,7 +54,7 @@ get_game_state(game_state(Board,Turns,LastMovedCells,FixedCells,Players)):-
 	% get_fixed_cells(FixedCells),
 	players(Players).
 
-set_game_state(game_state(game_state(Board,Turns,LastMovedCells,FixedCells,Players))):-
+set_game_state(game_state(Board,Turns,LastMovedCells,FixedCells,Players)):-
 	set_cells(Board),
 	set_turns(Turns),
 	set_last_moved_cells(LastMovedCells),
@@ -355,6 +355,11 @@ game_status(Status):-
     Turns >= 100,
     Status = draw,!.
 
+%game_status(Status) :-
+%hive_zero_moves(white),
+%hive_zero_moves(black),
+%Status = draw,!.
+
 game_status(Status):-
 	get_cell(cell(queen,_,_,white,_),WhiteQueen),
 	forall( adjacent_cell(WhiteQueen,AdjCell),
@@ -368,13 +373,13 @@ game_status(Status):-
 	get_cell(cell(queen,_,_,white,_),WhiteQueen),
 	forall( adjacent_cell(WhiteQueen,AdjCell),
 			not(get_bug_type(AdjCell,none))),
-	Status = white_won,!.
+	Status = black_won,!.
 
 game_status(Status):-
 	get_cell(cell(queen,_,_,black,_),BlackQueen),
 	forall( adjacent_cell(BlackQueen,AdjCell),
 			not(get_bug_type(AdjCell,none))),
-	Status = black_won,!.
+	Status = white_won,!.
 
 game_status(Status):-
 	Status = non_terminal.

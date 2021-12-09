@@ -1,5 +1,6 @@
 :- module(node, [
     get_address/2,
+    get_parent_address/2,
     get_type/2,
     get_stats/4,
     get_times_explored/2,
@@ -8,18 +9,17 @@
     force_find_node/5,
     force_find_node/6,
     start_up_ia/0,
+    sync_tree_db/0,
     add_initial_node/0,
     find_node_by_game_state/2,
     find_node_by_edge_move/2,
+    update_node/2,
     keccak256/3
 ]).
 
 :- use_module(library(persistency)).
 :- use_module(total_visits, [init_total_visits/0, load_total_visits_db/0]).
 
-% define persistent game node
-% TODO
-% There is no need to keep game_state!!!
 :- persistent
     node(
         address:atom,          % hash(parent_address + str(game_state))
@@ -36,6 +36,7 @@
 load_tree_db :-
     db_attach('../ai/db/tree_db.pl', []).
 
+% sync to delte retract calls
 sync_tree_db :-
     db_sync(gc).
 
@@ -52,7 +53,7 @@ get_aux_address(
 ).
 
 get_parent_address(
-    node(_, _, ParentAddress, _, _, _, _, _, _),
+    node(_, _, ParentAddress, _, _, _, _, _),
     ParentAddress
 ). 
 
@@ -62,7 +63,7 @@ get_type(
 ).
 
 get_stats(
-    node(_, _, _, _, _, _, Explored, WhiteWon, BlackWon),
+    node(_, _, _, _, _, Explored, WhiteWon, BlackWon),
     Explored, WhiteWon, BlackWon
 ).
 
@@ -193,12 +194,31 @@ find_node_by_edge_move(
 % 2. Updates properties
 % 3. Returns ParentAddress
 update_node(Node, Status) :-
-    Node = node(Address, AuxAddress, ParentAddress, NodeType, Explored, WhiteWon, BlackWon),
-    retract_node(Node),
+    Node = node(
+        Address, 
+        AuxAddress, 
+        ParentAddress, 
+        NodeType, 
+        NodeVisited, 
+        Explored, 
+        WhiteWon, 
+        BlackWon
+    ),
+    retract_node(
+        Address, 
+        AuxAddress, 
+        ParentAddress, 
+        NodeType, 
+        NodeVisited, 
+        Explored, 
+        WhiteWon, 
+        BlackWon
+    ),
     NewExplored is Explored + 1,
     (
-        (Status = black_won, NewBlackWon is BlackWon + 1, NewWhiteWon = WhiteWon);
-        (Status = white_won, NewBlackWon = BlackWon, NewWhiteWon is WhiteWon + 1)
+        (Status = black_won, NewBlackWon is BlackWon + 1, NewWhiteWon = WhiteWon, write_ln('BlackWon'));
+        (Status = white_won, NewBlackWon = BlackWon, NewWhiteWon is WhiteWon + 1, write_ln('WhiteWon'));
+        (Status = draw, NewBlackWon = BlackWon, NewWhiteWon = WhiteWon)
     ),
     assert_node(
         Address,
