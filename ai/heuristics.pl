@@ -10,9 +10,15 @@ apply_heuristics(Move, Value) :-
     %write_ln("MOVE"),
     %write_ln(Move),
     %write_ln("HEURISTICS METRICS"),
-	surround_enemy_queen(Move,A),
-	write_ln(A),
-	Value is A.
+	surround_enemy_queen(Move, A),
+    free_enemy_queen(Move, B),
+    PreValue is A + B,
+    (
+        (PreValue > 0, Value = PreValue);
+        Value = 0.2
+    ),
+	write_ln(Value).
+
 
 surround_enemy_queen(move(cell(B1,R1,C1,D1,S1),cell(B2,R2,C2,D2,S2)),Value):-
 	DestCell = cell(B1,R2,C2,D1,S2),
@@ -33,8 +39,10 @@ surround_enemy_queen_aux(DestCell,Value):-
 	Value = 1,!.
 surround_enemy_queen_aux(DestCell,0.1).
 
-% move_cell_already_surrounded_enemy_queen(move(cell(B1,R1,C1,D1,S1),cell(B2,R2,C2,D2,S2)),Value):-
-
+free_enemy_queen(move(cell(B1,R1,C1,D1,S1),cell(B2,R2,C2,D2,S2)), -0.7):-
+    hive_current_player_color(Color),
+    oponent_color(Color, OpponentColor),
+    adjacent_cell(cell(B1, R1, C1, D1, S1), cell(queen, _, _, OpponentColor, _)).
 
 free_current_player_queen(cell(B1,R1,C1,D1,S1),cell(B2,R2,C2,D2,S2)):-
 	DestCell = cell(B1,R2,C2,D1,S2),
