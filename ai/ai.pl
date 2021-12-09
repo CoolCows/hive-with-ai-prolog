@@ -36,25 +36,22 @@ run_simulation(
     ai_get_game_state(RealGameState),!,
     get_next_moves(AllPosMoves),
     analyze_moves(Address, AllPosMoves, 0, [], BestMoves),
-    do_searchs(Address, BestMoves),
+    do_searches(Address, BestMoves),
   
     % ===== Multi-Threading (for later) =====
     % Make the dynamic predicates thread independent
     % Use mutexes to when writing to database
     % create some threads to analyse several path down 
     % =====          End                =====
-
-    % After simulation select cells to move
-    % ai_set_game_state(RealGameState),
-    % select_next_move(Address, NextMove),
     
-    select_next_move(Address, FinalNextMove),
+    ai_set_game_state(RealGameState),
+    select_next_move(Address, AllPosMoves, FinalNextMove),
     explore_node(Address, FinalNextMove, true, NextNode),
     write_ln('Simulation Ended').
 
-do_searchs(_, _, 0).
-do_searchs(_, [], _).
-do_searchs(Address, [BestMove|OtherMoves], Amount) :-
+do_searches(_, _, 0).
+do_searches(_, [], _).
+do_searches(Address, [BestMove|OtherMoves], Amount) :-
     explore_node(Address, NextMove, Node),
     search(Node, EndNode),
     increase_total_visits,
@@ -62,7 +59,7 @@ do_searchs(Address, [BestMove|OtherMoves], Amount) :-
     backpropagate(EndNode, Status),
     
     DecAmount is Amount - 1,
-    do_searchs(Address, OtherMoves, DecAmount).
+    do_searches(Address, OtherMoves, DecAmount).
   
 
 search(Node, Node) :-
