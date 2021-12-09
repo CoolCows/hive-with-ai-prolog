@@ -241,13 +241,12 @@ adjacent_cells(Cell, AdjCells):-
 %
 
 valid_new_cell(_,ValidCell):-
-	cells([X|Y]),
-	len([X|Y],1),
-	adjacent_cell(X,ValidCell).
-
-valid_new_cell(_,ValidCell):-
 	cells([]),
 	ValidCell = cell(none,0,0,none,0).
+
+valid_new_cell(_,ValidCell):-
+	cells([X]),
+	adjacent_cell_1(X,ValidCell).
 
 valid_new_cell(Color,ValidCell):-
 	get_cell(cell(_,_,_,Color,_),SameColorCell),
@@ -344,6 +343,11 @@ top_level_cell(Cell,TopCell):-
 		top_level_cell(AboveCell,TopCell),!
 	);
 	TopCell = Cell.
+
+game_status(Status):-
+    total_turns(Turns),
+    Turns >= 100,
+    Status = draw,!.
 
 game_status(Status):-
 	get_cell(cell(queen,_,_,white,_),WhiteQueen),

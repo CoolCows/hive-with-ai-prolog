@@ -34,48 +34,52 @@ run_simulation(
     write_ln(Node),
     get_address(Node, Address),
     ai_get_game_state(RealGameState),!,
-    write_ln('Got Game State'),
-    write_ln(RealGameState),
-    select_next_move(Address, NextMove),  
+    get_next_moves(AllPosMoves),
+    analyze_moves(Address, AllPosMoves, 0, [], BestMoves),
+    do_searches(Address, BestMoves),
+  
     % ===== Multi-Threading (for later) =====
     % Make the dynamic predicates thread independent
     % Use mutexes to when writing to database
     % create some threads to analyse several path down 
     % =====          End                =====
-
-    % After simulation select cells to move
-    % ai_set_game_state(RealGameState),
-    % select_next_move(Address, NextMove),
-    write_ln('Definitive Move:'),
-    write_ln(NextMove),
-    ai_change_game_state(NextMove),
-    ai_get_game_state(NewGameState),
-    write_ln('Updated Game State'),
-    write_ln(NewGameState),
-    ai_game_status(NodeType),
-	write_ln("hfkadffjakfsfsddf"),
-	write_ln("\n"),
-	write_ln(NodeType),
-
-    force_find_node(Address, NewGameState, NextMove, NodeType, true, NextNode),
+    
+    ai_set_game_state(RealGameState),
+    select_next_move(Address, AllPosMoves, FinalNextMove),
+    explore_node(Address, FinalNextMove, true, NextNode),
     write_ln('Simulation Ended').
 
-search(Node, Node) :-
-    not(get_type(Node, non_terminal)),!,
-    ai_current_player_color(Color),
+do_searches(_, _, 0).
+do_searches(_, [], _).
+do_searches(Address, [BestMove|OtherMoves], Amount) :-
+    explore_node(Address, NextMove, Node),
+    search(Node, EndNode),
     increase_total_visits,
-    backpropagate(Node, Color).
+    ai_game_status(Status),
+    backpropagate(EndNode, Status),
+    
+    DecAmount is Amount - 1,
+    do_searches(Address, OtherMoves, DecAmount).
+  
+
+search(Node, Node) :-
+    not(get_type(Node, non_terminal)),!.
 search(
     Node,
     EndNode
 ) :-
     get_address(Node, Address),
     select_next_move(Address, NextMove),
+    explore_node(Address, NextMove, false, NewNode),
+    search(NewNode, EndNode).
+
+explore_node(Address, NextMove, Node) :-
+    explore_node(Address, NextMove, false, Node).
+explore_node(Address, NextMove, Visited, Node) :-
     ai_change_game_state(NextMove),
-    get_game_state(NewGameState),
+    ai_get_game_state(GameState),
     ai_game_status(NodeType),
-    force_find_node(Address, NewGameState, NextMove, NodeType, Node),
-    search(Node, EndNode).
+    force_find_node(Address, GameState, NextMove, NodeType, Visited, Node).
 
 backpropagate(Node, Color) :-
     get_parent_address(Node, 0),!,
@@ -86,9 +90,12 @@ backpropagate(Node, Color) :-
     find_node_by_game_state(ParentGameStateAddress, ParentNode),
     backpropagate(ParentNode, Color).
 
+
 select_next_move(Address, NextMove) :-
     write_ln('Selecting Next Move'),
     get_next_moves(NextMoves), 
+    select_next_move(Address, NextMoves, NextMove).
+select_next_move(Address, NextMoves, NextMove) :-
     write_ln('Analyzing Next Moves'),
     write_ln(Address),
     analyze_moves(Address, NextMoves, 0, [], [NextMove|_]),
@@ -131,7 +138,10 @@ get_next_moves(NextMoves) :-
 	write_ln("GETTING POSSIBLE PLACE"),
 	findall(Place, possible_place(Color,Place),Places),
 	write_ln(Places),
-	append(Moves,Places,NextMoves).
+    (
+	    (Moves = [], Place = [], NextMoves = [skip_move]);
+        append(Moves,Places,NextMoves)
+    ).
 
 
 possible_moves(Color,move(SourceCell,DestCell)):-
@@ -196,5 +206,6 @@ uct(Node, Move, Result) :-
         get_stats(Node, _, TimesWon, Explored)
     ),
 	%apply_heuristics(Move, C),
+    C = 1,
     get_total_visits(TotalVisits),
     Result is TimesWon/Explored + C*sqrt(TotalVisits)/Explored.
