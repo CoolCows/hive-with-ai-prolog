@@ -196,6 +196,8 @@ handle_opponent(MoveType, Canvas, WhiteCanvas, BlackCanvas):-
     gui_ai_turn(MoveType),
     gui_get_visual_game_state(Board, [BlackPlayer, WhitePlayer]),
     nb_setval(board, Board),
+    nb_setval(black_player, BlackPlayer),
+    nb_setval(white_player, WhitePlayer),
     draw_side_board(WhitePlayer, white, WhiteCanvas),
     draw_side_board(BlackPlayer, black, BlackCanvas),
     draw_board(Board, Canvas).
