@@ -196,5 +196,6 @@ uct(Node, Move, Result) :-
         get_stats(Node, _, TimesWon, Explored)
     ),
 	%apply_heuristics(Move, C),
+    C = 1,
     get_total_visits(TotalVisits),
     Result is TimesWon/Explored + C*sqrt(TotalVisits)/Explored.
