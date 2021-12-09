@@ -54,7 +54,7 @@ get_game_state(game_state(Board,Turns,LastMovedCells,FixedCells,Players)):-
 	% get_fixed_cells(FixedCells),
 	players(Players).
 
-set_game_state(game_state(game_state(Board,Turns,LastMovedCells,FixedCells,Players))):-
+set_game_state(game_state(Board,Turns,LastMovedCells,FixedCells,Players)):-
 	set_cells(Board),
 	set_turns(Turns),
 	set_last_moved_cells(LastMovedCells),
