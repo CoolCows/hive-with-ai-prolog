@@ -76,8 +76,19 @@ gui_mosquito_adyacent_pillbug(+MosquitoCell) :-
 gui_change_game_state(MoveType) :-
     hive_change_game_state(MoveType).
 
-gui_get_visual_game_state(Board, Players) :-
-    get_game_state(game_state(Board, _, _, _, Players)),
+gui_get_visual_game_state(Board, [BlackPlayer, WhitePlayer]) :-
+    get_game_state(game_state(Board, _, _, _, [Player1, Player2])),
+    (
+        (
+            Player1 = player(black, _, _, _, _, _, _, _, _), 
+            BlackPlayer = Player1, 
+            WhitePlayer = Player2
+        );
+        (
+            BlackPlayer = Player2, 
+            WhitePlayer = Player1
+        )
+    ).
     write_ln(Players).
 
 gui_ai_turn(MoveType) :-
