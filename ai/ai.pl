@@ -138,7 +138,10 @@ get_next_moves(NextMoves) :-
 	write_ln("GETTING POSSIBLE PLACE"),
 	findall(Place, possible_place(Color,Place),Places),
 	write_ln(Places),
-	append(Moves,Places,NextMoves).
+    (
+	    (Moves = [], Place = [], NextMoves = [skip_move]);
+        append(Moves,Places,NextMoves)
+    ).
 
 
 possible_moves(Color,move(SourceCell,DestCell)):-

@@ -7,6 +7,7 @@
     hive_get_possible_positions/2,
 	hive_get_pillbug_effect/2,
 	hive_skip_turn/0,
+	hive_force_skip_turn/0,
 	hive_mosquito_adjacent_pillbug/1,
 	hive_game_status/1,
 	hive_current_player_color/1,
@@ -40,7 +41,8 @@ hive_init_players() :-
 hive_change_game_state(MoveType) :-
     (MoveType = place(Cell), add_new_cell(Cell));
     (MoveType = move(SourceCell, DestCell), move_cell(SourceCell, DestCell));
-    (MoveType = pillbug(SourceCell, DestCell), pillbug_move(SourceCell, DestCell)).
+    (MoveType = pillbug(SourceCell, DestCell), pillbug_move(SourceCell, DestCell)),
+    (MoveType = skip_move, hive_force_skip_turn()).
 
 hive_put_cell(Cell):-
     add_new_cell(Cell).
@@ -77,6 +79,10 @@ hive_skip_turn():-
 	% TODO: Handle pillbug effect
 	increase_turns(),
 	remove_expired_fixed_cells().
+
+hive_force_skip_turn() :-
+    increase_turns(),
+    remove_expired_fixed_cells().
 
 hive_current_player_color(Color):-
     current_player_color(Color).
