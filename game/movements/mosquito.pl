@@ -15,7 +15,7 @@ valid_mosquito_movement(cell(mosquito,Row,Col,Color,StackPos),DestCells):-
 	StackPos > 0,!,
 	delete_cell(cell(mosquito,Row,Col,Color,StackPos)),
 	init_cell(cell(beetle,Row,Col,Color,StackPos)),
-	findall(DestCell,valid_movement(cell(AdjBug,Row,Col,Color,StackPos),DestCell),DestCells),
+	findall(DestCell,valid_movement(cell(beetle,Row,Col,Color,StackPos),DestCell),DestCells),
 	delete_cell(cell(beetle,Row,Col,Color,StackPos)),
 	init_cell(cell(mosquito,Row,Col,Color,StackPos)).
 
