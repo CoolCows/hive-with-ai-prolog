@@ -33,7 +33,8 @@ stamina :-
 
 write_to_file(Status):-
     open('./log.txt', append, File),
-    write(File, Status),
+    string_concat("\n", Status, Result)
+    write(File, Result),
     close(File).
 
-?- stamina.
+?- train.
