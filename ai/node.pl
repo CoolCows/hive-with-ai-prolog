@@ -38,7 +38,7 @@ load_tree_db :-
 
 % sync to delte retract calls
 sync_tree_db :-
-    db_sync(gc).
+    db_sync(gc(always)).
 
 % Properties:
 
