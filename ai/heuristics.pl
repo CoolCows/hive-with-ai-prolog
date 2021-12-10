@@ -16,7 +16,7 @@ apply_heuristics(Move, Value) :-
     closer_to_enemy_queen(Move,H4),%write_ln('h6'),
     place_ants(Move, H5),
     place_bug(Move, H6),
-    climb_queen(H7),
+    climb_queen(Move, H7),
     %hive_current_player_color(Color),
     %oponent_color(Color, OpponentColor),
     %block_bug(Move, OpponentColor, H3P),write_ln('h7'),
@@ -28,6 +28,16 @@ apply_heuristics(Move, Value) :-
     ).
     %write_ln(Value).
 
+surround_enemy_queen(move(QueenCell, SurroundedCell), Value) :-
+    current_player_color(Color),
+    oponent_color(Color, OpponentColor),
+    QueenCell = cell(queen, _, _, OpponentColor, _),
+    findall(X, empty_cell(QueenCell, X), SourceEmptyCells),
+    findall(Y, empty_cell(SurroundedCell, Y), DestEmptyCells),
+    length(SourceEmptyCells, A),
+    length(DestEmptyCells, B),
+    B < A,
+    Value is (6 - B)*0.2.
 surround_enemy_queen(move(_,DestCell), 1):-
     hive_current_player_color(Color),
     oponent_color(Color, OpponentColor),
@@ -71,6 +81,15 @@ closer_to_enemy_queen_aux(DestCell,SourceCell, 0.5):-
 	RD < RS.
 closer_to_enemy_queen_aux(_,_,0).
 	
+free_ally_queen(move(QueenCell, SurroundedCell), Value) :-
+    current_player_color(Color),
+    QueenCell = cell(queen, _, _, Color, _),
+    findall(X, empty_cell(QueenCell, X), SourceEmptyCells),
+    findall(Y, empty_cell(SurroundedCell, Y), DestEmptyCells),
+    length(SourceEmptyCells, A),
+    length(DestEmptyCells, B),
+    A < B,
+    Value is B*0.2.
 free_ally_queen(move(SourceCell, DestCell), 0.5):-
 	hive_current_player_color(Color),
     adjacent_cell(SourceCell, cell(queen, _, _, Color, _)),
@@ -87,12 +106,13 @@ place_bug(place(_), Value) :-
     Value is 0.25 + T/30.
 place_bug(_, 0).
 
-climb_queen(move(cell(beetle,_,_,BColor,_), cell(none,Row,Col,none,Stack), 0.4)) :-
+climb_queen(move(cell(beetle,_,_,_,_), cell(none,Row,Col,none,Stack), 0.4)) :-
     Stack > 0,
     hive_current_player_color(Color),
     oponent_color(Color, OpponentColor),
     get_cell(cell(queen, Row, Col, OpponentColor, 0)).
 climb_queen(_, 0).
+
 
 block_bug(move(SourceCell, DestCell), Color, Value):-
 	delete_cell(SourceCell),
@@ -108,3 +128,6 @@ block_bug_aux(DestCell, Color, 0.5) :-
 	hive_get_possible_moves(AdjCell, []).
 block_bug_aux(_, _, 0).
 
+empty_cell(Cell, AdyCell):-
+    adjacent_cell(Cell, AdyCell),
+    AdyCell = cell(none, _, _, none, _).
