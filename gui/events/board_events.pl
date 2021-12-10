@@ -203,6 +203,10 @@ handle_opponent(MoveType, Canvas, WhiteCanvas, BlackCanvas) :-
         );
         true
     ),
+    (
+        (Colour = white, handle_skip(black, Canvas, WhiteCanvas, BlackCanvas));
+        handle_skip(white, Canvas, WhiteCanvas, BlackCanvas)
+    ),
     draw_board(Board, Canvas).
 
 
@@ -215,7 +219,15 @@ handle_opponent(MoveType, Canvas, WhiteCanvas, BlackCanvas):-
     nb_setval(white_player, WhitePlayer),
     draw_side_board(WhitePlayer, white, WhiteCanvas),
     draw_side_board(BlackPlayer, black, BlackCanvas),
-    draw_board(Board, Canvas).
+    draw_board(Board, Canvas),
+    nb_getval(player_turn, Color),
+    handle_skip(Color, Canvas, WhiteCanvas, BlackCanvas).
+
+handle_skip(Color, Canvas, WhiteCanvas, BlackCanvas) :- 
+    gui_all_possible_moves(Color, []),
+    handle_opponent(skip_move, Canvas, WhiteCanvas, BlackCanvas).
+handle_skip(_, _, _, _).
+
 
 scan_board([Cell|Rest], ClickPosition, CorrectCell) :-
     click_inside(Cell, ClickPosition, CorrectCell);
