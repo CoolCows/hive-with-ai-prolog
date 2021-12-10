@@ -9,6 +9,7 @@
 					add_new_cell/1,
 					valid_new_cell/2,
 					adjacent_hive_cell/2,
+					adjacent_hive_cell/3,
 					move_cell/2,
 					pillbug_move/2,
 					one_hive/1,
@@ -16,6 +17,7 @@
 					adjacent_to_hive/1,
 					insect_above/2,
 					accesible_cell/2,
+					accesible_cell/3,
 					current_player_color/1,
 					set_last_moved_cell/2,
 					delete_last_moved_cell/2,
@@ -30,7 +32,6 @@
 					set_game_state/1,
 					game_status/1,
 					remove_expired_fixed_cells/0
-					% current_player_color/2
 					]).
 
 :- use_module(cell).
@@ -338,7 +339,16 @@ adjacent_hive_cell(Cell,AdjHiveCell):-
 	adjacent_cell(Cell,AdjHiveCell),
 	not(get_bug_type(AdjHiveCell,none)).
 
+adjacent_hive_cell(Cell,HiveCells,AdjHiveCell):-
+	adjacent_cell(Cell,AdjHiveCell),
+	member(AdjHiveCell, HiveCells).
+
 % triumph if DestCell is accesible from SourceCell through sliding 
+accesible_cell(SourceCell,HiveCells,DestCell):-
+	adjacent_cell(SourceCell,AdjCell),
+	adjacent_cell(DestCell,AdjCell),
+	not(member(AdjCell,HiveCells)).
+
 accesible_cell(SourceCell,DestCell):-
 	adjacent_cell(SourceCell,AdjCell),
 	adjacent_cell(DestCell,AdjCell),
@@ -362,10 +372,6 @@ game_status(Status):-
     Turns >= 100,
     Status = draw,!.
 
-%game_status(Status) :-
-%hive_zero_moves(white),
-%hive_zero_moves(black),
-%Status = draw,!.
 
 game_status(Status):-
 	get_cell(cell(queen,_,_,white,_),WhiteQueen),
