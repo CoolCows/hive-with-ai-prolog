@@ -11,6 +11,7 @@
 	gui_mosquito_adyacent_pillbug/1,
     gui_change_game_state/1,
     gui_get_visual_game_state/2,
+    gui_ai_turn/0,
     gui_ai_turn/1,
     gui_ai_vs_ai_visual/2,
     gui_game_status/1
@@ -25,13 +26,15 @@
 :- use_module("../ai/ai_api", [
     ai_vs_human_init/0,
     ai_vs_ai_init/1,
+    ai_vs_human/0,
     ai_vs_human/1,
     ai_vs_ai_visual/2
 ]).
 
 gui_start_game(+Opponent, -Board, -Players) :-
     (
-        (Opponent = ai, ai_vs_human_init);
+        (Opponent = aiw, ai_vs_human_init);
+        (Opponent = aib, ai_vs_human_init);
         (Opponent = ai_vs_ai_visual, ai_vs_ai_init(Node), nb_setval(last_node, Node));
         true
     ),
@@ -102,6 +105,8 @@ gui_get_visual_game_state(Board, [BlackPlayer, WhitePlayer]) :-
         )
     ).
 
+gui_ai_turn() :-
+    ai_vs_human().
 gui_ai_turn(MoveType) :-
     ai_vs_human(MoveType).
 

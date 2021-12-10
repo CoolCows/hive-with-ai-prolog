@@ -1,6 +1,7 @@
 :- module(ai_api, [
     ai_vs_human_init/0,
     ai_vs_ai_init/1,
+    ai_vs_human/0,
     ai_vs_human/1,
     ai_vs_ai_visual/2,
     ai_vs_ai/4,
@@ -27,6 +28,13 @@ ai_vs_ai_init(RootNode):-
     add_initial_node, 
     find_node_by_game_state('1', RootNode).
 
+ai_vs_human():-
+    write_ln('ai plays first'),
+    find_node_by_game_state('1', RootNode),
+    write_ln('er0'),
+    ai_play(RootNode, ResultNode, 0, train),
+    get_address(ResultNode, Address),
+    nb_setval(parent_address, Address).
 ai_vs_human(_) :-
     not(hive_game_status(non_terminal)).
 ai_vs_human(EdgeMove) :-

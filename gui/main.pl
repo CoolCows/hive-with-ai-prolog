@@ -17,8 +17,10 @@ menu_bar_setup(MainWin, Board, BlackCells, WhiteCells) :-
                 [new(Opt, popup(new_Game)),
                  menu_item(exit, message(MainWin, destroy))]),
     send_list(Opt, append,
-                [menu_item(against_AI, message(
-                        @prolog, start_game, ai, Board, BlackCells, WhiteCells)),
+                [menu_item(against_AI_white, message(
+                        @prolog, start_game, aiw, Board, BlackCells, WhiteCells)),
+                menu_item(against_AI_black, message(
+                        @prolog, start_game, aib, Board, BlackCells, WhiteCells)),
                  menu_item(aI_vs_AI, message(
                         @prolog, start_game, ai_vs_ai_visual, Board, BlackCells, WhiteCells)),
                  menu_item(local_game, message(
@@ -54,8 +56,6 @@ start_game(Opponent, Canvas, BlackCells, WhiteCells) :-
     nb_setval(move_cell, undefined),
     nb_setval(position_cell, undefined),
     nb_setval(pillbug_effect, undefined),
-    nb_setval(player_turn, white),
-    nb_setval(opponent, Opponent),
 
     get(Canvas, size, size(W, H)),
     CH is H/2, CW is W/2,
@@ -69,7 +69,31 @@ start_game(Opponent, Canvas, BlackCells, WhiteCells) :-
 
     draw_side_board(Player1, white, WhiteCells),
     draw_side_board(Player2, black, BlackCells),
-    draw_board(Board, Canvas).
+    draw_board(Board, Canvas),
+
+    (
+        (
+            Opponent = aiw, 
+            nb_setval(opponent, ai),
+            nb_setval(player_turn, black),
+            gui_ai_turn(),
+            write_ln('ai played'),
+            gui_get_visual_game_state(NewBoard, [BlackPlayer, WhitePlayer]),
+            nb_setval(board, NewBoard),
+            nb_setval(black_player, BlackPlayer),
+            nb_setval(white_player, WhitePlayer),
+            draw_side_board(WhitePlayer, white, WhiteCells),
+            draw_side_board(BlackPlayer, black, BlackCells),
+            draw_board(NewBoard, Canvas)
+        );
+        (
+            Opponent = aib, 
+            nb_setval(opponent, ai),
+            nb_setval(player_turn, white)
+        );
+        nb_setval(opponent, Opponent),
+        nb_setval(player_turn, white)
+    ).
 
 gui_init :-
     % Setting up Game Panel
