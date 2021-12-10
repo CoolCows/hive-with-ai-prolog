@@ -12,11 +12,12 @@ apply_heuristics(Move, Value) :-
     free_enemy_queen(Move, H1N),
     free_ally_queen(Move, H2P),
     surround_ally_queen(Move, H2N),
+	closer_to_enemy_queen(Move,H4),
     hive_current_player_color(Color),
     oponent_color(Color, OpponentColor),
     block_bug(Move, OpponentColor, H3P),
     block_bug(Move, Color, H3N),
-    PreValue is H1P + H1N + H2P + H2N + H3P - H3N,
+    PreValue is H1P + H1N + H2P + H2N + H3P - H3N + H4,
     (
         (PreValue > 0, Value = PreValue);
         Value = 0.2
