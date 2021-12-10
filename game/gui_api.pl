@@ -2,6 +2,7 @@
     gui_start_game/3,
     gui_put_cell/3,
     gui_move_cell/3,
+    gui_all_possible_moves/2,
     gui_get_possible_moves/2,
     gui_get_possible_positions/2,
 	gui_get_pillbug_effect/2,
@@ -56,6 +57,9 @@ gui_move_cell(+SourceCell, +DestCell, -Board) :-
     % Returns the new board if succesful
 	hive_move_cell(SourceCell,DestCell),
     cells(Board).
+
+gui_all_possible_moves(Color, Moves) :-
+    hive_possible_plays(Color, Moves).
 
 gui_get_possible_moves(+Cell, -Board) :-
     % Get all Cells where a bug can be moved

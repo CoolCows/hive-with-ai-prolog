@@ -37,7 +37,7 @@ run_simulation(
     ai_get_game_state(RealGameState),
     get_next_moves(AllPosMoves),
     analyze_moves(Address, AllPosMoves, 0, [], BestMoves),
-    do_searches(Address, RealGameState, BestMoves, 2),
+    do_searches(Address, RealGameState, BestMoves, 4),
     write_ln('Do searches completed'),
   
     % ===== Multi-Threading (for later) =====
@@ -46,7 +46,7 @@ run_simulation(
     % create some threads to analyse several path down 
     % =====          End                =====
     
-    select_next_move(Address, AllPosMoves, FinalNextMove),
+    select_end_move(Address, AllPosMoves, FinalNextMove),
     write_ln('Final Next Move'),
     write_ln(FinalNextMove),
     explore_node(Address, FinalNextMove, true, NextNode),
@@ -122,10 +122,24 @@ select_next_move(Address, NextMove) :-
 select_next_move(Address, NextMoves, NextMove) :-
     %write_ln('Analyzing Next Moves'),
     %write_ln(Address),
-    analyze_moves(Address, NextMoves, 0, [], [NextMove|_]),
-    true.
+    analyze_moves(Address, NextMoves, 0, [], [NextMove|_]).
 
-analyze_moves(_, [], MaxValue, BestMoves, BestMoves).
+select_end_move(Address, AllPosMoves, EndMove):-
+    select_end_move(Address, AllPosMoves, 0, none, EndMove).
+select_end_move(_, [], _, EndMove, EndMove).
+select_end_move(Address, [PosMove|OtherMoves], MaxExplored, PosEndMove, EndMove) :-
+    keccak256(Address, PosMove, AuxAddress),
+    find_node_by_edge_move(AuxAddress, Node),!,
+    get_times_explored(Node, Explored),
+    (
+        (Explored > MaxExplored,!,  select_end_move(Address, OtherMoves, Explored, PosMove, EndMove));
+        select_end_move(Address, OtherMoves, MaxExplored, PosEndMove, EndMove)
+    ).
+select_end_move(Address, [_|OtherMoves], MaxExplored, PosEndMove, EndMove) :-
+    select_end_move(Address, OtherMoves, MaxExplored, PosEndMove, EndMove).
+
+
+analyze_moves(_, [], _, BestMoves, BestMoves).
     %write_ln('Analyzed all moves. Max Value'),
     %write_ln(MaxValue),
     %write_ln(BestMoves).

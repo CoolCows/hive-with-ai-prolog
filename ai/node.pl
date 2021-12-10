@@ -68,17 +68,17 @@ get_stats(
 ).
 
 get_times_explored(
-    node(_, _, _, _, _, _, Explored, _, _),
+    node(_, _, _, _, _, Explored, _, _),
     Explored
 ).
 
 get_times_white_won(
-    node(_, _, _, _, _, _, _, WhiteWon, _),
+    node(_, _, _, _, _,  _, WhiteWon, _),
     WhiteWon
 ).
 
 get_times_black_won(
-    node(_, _, _, _, _, _, _, _, BlackWon),
+    node(_, _, _, _, _, _, _, BlackWon),
     BlackWon
 ).
 
