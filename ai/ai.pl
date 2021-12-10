@@ -174,7 +174,7 @@ get_next_moves(NextMoves) :-
 	hive_current_player_color(Color),
  	hive_possible_plays(Color, Moves),
 	(
-		(Moves = [],NextMove = [skip_move]);
+		(Moves = [],NextMoves = [skip_move]);
 		NextMoves = Moves
 	).
 
