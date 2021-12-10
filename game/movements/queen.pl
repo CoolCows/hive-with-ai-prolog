@@ -9,6 +9,5 @@ valid_queen_movement(SourceCell, DestCell) :-
     adjacent_cell(SourceCell, DestCell),
 	accesible_cell(SourceCell,DestCell),
 	get_bug_type(DestCell,none),
-	cells(Cells),
-	delete(Cells,SourceCell,CellsWithoutSourceCell),
-	adjacent_to_hive(DestCell,CellsWithoutSourceCell).
+	adjacent_hive_cell(SourceCell,AdjHiveCell),
+	adjacent_cell(AdjHiveCell,DestCell).

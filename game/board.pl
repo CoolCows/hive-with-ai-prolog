@@ -8,6 +8,7 @@
 					adjacent_cells/2,
 					add_new_cell/1,
 					valid_new_cell/2,
+					adjacent_hive_cell/2,
 					move_cell/2,
 					pillbug_move/2,
 					one_hive/1,
@@ -331,6 +332,11 @@ adjacent_to_hive(Cell):-
 	cells(HiveCells),
 	adjacent_cell(Cell,AdjCell),
 	member(AdjCell,HiveCells),!.
+
+adjacent_hive_cell(Cell,AdjHiveCell):-
+	cells(HiveCells),
+	adjacent_cell(Cell,AdjHiveCell),
+	not(get_bug_type(AdjHiveCell,none)).
 
 % triumph if DestCell is accesible from SourceCell through sliding 
 accesible_cell(SourceCell,DestCell):-
