@@ -5,6 +5,7 @@
 
 
 valid_spider_movement(SourceCell,DestCell):-
+	one_hive(SourceCell),
 	cells(Cells),
 	delete(Cells,SourceCell,NewCells),
 
