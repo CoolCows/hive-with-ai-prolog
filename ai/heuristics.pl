@@ -71,9 +71,9 @@ free_ally_queen(move(SourceCell, DestCell), 0.5):-
     not(adjacent_cell(DestCell, cell(queen, _, _, Color, _))).
 free_ally_queen(_, 0).
 
-place_ants(place(cell(ant,_,_,_,_)), 0.35) :-
+place_ants(place(cell(ant,_,_,_,_)), 0.05) :-
     hive_current_player_turns(T),
-    T > 10.
+    T > 8.
 place_ants(_, 0).
 
 place_bug(place(_), Value) :-
