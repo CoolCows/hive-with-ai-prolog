@@ -106,7 +106,7 @@ place_bug(place(_), Value) :-
     Value is 0.25 + T/30.
 place_bug(_, 0).
 
-climb_queen(move(cell(beetle,_,_,_,_), cell(none,Row,Col,none,Stack), 0.4)) :-
+climb_queen(move(cell(beetle,_,_,_,_), cell(none,Row,Col,none,Stack), 0.45)) :-
     Stack > 0,
     hive_current_player_color(Color),
     oponent_color(Color, OpponentColor),

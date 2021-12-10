@@ -3,7 +3,7 @@
     ai_vs_ai_init/1,
     ai_vs_human/1,
     ai_vs_ai_visual/2,
-    ai_vs_ai/2,
+    ai_vs_ai/4,
     ai_get_game_state/1,
     ai_set_game_state/1,
     ai_game_status/1,
@@ -41,11 +41,11 @@ ai_vs_human(EdgeMove) :-
 ai_vs_ai_visual(Node, NextNode) :-
     ai_play(Node, NextNode, 2, train).
 
-ai_vs_ai(Node, Node) :-
+ai_vs_ai(Node, Node, _, _) :-
     not(get_type(Node, non_terminal)).
-ai_vs_ai(Node, EndNode) :-
-    ai_play(Node, NewNode),
-    ai_vs_ai(NewNode, EndNode).
+ai_vs_ai(Node, EndNode, SearchTimes, PlayOrTrain) :-
+    ai_play(Node, NewNode, SearchTimes, PlayOrTrain),
+    ai_vs_ai(NewNode, EndNode, SearchTimes, PlayOrTrain).
 
 ai_play(Node, Node, _, _) :-
     not(get_type(Node, non_terminal)),
