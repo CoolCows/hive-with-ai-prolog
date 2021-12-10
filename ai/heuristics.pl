@@ -13,11 +13,12 @@ apply_heuristics(Move, Value) :-
     free_ally_queen(Move, H2P),write_ln('h4'),
     surround_ally_queen(Move, H2N),write_ln('h5'),
     closer_to_enemy_queen(Move,H4),write_ln('h6'),
+    place_ants(Move, H5),
     hive_current_player_color(Color),
     oponent_color(Color, OpponentColor),
     %block_bug(Move, OpponentColor, H3P),write_ln('h7'),
     %block_bug(Move, Color, H3N),write_ln('h8'),
-    PreValue is H1P + H1N + H2P + H2N + H4, %H3P - H3N,
+    PreValue is H1P + H1N + H2P + H2N + H4 + H5, %H3P - H3N,
     (
         (PreValue > 0, Value = PreValue);
         Value = 0.2
@@ -64,9 +65,10 @@ closer_to_enemy_queen(move(cell(B1,R1,C1,D1,S1),cell(B2,R2,C2,D2,S2)),Value):-
 	delete_cell(DestCell).
 closer_to_enemy_queen(_, 0).
 
-closer_to_enemy_queen_aux(DestCell,SourceCell, 0.5):-
+closer_to_enemy_queen_aux(DestCell,SourceCell, 0.4):-
 	hive_current_player_color(Color),
 	oponent_color(Color,OponentColor),
+    not(adjacent_cell(SourceCell, cell(queen, _, _, OponentColor, _))),
 	hive_get_cell(cell(queen,_,_,OponentColor,_),QueenCell),
 	hive_distance(DestCell,QueenCell,RD),
 	hive_distance(SourceCell,QueenCell,RS),
@@ -78,6 +80,11 @@ free_ally_queen(move(SourceCell, DestCell), 0.5):-
     adjacent_cell(SourceCell, cell(queen, _, _, Color, _)),
     not(adjacent_cell(DestCell, cell(queen, _, _, Color, _))).
 free_ally_queen(_, 0).
+
+place_ants(place(cell(ant,_,_,_,_)), 0.5) :-
+    hive_current_player_turns(T),
+    T > 10.
+place_ants(_, 0).
 
 block_bug(move(SourceCell, DestCell), Color, Value):-
 	delete_cell(SourceCell),
