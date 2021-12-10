@@ -63,7 +63,7 @@ surround_ally_queen(move(_, DestCell), -0.7) :-
     adjacent_cell(DestCell, cell(queen, _, _, Color, _)).
 surround_ally_queen(_, 0).
 
-closer_to_enemy_queen(move(cell(B1,R1,C1,D1,S1),cell(B2,R2,C2,D2,S2)),Value):-
+closer_to_enemy_queen(move(cell(B1,R1,C1,D1,S1),cell(_,R2,C2,_,S2)),Value):-
 	DestCell = cell(B1,R2,C2,D1,S2),
 	SourceCell = cell(B1,R1,C1,D1,S1),
 	init_cell(DestCell),
@@ -119,8 +119,8 @@ block_bug(move(SourceCell, DestCell), Color, Value):-
 	init_cell(DestCell),
 	block_bug_aux(DestCell, Color, Value),
 	delete_cell(DestCell),
-	init_cell(SourceCell),
-    Cond = [].
+	init_cell(SourceCell).
+
 block_bug(_, _, 0).
 block_bug_aux(DestCell, Color, 0.5) :-
 	adjacent_cell(DestCell,AdjCell),

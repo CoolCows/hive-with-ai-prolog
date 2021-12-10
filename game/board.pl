@@ -111,7 +111,7 @@ remove_expired_fixed_cells():-
 
 % adds a new cell to the board 
 % NOTE: to find  new cells possible positions use findall with valid_new_cell/2
-add_new_cell(cell(Bug,Row,Col,Color,0)):-
+add_new_cell(cell(Bug,_,_,Color,0)):-
 	current_player_turns(3),
 	not(get_cell(cell(queen,_,_,Color,_),_)),
 	Bug \= queen,!,
@@ -128,12 +128,12 @@ add_new_cell(cell(Bug,Row,Col,Color,0)):-
 	remove_expired_fixed_cells().
 
 
-move_cell(cell(B1,R1,C1,D1,S1),cell(B2,R2,C2,D2,S2)):-
+move_cell(cell(B1,R1,C1,D1,S1),cell(_,R2,C2,_,S2)):-
 	delete_cell(cell(B1,R1,C1,D1,S1)),
 	init_cell(cell(B1,R2,C2,D1,S2)),
 	current_player_color(PlayerColor),
 	delete_last_moved_cell(_,PlayerColor),
-	set_last_moved_cell(cell(B1,R2,C2,D1,S2),PlayerColor),
+	set_last_moved_cell(cell(B1,R2,C2,D1,S2), PlayerColor),
     %write_ln("LAST MOVE CELL BY PLAYER"),
     %write_ln(PlayerColor),
     %write_ln(cell(B1,R2,C2,D1,S2)),
@@ -267,7 +267,7 @@ valid_new_cell(Color,ValidCell):-
 
 % checks for one hive rule
 one_hive(Cell):-
-	cells(Cells),
+	% cells(Cells),
 	delete_cell(Cell),
 	cells([X|Y]),
 	reachable(X,[X],ReachableCells),
@@ -335,7 +335,7 @@ adjacent_to_hive(Cell):-
 	member(AdjCell,HiveCells),!.
 
 adjacent_hive_cell(Cell,AdjHiveCell):-
-	cells(HiveCells),
+	% cells(HiveCells),
 	adjacent_cell(Cell,AdjHiveCell),
 	not(get_bug_type(AdjHiveCell,none)).
 

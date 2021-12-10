@@ -20,7 +20,6 @@
 	hive_possible_plays/2,
 	hive_distance/3
 ]).
-
 :- use_module(player).
 :- use_module(cell).
 :- use_module("movements/movements").
@@ -90,7 +89,7 @@ possible_moves(Color,move(SourceCell,DestCell)):-
 possible_place(Color,place(Cell)):-
 	hive_current_player_turns(3),
 	hive_get_player(player(Color,_, _, _, _, _, _, _, _),
-					player(Color,Queen, Ants, Beetle, Grasshopper, Ladybug, Mosquito, Pillbug, Spider)),
+					player(Color,Queen, _, _, _, _, _, _, _)),
 	Queen = 1,	
 	hive_get_possible_positions(Color,PosPositions),!,
 	member(cell(_,Row,Col,_,_),PosPositions),
@@ -156,8 +155,6 @@ hive_force_skip_turn() :-
     increase_turns(),
     remove_expired_fixed_cells().
 
-hive_current_player_color(Color):-
-    current_player_color(Color).
 
 hive_game_status(Status):-
 	game_status(Status).
@@ -177,5 +174,5 @@ hive_get_player(player(Color,Queen, Ants, Beetle, Grasshopper, Ladybug, Mosquito
 hive_current_player_turns(P):-
 	current_player_turns(P).
 	
-hive_distance(cell(_,R1,C1,_,_),cell(_,R2,C2,_,_),R):-
+hive_distance(cell(_,_,C1,_,_),cell(_,_,C2,_,_),R):-
 	R is  abs(C1 - C2).
