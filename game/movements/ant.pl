@@ -10,7 +10,7 @@ valid_ant_movement(SourceCell,DestCell):-
 	ant_path(SourceCell,[],DestCells),
 	init_cell(SourceCell),
 	member(DestCell,DestCells),
-    not(same_position(SourceCell, DestCell)).
+	not(same_position(SourceCell,DestCell)).
 
 non_visited_ant(Cell, Visited, AdjCell):-
 	adjacent_cell(Cell,AdjCell),
