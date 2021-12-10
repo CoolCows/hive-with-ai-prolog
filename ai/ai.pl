@@ -38,7 +38,7 @@ run_simulation(Node, NextNode, SearchTimes, PlayOrTrain) :-
     
     (
         (PlayOrTrain = play, select_end_move(Address, AllPosMoves, FinalNextMove));
-        select_next_move(Address, AllPosMoves, FinalNextMove),
+        select_next_move(Address, AllPosMoves, FinalNextMove)
     ),
     term_string(FinalNextMove, FinalNextMoveStr),
     message('AI choose next move:', FinalNextMoveStr),
