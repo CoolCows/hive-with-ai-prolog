@@ -13,7 +13,7 @@ train :-
 
     %Run simulation
     find_node_by_game_state('1', RootNode),
-    ai_vs_ai(RootNode, _),
+    ai_vs_ai(RootNode, _, 4, train),
     hive_game_status(Status),
     write_to_file(Status),
     halt.

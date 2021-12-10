@@ -41,11 +41,11 @@ ai_vs_human(EdgeMove) :-
 ai_vs_ai_visual(Node, NextNode) :-
     ai_play(Node, NextNode, 2, train).
 
-ai_vs_ai(Node, Node) :-
+ai_vs_ai(Node, Node, _, _) :-
     not(get_type(Node, non_terminal)).
 ai_vs_ai(Node, EndNode) :-
-    ai_play(Node, NewNode),
-    ai_vs_ai(NewNode, EndNode).
+    ai_play(Node, NewNode, SearchTimes, PlayOrTrain),
+    ai_vs_ai(NewNode, EndNode, SearchTimes, PlayOrTrain).
 
 ai_play(Node, Node, _, _) :-
     not(get_type(Node, non_terminal)),
