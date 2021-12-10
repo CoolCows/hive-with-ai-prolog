@@ -46,7 +46,7 @@ run_simulation(
     % create some threads to analyse several path down 
     % =====          End                =====
     
-    select_next_move(Address, AllPosMoves, FinalNextMove),
+    select_end_move(Address, AllPosMoves, FinalNextMove),
     write_ln('Final Next Move'),
     write_ln(FinalNextMove),
     explore_node(Address, FinalNextMove, true, NextNode),
@@ -122,10 +122,30 @@ select_next_move(Address, NextMove) :-
 select_next_move(Address, NextMoves, NextMove) :-
     %write_ln('Analyzing Next Moves'),
     %write_ln(Address),
-    analyze_moves(Address, NextMoves, 0, [], [NextMove|_]),
-    true.
+    analyze_moves(Address, NextMoves, 0, [], [NextMove|_]).
 
-analyze_moves(_, [], MaxValue, BestMoves, BestMoves).
+select_end_move(Address, AllPosMoves, EndMove):-
+    write_ln('sel1'),
+    select_end_move(Address, AllPosMoves, 0, none, EndMove).
+select_end_move(_, [], _, EndMove, EndMove).
+select_end_move(Address, [PosMove|OtherMoves], MaxExplored, PosEndMove, EndMove) :-
+    write_ln('sel2'),
+    keccak256(Address, PosMove, AuxAddress),
+    write_ln('sel20'),
+    find_node_by_edge_move(AuxAddress, Node),!,
+    write_ln('sel21'),
+    get_times_explored(Node, Explored),
+    (
+        (Explored > MaxExplored,!, write_ln('sel22'), select_end_move(Address, OtherMoves, Explored, PosMove, EndMove));
+        select_end_move(Address, OtherMoves, MaxExplored, PosEndMove, EndMove)
+    ),
+    write_ln('sel23').
+select_end_move(Address, [_|OtherMoves], MaxExplored, PosEndMove, EndMove) :-
+    write_ln('sel3'),
+    select_end_move(Address, OtherMoves, MaxExplored, PosEndMove, EndMove).
+
+
+analyze_moves(_, [], _, BestMoves, BestMoves).
     %write_ln('Analyzed all moves. Max Value'),
     %write_ln(MaxValue),
     %write_ln(BestMoves).
