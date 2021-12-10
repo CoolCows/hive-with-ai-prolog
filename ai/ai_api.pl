@@ -33,21 +33,13 @@ ai_vs_human(EdgeMove) :-
     write_ln('Playing Ai vs human'),
     nb_getval(parent_address, ParentAddress),
     explore_node(ParentAddress, EdgeMove, true, Node),
-    ai_play(Node, ResultNode),
+    ai_play(Node, ResultNode, 2, play),
     get_address(ResultNode, Address),
     nb_setval(parent_address, Address),
     write_ln('Ai ended its turn').
 
 ai_vs_ai_visual(Node, NextNode) :-
-    var(Node),!,
-    write_ln('ai_vs_ai_visual_step_0'),
-    find_node_by_game_state('1', Node),
-    write_ln('ai_vs_ai_visual_step_1'),
-    ai_vs_ai_visual(Node, NextNode),
-    write_ln('ai_vs_ai_visual_step_0 completed').
-ai_vs_ai_visual(Node, NextNode) :-
-    write_ln('ai_vs_ai_visual_step_N'),
-    ai_play(Node, NextNode).
+    ai_play(Node, NextNode, 2, train).
 
 ai_vs_ai(Node, Node) :-
     not(get_type(Node, non_terminal)).
@@ -55,13 +47,12 @@ ai_vs_ai(Node, EndNode) :-
     ai_play(Node, NewNode),
     ai_vs_ai(NewNode, EndNode).
 
-ai_play(Node, Node) :-
+ai_play(Node, Node, _, _) :-
     not(get_type(Node, non_terminal)),
     ai_game_status(Status),
-    write_ln('ai_play: Back Propagating End Move'),
     backpropagate(Node, Status).
-ai_play(Node, NewNode) :-
-    run_simulation(Node, NewNode).
+ai_play(Node, NewNode, SearchTimes, PlayOrTrain) :-
+    run_simulation(Node, NewNode, SearchTimes, PlayOrTrain).
 
 ai_put_cell(Cell) :-
     hive_put_cell(Cell).

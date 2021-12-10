@@ -1,5 +1,6 @@
 :- module(ai, [
     run_simulation/2,
+    run_simulation/4,
     explore_node/4,
     backpropagate/2
 ]).
@@ -16,19 +17,18 @@
 :- use_module(heuristics).
 :- use_module(node).
 
-run_simulation(Node, Node) :-
+run_simulation(Node, NextNode) :-
+    run_simulation(Node, NextNode, 2, play).
+run_simulation(Node, Node, _, _) :-
     not(get_type(Node, non_terminal)),!,
     write_ln('End Case Simulation').
-run_simulation(
-    Node,
-    NextNode
-) :-
-    write_ln('Running simulation'),
+run_simulation(Node, NextNode, SearchTimes, PlayOrTrain) :-
+    message('Running simulation: ', PlayOrTrain),
     get_address(Node, Address),
     ai_get_game_state(RealGameState),
     get_next_moves(AllPosMoves),
     analyze_moves(Address, AllPosMoves, 0, [], BestMoves),
-    do_searches(Address, RealGameState, BestMoves, 4),
+    do_searches(Address, RealGameState, BestMoves, SearchTimes),
   
     % ===== Multi-Threading (for later) =====
     % Make the dynamic predicates thread independent
@@ -36,8 +36,10 @@ run_simulation(
     % create some threads to analyse several path down 
     % =====          End                =====
     
-    %select_end_move(Address, AllPosMoves, FinalNextMove),
-    select_next_move(Address, AllPosMoves, FinalNextMove),
+    (
+        (PlayOrTrain = play, select_end_move(Address, AllPosMoves, FinalNextMove));
+        select_next_move(Address, AllPosMoves, FinalNextMove),
+    ),
     term_string(FinalNextMove, FinalNextMoveStr),
     message('AI choose next move:', FinalNextMoveStr),
     explore_node(Address, FinalNextMove, true, NextNode),
