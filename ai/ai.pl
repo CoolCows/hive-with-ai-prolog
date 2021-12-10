@@ -116,41 +116,42 @@ backpropagate(Node, EndNodeType) :-
     backpropagate(ParentNode, EndNodeType).
 
 select_next_move(Address, NextMove) :-
-    write_ln('Selecting Next Move'),
+    %write_ln('Selecting Next Move'),
     get_next_moves(NextMoves), 
     select_next_move(Address, NextMoves, NextMove).
 select_next_move(Address, NextMoves, NextMove) :-
-    write_ln('Analyzing Next Moves'),
-    write_ln(Address),
+    %write_ln('Analyzing Next Moves'),
+    %write_ln(Address),
     analyze_moves(Address, NextMoves, 0, [], [NextMove|_]),
     true.
 
-analyze_moves(_, [], MaxValue, BestMoves, BestMoves):-
-    write_ln('Analyzed all moves. Max Value'),
-    write_ln(MaxValue),
-    write_ln(BestMoves).
+analyze_moves(_, [], MaxValue, BestMoves, BestMoves).
+    %write_ln('Analyzed all moves. Max Value'),
+    %write_ln(MaxValue),
+    %write_ln(BestMoves).
 analyze_moves(Address, [Move|NextMoves], MaxValue, TopMoves, BestMoves) :-
     keccak256(Address, Move, AuxAddress),
     (
         (
-            write_ln('AM0'),
+            %write_ln('AM0'),
             find_node_by_edge_move(AuxAddress, Node),
-            write_ln('AM1'),
-            uct(Node, Move, NewValue),
-            write_ln('AM2'),
-            write_ln('New Value of Explored Node'),
-            write_ln(NewValue)
+            %write_ln('AM1'),
+            %write_ln('Analyzing Next Moves'),
+            uct(Node, Move, NewValue)%,
+            %write_ln('AM2'),
+            %write_ln('New Value of Explored Node'),
+            %write_ln(NewValue)
         );
         (
             % Call to Heuristics and Multiply for constant Value
-            write_ln('AM3'),
+            %write_ln('AM3'),
             apply_heuristics(Move, C),
             get_total_visits(TotalVisits),
-            write_ln(TotalVisits),
-            write_ln('AM4'),
-            NewValue is C*sqrt(TotalVisits),
-            write_ln('New Value of Unexplored Node'),
-            write_ln(NewValue)
+            %write_ln(TotalVisits),
+            %write_ln('AM4'),
+            NewValue is C*sqrt(TotalVisits)%,
+            %write_ln('New Value of Unexplored Node'),
+            %write_ln(NewValue)
         )
     ),
     % write_ln(NewValue),
@@ -181,17 +182,17 @@ get_next_moves(NextMoves) :-
 
 % Upper Confidence Bound
 uct(Node, Move, Result) :-
-    write_ln('UCT0'),
+    %write_ln('UCT0'),
     ai_current_player_color(Color),
     (
         (Color = white, get_stats(Node, Explored, _, TimesWon));
         get_stats(Node, Explored, TimesWon, _)
     ),
-    write_ln('UCT1'),
+    %write_ln('UCT1'),
 	apply_heuristics(Move, C),
-    write_ln('UCT2'),
+    %write_ln('UCT2'),
     get_total_visits(TotalVisits),
-    write_ln('UCT3'),
-    write_ln(Explored),
-    Result is TimesWon/(Explored + 1) + C*sqrt(TotalVisits)/(Explored + 1),
-    write_ln(Result).
+    %write_ln('UCT3'),
+    %write_ln(Explored),
+    Result is TimesWon/(Explored + 1) + C*sqrt(TotalVisits)/(Explored + 1).
+    %write_ln(Result).

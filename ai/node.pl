@@ -216,8 +216,8 @@ update_node(Node, Status) :-
     ),
     NewExplored is Explored + 1,
     (
-        (Status = black_won, NewBlackWon is BlackWon + 1, NewWhiteWon = WhiteWon, write_ln('BlackWon'));
-        (Status = white_won, NewBlackWon = BlackWon, NewWhiteWon is WhiteWon + 1, write_ln('WhiteWon'));
+        (Status = black_won, NewBlackWon is BlackWon + 1, NewWhiteWon = WhiteWon);
+        (Status = white_won, NewBlackWon = BlackWon, NewWhiteWon is WhiteWon + 1);
         (Status = draw, NewBlackWon = BlackWon, NewWhiteWon = WhiteWon)
     ),
     assert_node(

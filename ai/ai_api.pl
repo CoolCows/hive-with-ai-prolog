@@ -3,6 +3,7 @@
     ai_vs_ai_init/1,
     ai_vs_human/1,
     ai_vs_ai_visual/2,
+    ai_vs_ai/2,
     ai_get_game_state/1,
     ai_set_game_state/1,
     ai_game_status/1,
