@@ -1,12 +1,3 @@
-% TODO:
-% Explore children in different threads
-% Speed up the process
-%
-% Number of time this node is explored
-% Number of game won through this node
-% Total explorations
-%
-% Use reinforced learning 
 :- module(ai, [
     run_simulation/2,
     explore_node/4,
@@ -37,7 +28,7 @@ run_simulation(
     ai_get_game_state(RealGameState),
     get_next_moves(AllPosMoves),
     analyze_moves(Address, AllPosMoves, 0, [], BestMoves),
-    do_searches(Address, RealGameState, BestMoves, 4),
+    do_searches(Address, RealGameState, BestMoves, 2),
     write_ln('Do searches completed'),
   
     % ===== Multi-Threading (for later) =====
@@ -47,6 +38,7 @@ run_simulation(
     % =====          End                =====
     
     select_end_move(Address, AllPosMoves, FinalNextMove),
+    %select_next_move(Address, AllPosMoves, FinalNextMove),
     write_ln('Final Next Move'),
     write_ln(FinalNextMove),
     explore_node(Address, FinalNextMove, true, NextNode),
@@ -74,7 +66,6 @@ do_searches(Address, RealGameState, [BestMove|OtherMoves], Amount) :-
     find_node_by_game_state(NA, NEN),
     write_ln(NEN),
     write_ln('Back Propagation Complete'),
-    sync_tree_db,
     
     write_ln('--------------------Ending Search--------------------\n'),
     DecAmount is Amount - 1,
@@ -103,12 +94,11 @@ explore_node(Address, NextMove, Visited, Node) :-
     ai_game_status(NodeType),
     force_find_node(Address, GameState, NextMove, NodeType, Visited, Node).
 
-backpropagate(_, non_terminal):-
-    write_ln('backpropagation ended because of non terminal status').
+% backpropagate(_, non_terminal).
 backpropagate(Node, EndNodeType) :-
     get_parent_address(Node, '0'),!,
-    write_ln('backpropagation final step'),
-    update_node(Node, EndNodeType).
+    update_node(Node, EndNodeType),
+    sync_tree_db.
 backpropagate(Node, EndNodeType) :-
     update_node(Node, EndNodeType),
     get_parent_address(Node, ParentGameStateAddress),
@@ -139,11 +129,15 @@ select_end_move(Address, [_|OtherMoves], MaxExplored, PosEndMove, EndMove) :-
     select_end_move(Address, OtherMoves, MaxExplored, PosEndMove, EndMove).
 
 
-analyze_moves(_, [], _, BestMoves, BestMoves).
+analyze_moves(Address, Moves, MaxValue, TopMoves, BestMoves) :-
+    find_node_by_game_state(Address, Node),
+    get_times_explored(Node, ParentVisits),
+    analyze_moves(Address, ParentVisits, Moves, MaxValue, TopMoves, BestMoves).
+analyze_moves(_, _, [], _, BestMoves, BestMoves).
     %write_ln('Analyzed all moves. Max Value'),
     %write_ln(MaxValue),
     %write_ln(BestMoves).
-analyze_moves(Address, [Move|NextMoves], MaxValue, TopMoves, BestMoves) :-
+analyze_moves(Address, ParentVisits, [Move|NextMoves], MaxValue, TopMoves, BestMoves) :-
     keccak256(Address, Move, AuxAddress),
     (
         (
@@ -151,7 +145,7 @@ analyze_moves(Address, [Move|NextMoves], MaxValue, TopMoves, BestMoves) :-
             find_node_by_edge_move(AuxAddress, Node),
             %write_ln('AM1'),
             %write_ln('Analyzing Next Moves'),
-            uct(Node, Move, NewValue)%,
+            uct(ParentVisits, Node, Move, NewValue)%,
             %write_ln('AM2'),
             %write_ln('New Value of Explored Node'),
             %write_ln(NewValue)
@@ -160,10 +154,10 @@ analyze_moves(Address, [Move|NextMoves], MaxValue, TopMoves, BestMoves) :-
             % Call to Heuristics and Multiply for constant Value
             %write_ln('AM3'),
             apply_heuristics(Move, C),
-            get_total_visits(TotalVisits),
+            %get_total_visits(TotalVisits),
             %write_ln(TotalVisits),
             %write_ln('AM4'),
-            NewValue is C*sqrt(TotalVisits)%,
+            NewValue is C*sqrt(ParentVisits)%,
             %write_ln('New Value of Unexplored Node'),
             %write_ln(NewValue)
         )
@@ -195,7 +189,7 @@ get_next_moves(NextMoves) :-
 
 
 % Upper Confidence Bound
-uct(Node, Move, Result) :-
+uct(ParentVisits, Node, Move, Result) :-
     %write_ln('UCT0'),
     ai_current_player_color(Color),
     (
@@ -205,8 +199,8 @@ uct(Node, Move, Result) :-
     %write_ln('UCT1'),
 	apply_heuristics(Move, C),
     %write_ln('UCT2'),
-    get_total_visits(TotalVisits),
+    %get_total_visits(TotalVisits),
     %write_ln('UCT3'),
     %write_ln(Explored),
-    Result is TimesWon/(Explored + 1) + C*sqrt(TotalVisits)/(Explored + 1).
+    Result is TimesWon/(Explored + 1) + C*sqrt(ParentVisits)/(Explored + 1).
     %write_ln(Result).
