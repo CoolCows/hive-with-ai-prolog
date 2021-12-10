@@ -134,9 +134,9 @@ move_cell(cell(B1,R1,C1,D1,S1),cell(B2,R2,C2,D2,S2)):-
 	current_player_color(PlayerColor),
 	delete_last_moved_cell(_,PlayerColor),
 	set_last_moved_cell(cell(B1,R2,C2,D1,S2),PlayerColor),
-	write_ln("LAST MOVE CELL BY PLAYER"),
-	write_ln(PlayerColor),
-	write_ln(cell(B1,R2,C2,D1,S2)),
+    %write_ln("LAST MOVE CELL BY PLAYER"),
+    %write_ln(PlayerColor),
+    %write_ln(cell(B1,R2,C2,D1,S2)),
 	increase_turns(),
 	remove_expired_fixed_cells().
 
