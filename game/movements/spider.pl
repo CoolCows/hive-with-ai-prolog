@@ -5,24 +5,31 @@
 
 
 valid_spider_movement(SourceCell,DestCell):-
-	one_hive(SourceCell),
-	cells(HiveCells),
-	delete(HiveCells,SourceCell,HiveCellsWithoutSourceCell),
+	cells(Cells),
+	delete(Cells,SourceCell,NewCells),
+
 	adjacent_cell(SourceCell,AdjCell1),
-	accesible_cell(SourceCell,AdjCell1),
-	adjacent_to_hive(AdjCell1,HiveCellsWithoutSourceCell),
-	AdjCell1 \== SourceCell,
 	get_bug_type(AdjCell1,none),
+	accesible_cell(SourceCell,NewCells,AdjCell1),
+	adjacent_hive_cell(SourceCell,NewCells,AdjHiveCell1),
+	adjacent_cell(AdjCell1,AdjHiveCell1),
+
 	adjacent_cell(AdjCell1,AdjCell2),
-	accesible_cell(AdjCell1,AdjCell2),
-	adjacent_to_hive(AdjCell2,HiveCellsWithoutSourceCell),
-	AdjCell2 \== SourceCell,
-	AdjCell2 \== AdjCell1,
 	get_bug_type(AdjCell2,none),
+	AdjCell2 \= SourceCell,
+	accesible_cell(AdjCell1,NewCells,AdjCell2),
+	adjacent_hive_cell(AdjCell1,NewCells,AdjHiveCell2),
+	adjacent_cell(AdjCell2,AdjHiveCell2),
+	AdjHiveCell2 \= SourceCell,
+
 	adjacent_cell(AdjCell2,DestCell),
-	accesible_cell(AdjCell2,DestCell),
-	adjacent_to_hive(DestCell,HiveCellsWithoutSourceCell),
-	DestCell \== SourceCell,
-	DestCell \== AdjCell1,
-	DestCell \== AdjCell2,
-	get_bug_type(DestCell,none).
+	get_bug_type(DestCell,none),
+	DestCell \= SourceCell,
+	DestCell \= AdjCell1,
+	accesible_cell(AdjCell2,NewCells,DestCell),
+	adjacent_hive_cell(AdjCell2,NewCells,AdjHiveCell3),
+	adjacent_cell(DestCell,AdjHiveCell3),
+	AdjHiveCell2 \= SourceCell.
+
+
+

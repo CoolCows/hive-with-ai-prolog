@@ -12,9 +12,8 @@ valid_pillbug_movement(SourceCell,DestCell):-
 	one_hive(SourceCell),
     adjacent_cell(SourceCell, DestCell),
 	get_bug_type(DestCell,none),
-	cells(Cells),
-	delete(Cells,SourceCell,CellsWithoutSourceCell),
-	adjacent_to_hive(DestCell,CellsWithoutSourceCell).
+	adjacent_hive_cell(DestCell, AdjHiveCell),
+	adjacent_cell(SourceCell,AdjHiveCell).
 
 movable_cell_by_pillbug(PillbugCell,MovableBug):-
 	adjacent_cell(PillbugCell,MovableBug),

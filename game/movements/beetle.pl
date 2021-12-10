@@ -8,17 +8,15 @@ valid_beetle_movement(SourceCell,DestCell):-
 	adjacent_cell(SourceCell,DestCell),
 	accesible_cell_top_level(SourceCell,DestCell),
 	get_bug_type(DestCell,none),
-	cells(Cells),
-	delete(Cells,SourceCell,CellsWithoutSourceCell),
-	adjacent_to_hive(DestCell,CellsWithoutSourceCell),
-	adjacent_to_hive(DestCell).
+	adjacent_hive_cell(SourceCell,AdjHiveCell),
+	adjacent_cell(DestCell,AdjHiveCell).
 
 valid_beetle_movement(SourceCell,DestCell):-
 	one_hive(SourceCell),
-	adjacent_cell(SourceCell, AdyCell),
-	accesible_cell_top_level(SourceCell,AdyCell),
-	not(get_bug_type(AdyCell,none)),
-    AdyCell = cell(_, Row, Col, _, Stack),
+	adjacent_cell(SourceCell, AdjCell),
+	accesible_cell_top_level(SourceCell,AdjCell),
+	not(get_bug_type(AdjCell,none)),
+    AdjCell = cell(_, Row, Col, _, Stack),
     NewStack is Stack + 1,
     DestCell = cell(none, Row, Col, none, NewStack).
 
