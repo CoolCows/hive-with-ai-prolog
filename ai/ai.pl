@@ -27,7 +27,7 @@ run_simulation(Node, NextNode, SearchTimes, PlayOrTrain) :-
     get_address(Node, Address),
     ai_get_game_state(RealGameState),
     get_next_moves(AllPosMoves),
-    analyze_moves(Address, AllPosMoves, BestMoves),
+    analyze_moves(Address, AllPosMoves, 0, [], BestMoves),
     do_searches(Address, RealGameState, BestMoves, SearchTimes),
   
     % ===== Multi-Threading (for later) =====
@@ -103,7 +103,7 @@ select_next_move(Address, NextMove) :-
 select_next_move(Address, NextMoves, NextMove) :-
     %write_ln('Analyzing Next Moves'),
     %write_ln(Address),
-    analyze_moves(Address, NextMoves, [NextMove|_]).
+    analyze_moves(Address, NextMoves, 0, [], [NextMove|_]).
 
 select_end_move(Address, AllPosMoves, EndMove):-
     select_end_move(Address, AllPosMoves, 0, none, EndMove).
@@ -120,22 +120,15 @@ select_end_move(Address, [_|OtherMoves], MaxExplored, PosEndMove, EndMove) :-
     select_end_move(Address, OtherMoves, MaxExplored, PosEndMove, EndMove).
 
 
-analyze_moves(Address, Moves, BestMoves) :-
+analyze_moves(Address, Moves, MaxValue, TopMoves, BestMoves) :-
     find_node_by_game_state(Address, Node),
     get_times_explored(Node, ParentVisits),
-    analyze_moves(Address, ParentVisits, Moves, [], PackedMoves),
-    sort(0, @>=, PackedMoves, PackedBestMoves),
-    unpack(PackedBestMoves, BestMoves).
-
-unpack([c(_, Move)], [Move]).
-unpack([c(_, Move)|Tail], [Move|Result]) :-
-    unpack(Tail,Result).
-
-analyze_moves(_, _, [], BestMoves, BestMoves).
+    analyze_moves(Address, ParentVisits, Moves, MaxValue, TopMoves, BestMoves).
+analyze_moves(_, _, [], _, BestMoves, BestMoves).
     %write_ln('Analyzed all moves. Max Value'),
     %write_ln(MaxValue),
     %write_ln(BestMoves).
-analyze_moves(Address, ParentVisits, [Move|NextMoves], TopMoves, BestMoves) :-
+analyze_moves(Address, ParentVisits, [Move|NextMoves], MaxValue, TopMoves, BestMoves) :-
     keccak256(Address, Move, AuxAddress),
     (
         (
@@ -162,7 +155,19 @@ analyze_moves(Address, ParentVisits, [Move|NextMoves], TopMoves, BestMoves) :-
     ),
     % write_ln(NewValue),
     % write_ln(MaxValue),
-    analyze_moves(Address, ParentVisits, NextMoves, [c(NewValue, Move)|TopMoves], BestMoves).
+    (
+        (
+            NewValue > MaxValue,!, 
+            %write_ln('Found Best Move'),
+            %write_ln(Move),
+            analyze_moves(Address, NextMoves, NewValue, [Move], BestMoves)
+        );
+        (
+            NewValue =:= MaxValue,!,
+            analyze_moves(Address, NextMoves, MaxValue, [Move|TopMoves], BestMoves)
+        );
+        analyze_moves(Address, NextMoves, MaxValue, TopMoves, BestMoves)
+    ).
 
 % Get all possible moves
 get_next_moves(NextMoves) :-
