@@ -17,13 +17,13 @@ apply_heuristics(Move, Value) :-
     place_ants(Move, H5),
     place_bug(Move, H6),
     climb_queen(Move, H7),
-    %hive_current_player_color(Color),
-    %oponent_color(Color, OpponentColor),
-    %block_bug(Move, OpponentColor, H3P),write_ln('h7'),
-    %block_bug(Move, Color, H3N),write_ln('h8'),
-    PreValue is H1P + H1N + H2P + H2N + H4 + H5 + H6 + H7, %H3P - H3N,
+    hive_current_player_color(Color),
+    oponent_color(Color, OpponentColor),
+    block_enemy_bug(Move, OpponentColor, H3P),
+    block_ally_bug(Move, Color, H3N),
+    PreValue is H1P + H1N + H2P + H2N + H4 + H5 + H6 + H7 + H3P + H3N,
     (
-        (PreValue > 0, Value = PreValue);
+        (PreValue > 0.1, Value = PreValue);
         Value = 0.25
     ).
     %write_ln(Value).
@@ -113,21 +113,30 @@ climb_queen(move(cell(beetle,_,_,_,_), cell(none,Row,Col,none,Stack), 0.45)) :-
     get_cell(cell(queen, Row, Col, OpponentColor, 0)).
 climb_queen(_, 0).
 
+block_enemy_bug(move(_, DestCell), Color, 0.5) :-
+   findall(AdyCell, not_empty_cell(DestCell, AdyCell), [Cell]),
+   Cell = cell(_, _, _, Color, 0),
+   write_ln('bem').
+block_enemy_bug(place(cell(_, Row, Col, _, _)), Color, 0.5) :-
+   findall(AdyCell, not_empty_cell(cell(none, Row, Col, none, 0), AdyCell), [Cell]),
+   Cell = cell(_, _, _, Color, 0),
+   write_ln('bep').
+block_enemy_bug(X,_, 0) :-
+    write_ln(X).
 
-block_bug(move(SourceCell, DestCell), Color, Value):-
-	delete_cell(SourceCell),
-	init_cell(DestCell),
-	block_bug_aux(DestCell, Color, Value),
-	delete_cell(DestCell),
-	init_cell(SourceCell).
-
-block_bug(_, _, 0).
-block_bug_aux(DestCell, Color, 0.5) :-
-	adjacent_cell(DestCell,AdjCell),
-	get_color(AdjCell, Color),
-	hive_get_possible_moves(AdjCell, []).
-block_bug_aux(_, _, 0).
+block_ally_bug(move(_, DestCell), Color, -0.3) :-
+   findall(AdyCell, not_empty_cell(DestCell, AdyCell), [Cell]),
+   Cell = cell(_, _, _, Color, 0),
+   write_ln('bam').
+block_ally_bug(place(cell(_, Row, Col, _, _)), Color, -0.3) :-
+   findall(AdyCell, not_empty_cell(cell(none, Row, Col, none, 0), AdyCell), [Cell]),
+   Cell = cell(_, _, _, Color, 0),
+   write_ln('bap').
+block_ally_bug(_, _, 0).
 
 empty_cell(Cell, AdyCell):-
     adjacent_cell(Cell, AdyCell),
     AdyCell = cell(none, _, _, none, _).
+not_empty_cell(Cell, AdyCell) :-
+    adjacent_cell(Cell, AdyCell),
+    not(AdyCell = cell(none, _, _, none, _)).

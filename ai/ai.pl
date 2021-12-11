@@ -148,7 +148,7 @@ analyze_moves(Address, ParentVisits, [Move|NextMoves], MaxValue, TopMoves, BestM
             %get_total_visits(TotalVisits),
             %write_ln(TotalVisits),
             %write_ln('AM4'),
-            NewValue is C*sqrt(ParentVisits)%,
+            NewValue is C*sqrt(ParentVisits + 1)%,
             %write_ln('New Value of Unexplored Node'),
             %write_ln(NewValue)
         )
@@ -193,7 +193,7 @@ uct(ParentVisits, Node, Move, Result) :-
     %get_total_visits(TotalVisits),
     %write_ln('UCT3'),
     %write_ln(Explored),
-    Result is TimesWon/(Explored + 1) + C*sqrt(ParentVisits)/(Explored + 1).
+    Result is TimesWon/(Explored + 1) + C*sqrt(ParentVisits + 1)/(Explored + 1).
     %write_ln(Result).
 
 message(A, B) :-
