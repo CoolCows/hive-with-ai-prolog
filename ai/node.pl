@@ -36,7 +36,7 @@
 load_tree_db :-
     db_attach('../ai/db/tree_db.pl', []).
 
-% sync to delte retract calls
+% sync to delete retract calls
 sync_tree_db :-
     db_sync(gc(always)).
 
@@ -218,7 +218,7 @@ update_node(Node, Status) :-
     (
         (Status = black_won, NewBlackWon is BlackWon + 1, NewWhiteWon = WhiteWon);
         (Status = white_won, NewBlackWon = BlackWon, NewWhiteWon is WhiteWon + 1);
-        (Status = draw, NewBlackWon = BlackWon, NewWhiteWon = WhiteWon)
+        (Status = draw, NewBlackWon is BlackWon + 0.5, NewWhiteWon is WhiteWon + 0.5)
     ),
     assert_node(
         Address,

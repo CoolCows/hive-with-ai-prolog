@@ -55,10 +55,10 @@ free_enemy_queen(move(SourceCell, _), -0.6):-
     adjacent_cell(SourceCell, cell(queen, _, _, OpponentColor, _)).
 free_enemy_queen(_, 0).
 
-surround_ally_queen(place(Cell), -0.7) :-
+surround_ally_queen(place(Cell), -0.6) :-
     hive_current_player_color(Color),
     adjacent_cell(Cell, cell(queen, _, _, Color, _)).
-surround_ally_queen(move(_, DestCell), -0.7) :-
+surround_ally_queen(move(_, DestCell), -0.5) :-
     hive_current_player_color(Color),
     adjacent_cell(DestCell, cell(queen, _, _, Color, _)).
 surround_ally_queen(_, 0).
