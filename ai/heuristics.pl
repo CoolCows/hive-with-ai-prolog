@@ -115,23 +115,18 @@ climb_queen(_, 0).
 
 block_enemy_bug(move(_, DestCell), Color, 0.5) :-
    findall(AdyCell, not_empty_cell(DestCell, AdyCell), [Cell]),
-   Cell = cell(_, _, _, Color, 0),
-   write_ln('bem').
+   Cell = cell(_, _, _, Color, 0).
 block_enemy_bug(place(cell(_, Row, Col, _, _)), Color, 0.5) :-
    findall(AdyCell, not_empty_cell(cell(none, Row, Col, none, 0), AdyCell), [Cell]),
-   Cell = cell(_, _, _, Color, 0),
-   write_ln('bep').
-block_enemy_bug(X,_, 0) :-
-    write_ln(X).
+   Cell = cell(_, _, _, Color, 0).
+block_enemy_bug(_,_, 0).
 
 block_ally_bug(move(_, DestCell), Color, -0.3) :-
    findall(AdyCell, not_empty_cell(DestCell, AdyCell), [Cell]),
-   Cell = cell(_, _, _, Color, 0),
-   write_ln('bam').
+   Cell = cell(_, _, _, Color, 0).
 block_ally_bug(place(cell(_, Row, Col, _, _)), Color, -0.3) :-
    findall(AdyCell, not_empty_cell(cell(none, Row, Col, none, 0), AdyCell), [Cell]),
-   Cell = cell(_, _, _, Color, 0),
-   write_ln('bap').
+   Cell = cell(_, _, _, Color, 0).
 block_ally_bug(_, _, 0).
 
 empty_cell(Cell, AdyCell):-
