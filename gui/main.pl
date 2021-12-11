@@ -6,6 +6,8 @@
 :- use_module("./events/side_board_events", [select_side_board/4]).
 :- use_module("../game/gui_api").
 
+% Double stack size
+:- set_prolog_flag(stack_limit, 2_147_483_648).
 
 menu_bar_setup(MainWin, Board, BlackCells, WhiteCells) :-
     send(new(D, dialog), above, Board),
