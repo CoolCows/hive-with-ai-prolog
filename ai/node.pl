@@ -28,8 +28,8 @@
         node_type: atom,         % non_terminal | white_won | black_won | draw
         node_visited: atom,      % true | false
         times_explored: integer,
-        times_white_won: integer,
-        times_black_won: integer
+        times_white_won: float,
+        times_black_won: float
     ).
 
 % load stored tree
@@ -113,8 +113,8 @@ add_initial_node:-
             non_terminal,
             true,
             0,
-            0,
-            0
+            0.0,
+            0.0
         )
     ).
 
@@ -126,7 +126,7 @@ add_node(
     NodeVisited,
     node(
         NodeAddress, AuxAddress, ParentAddress,
-        NodeType, NodeVisited, 0, 0, 0
+        NodeType, NodeVisited, 0, 0.0, 0.0
     )
 ):-
     assert_node(
@@ -136,8 +136,8 @@ add_node(
         NodeType, 
         NodeVisited, 
         0, 
-        0,
-        0
+        0.0,
+        0.0
     ).
 
 % returns a node by it's address
@@ -216,8 +216,8 @@ update_node(Node, Status) :-
     ),
     NewExplored is Explored + 1,
     (
-        (Status = black_won, NewBlackWon is BlackWon + 1, NewWhiteWon = WhiteWon);
-        (Status = white_won, NewBlackWon = BlackWon, NewWhiteWon is WhiteWon + 1);
+        (Status = black_won, NewBlackWon is BlackWon + 1.0, NewWhiteWon = WhiteWon);
+        (Status = white_won, NewBlackWon = BlackWon, NewWhiteWon is WhiteWon + 1.0);
         (Status = draw, NewBlackWon is BlackWon + 0.5, NewWhiteWon is WhiteWon + 0.5)
     ),
     assert_node(
