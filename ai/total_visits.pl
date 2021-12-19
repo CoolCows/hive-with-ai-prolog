@@ -9,8 +9,10 @@
 
 :- persistent total_visits(num: integer).
 
+
 load_total_visits_db :-
-    db_attach('../ai/db/total_visits_db.pl', []).
+    total_visits(0).
+%    db_attach('../ai/db/total_visits_db.pl', []).
 
 init_total_visits :-
     assert_total_visits(0).
